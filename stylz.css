@@ -1,0 +1,77 @@
+body{
+	background-color:black;
+}
+@keyframes blink{
+	0%{ opacity: 1; }
+	50%{ opacity: 0; }
+	100%{ opacity: 1; }
+}
+
+@keyframes semiblink{
+	0%{ opacity: 1; }
+	50%{ opacity: 0.5; }
+	100%{ opacity: 1; }
+}
+
+img {
+	position:absolute;
+}
+
+.ge {
+	float:left;
+	width:30px;
+	height:30px;
+	margin:0;
+	padding:0;
+}
+
+.stati{
+	font-size: 10pt;
+
+	//font-family: monospace;
+	color:#EEE;
+	font-family: Lucida Console
+}
+
+.output{
+	width:100%;
+}
+
+.bugs{
+	text-align: center;
+	color:white;
+	text-size: 15pt;
+	font-family: Arial;
+}
+
+.blinking{
+	animation: blink 2s;
+	animation-iteration-count: infinite;
+}
+
+.blinkonceforyes{
+	animation: semiblink .4s;
+	animation-iteration-count: 2;
+}
+
+#gridandbug{
+	width:570px;
+}
+
+#grid{
+	height:330px;
+	width:100%;
+	//overflow:hidden;
+}
+#status1 {
+	float:left;
+}
+
+#status11{
+	width:35%;
+	float:left;
+}
+#status12{
+	width:65%;
+	float:left;
+}
