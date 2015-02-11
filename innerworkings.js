@@ -28,6 +28,8 @@
 // Can walk through Reds house from top side, can't think of a easy/good way to fix
 // More than 26 items is an issue
 
+fillstats(p1);
+charout = p1; 
 changeroom(BEDROOM, {y:4, x:3}); //in newgame()... rename STARTINGROOM, STARTINGPOS
 
 $("body").keypress(function(event){
@@ -45,7 +47,9 @@ $("body").keypress(function(event){
 		if(anykey) {
 			$("#grid").removeClass("blinkonceforyes"); 
 			anykey = false;
-			startfight();
+			monout = p1;
+			fightmenu = NORMALMENU;
+			fightingmessage();
 		} else demsbefightinkeys(key);
 	}
 });
@@ -63,17 +67,37 @@ function walking(key){
 	else if(key == KEY.S){ savegame();}
 }
 
-function listitems(){
+function listonseverallines(list){
+	string = "";
+	list.forEach(function(element, index){
+		string += "("+alphabet[index] + ") " + element.name + "<br>";
+	});
+	return string;
 }
 
 function listpokemon(){
-	items.forEach(function(item){
-	});
+	listofpoke = listpoke();
+	if(listofpoke.length != 0){
+		output("#bug0", "Check out which Pokemon?");
+		output("#bug1", listonseverallines(listofpoke));
+	} else {
+		output("#bug0", "No Pokemon");
+		mode = WALKMODE;
+	}
 }
+
 function savegame(){
 	output("#bug0", "Game saved... jk");
 }
 
+function getitem(nextitem){
+	if(nextitem.itemtype == BALL && nextitem.newpok){
+		newpokemon = nextitem.contains;
+		nextitem.newpok = false;
+		nextitem.contains = newmon(newpokemon, nextitem.lev);
+	}
+	p1.inventory.push(nextitem);
+}
 
 function getitems(){ 
 	string = "You get: "; count = 0;
@@ -82,7 +106,7 @@ function getitems(){
 			nextitem = curroom.items.splice(i,1)[0];
 			if(count > 0) string += ", ";
 			string += "A " + nextitem.name;
-			p1.inventory.push(nextitem);
+			getitem(nextitem);
 			count++;
 		}
 	}
@@ -180,10 +204,11 @@ function drawmap(){
 }
 
 function statusupdate(){
-	output("#status11", "Red, Pokemon Trainer");
-	output("#status12", "St:" + p1.str + " Df:" + p1.def);
-	output("#status2", curroom.name + " &ETH:" + p1.doge + " HP:"+p1.curhp +
-			"("+ p1.maxhp + ") Exp:"+p1.exp+ " T:"+turns+ " Hunger:" + hunger);
+	output("#status11",  p1.name);//)"Red, Pokemon Trainer");
+	output("#status12", "At:" + charout.att + " Df:" + 
+			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc);
+	output("#status2", curroom.name + " &ETH:" + doge + " HP:" + charout.curhp +
+			"("+ charout.maxhp + ") Exp:"+charout.level+ " T:"+turns+ " Hunger:" + hunger);
 }
 
 function exitdest(pos){
@@ -204,7 +229,7 @@ function drawsquare(pos){
 
 		peepat = checkforthings(ijda); 
 		hunt = thingsat(curroom.items, ijda);
-		hideme = peepat == p1 && newtile.hide && hunt.length == 0;
+		hideme = peepat == p1 && newtile.hide && hunt.length == 0 && mode != BATTLEMODE;
 		if(peepat != null && !hideme) newtile = peepat;
 
 		if(newtile.type == TILE && newtile.blink) $(ap(gridimgs,pos)).addClass("blinking");
@@ -278,7 +303,7 @@ function thingsat(list, pos){
 }
 
 function checkforthings(pos){
-	if(equpos(p1.pos, pos)) return p1; 
+	if(equpos(p1.pos, pos)) return charout; 
 
 	if(mode == BATTLEMODE && equpos(pos, encpok.pos)) return encpok;
 
@@ -291,16 +316,6 @@ function checkforthings(pos){
 	return null;
 }
 
-
-function newmon(type, level, position){
-	newpoke = {
-		type : type.type, name: type.name, fn: type.fn,
-		level: level, curhp: type.hp*level, maxhp: type.hp*level,
-		att: type.att*level, def:type.def*level, spc:type.spc*level,
-		spd:type.spd*level, pos: position
-	};
-	return newpoke;
-}
 
 function checktile(nexttile, pos, dir){
 	if(nexttile.danger){
@@ -371,8 +386,9 @@ function justanyol(thing){
 
 //This is actually longer than just typing it out each time...
 //I guess I might need to modify it
-function output(divname, message){ 
-	$(divname).html(message);
+function output(divname, message, append){ 
+	if(append) { $(divname).append(message); }
+	else{ $(divname).html(message); }
 }
 
 function chat(dir){
