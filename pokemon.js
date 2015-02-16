@@ -59,9 +59,11 @@ function fillstats(mon){
 	mon.def = statcalc(mon, mon.basedef);
 	mon.spd = statcalc(mon, mon.basespd);
 	mon.spc = statcalc(mon, mon.basespc);
-	while(mon.moves.length < 4) mon.moves.push(NILMOVE);
 }
 
+//I should deal with moves differently, not currently relevant but don't want moves reset when levelling
+//also currently doesn't copy, so that's not great
+//pos is moderately useless?
 function newmon(type, level, position){
 	newpoke = {
 		type: type.type,
@@ -69,7 +71,7 @@ function newmon(type, level, position){
 		basehp: type.basehp, baseatt: type.baseatt, basedef: type.basedef,
 		basespc: type.basespc, basespd: type.basespd, pos: position, exp:0, moves: type.moves,
 		xp: xpatlevel(level), evolve: type.evolve
-	};
+	}; 
 	fillstats(newpoke);
 	return newpoke;
 }
@@ -105,22 +107,16 @@ function xpup(mon1, mon2){
 			mon1.ballref.contains = evolved; //bleh, I want pointers
 			return 2;
 		}
+		oldhp = mon1.curhp;
+		oldmax = mon1.maxhp;
 		fillstats(mon1);
+		mon1.curhp = oldhp + mon1.maxhp - oldmax; //could make levelling replenish health, but nah
 		return 1;
 	} else return 0;
 }
 
-//what happens when a wild pokemon dies
-//will adjust to suit trainer battles
-//maybe better in fighting.js
-//mon1 is winner
-//can maybe adjust to suit your pokemon death
-function pokedeath(mon1, mon2) {
-	output("#bug1", mon1.name + " kills the " + mon2.name + "!");
-	output("#bug3", "");
-	result = xpup(mon1, mon2);
-	output("#bug2", mon1.name + " gains " + xpgiven(mon2) + "xp!");
-	pokename = mon1.name;
+function gainxp(result, oldname, newname, amount){
+	output("#bug2", oldname + " gains " + amount + "xp!");
 	if(result == 1){
 		output("#bug2", " Level up!", 1);
 	} else if(result == 2){
@@ -128,7 +124,28 @@ function pokedeath(mon1, mon2) {
 				+ mon1.ballref.contains.name, 1);
 		charout = mon1.ballref.contains;
 	}
-	newitem = makeitem(CORPSE, curroom, mon2.pos);
+}
+
+//what happens when a wild pokemon dies
+//will adjust to suit trainer battles
+//maybe better in fighting.js
+//mon1 is winner
+//can maybe adjust to suit your pokemon death
+function pokedeath(mon1, mon2, enemy) {
+	output("#bug1", mon1.name + " kills the " + mon2.name + "!"); 
+	if(enemy){
+		oldname = mon1.name;
+		result = xpup(mon1, mon2);
+		gainxp(result, oldname, mon1.name, xpgiven(mon2));
+		cpos = mon2.pos;
+	} else {
+		for(i = p1.inventory.length - 1; i >= 0; i--){
+			if(mon2.ballref == p1.inventory[i]) p1.inventory.splice(i, 1);
+		}
+		charout = p1;
+		cpos = p1.pos;
+	}
+	newitem = makeitem(CORPSE, curroom, cpos);
 	newitem.name = mon2.name + " corpse";
-	backtowalk();
+	output("#bug3", "");
 }

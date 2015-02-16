@@ -4,7 +4,7 @@ GDIM = {y:11, x:19};
 
 
 PLAYA = 0; NPC = 1; POKEMON = 2; ITEM = 3; TILE = 4; ROOM = 5;
-NORMALMENU=0; ATTACKMENU=1; ITEMMENU=2; SWITCHMENU=3;//fightmenus
+NORMALMENU=0; ATTACKMENU=1; ITEMMENU=2; SWITCHMENU=3; KEEPHOLDINGON=4;//fightmenus
 WALKMODE = 0; TALKMODE = 1; BATTLEMODE = 2; EATMODE = 3; //walkingmenus
 MAXDIM = 60;  //biggest dimensions of maps
 MAXEXITS = 1000; //max total exits, need to change map structre if it needs to be bigger

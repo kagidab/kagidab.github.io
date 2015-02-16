@@ -19,17 +19,34 @@ function demsbefightinkeys(key){
 		listitems();
 		itemchoice(key);
 	} else if(fightmenu == SWITCHMENU){
+		switchpoke();
 		switchout(key);
+	} else if(fightmenu == KEEPHOLDINGON){
+		holdon(key);
 	}
 }
 
+function holdon(key){
+	output("#bug0", "Keep battling?(Y/N)");
+	if(key == KEY.Y) {
+		if(listpoke().length > 0){
+			fightmenu = SWITCHMENU; 
+			switchpoke();
+		} else { 
+			monout = p1;
+			backtonormal();
+			update();
+		}
+	} else if(key == KEY.N) flee();
+}
 
+//could be tauter
 function listattacks(){
-	output("#bug0", "Which move to use?", 0);
-	if(monout.moves[0] != NILMOVE) output("#bug1", "(A) " + monout.moves[0].name, 0);
-	if(monout.moves[1] != NILMOVE) output("#bug1", " (S) " + monout.moves[1].name, 1);
-	if(monout.moves[2] != NILMOVE) output("#bug2", "(D) " + monout.moves[2].name, 0);
-	if(monout.moves[3] != NILMOVE) output("#bug2", " (F) " + monout.moves[3].name, 1);
+	output("#bug0", "Which move to use?");
+	output("#bug1", "(A) " + monout.moves[0].name);
+	if(monout.moves.length > 1) output("#bug1", " (S) " + monout.moves[1].name, 1);
+	if(monout.moves.length > 2) output("#bug2", "(D) " + monout.moves[2].name);
+	if(monout.moves.length > 3) output("#bug2", " (F) " + monout.moves[3].name, 1);
 	output("#bug3", "(ESC) Back");
 }
 
@@ -56,7 +73,6 @@ function switchpoke(){
 		backtonormal();
 		output("#bug0", "No Pokemon to switch to");
 	}
-
 }
 
 function listusable(){
@@ -108,12 +124,37 @@ function menuchoice(key){
 	else fightingmessage();
 }
 
+
 function attack(moveused){
-	dam = damage(moveused, monout, encpok);
-	encpok.curhp -= dam;
-	if(encpok.curhp <= 0) pokedeath(monout, encpok);
-	else backtonormal();
-	output("#bug0", monout.name + " used " + moveused.name + " for " + dam + " damage!");
+	encmov = justanyol(encpok.moves);
+	dam1 = damage(moveused, monout, encpok);
+	dam2 = damage(encmov, encpok, monout);
+	if(monout.spd >= encpok.spd){
+		encpok.curhp -= dam1;
+		if(encpok.curhp <= 0){ 
+			output("#bug0", monout.name + " used " + moveused.name + " for " + dam1 + " damage!");
+			pokedeath(monout, encpok, 1);
+			backtowalk();
+		} else {
+			monout.curhp -= dam2;
+			update();
+			if(monout.curhp <= 0){
+				if(monout == p1) playerdeath();
+				else {
+					pokedeath(encpok, monout);
+					output("#bug2", "Keep battling(Y/N)");
+					fightmenu = KEEPHOLDINGON;
+				}
+			} else {
+				backtonormal();
+			}
+			output("#bug0", monout.name + " used " + moveused.name + " for " + dam1 + " damage!");
+			output("#bug0", "<br>Enemy " + encpok.name + " used " + encmov.name + " for " + dam2 + " damage!", 1);
+		}
+	} else {
+		output("#bug0", "Enemy " + encpok.name + " used " + encmov.name + " for " + dam2 + " damage!");
+		output("#bug0", "<br>" + monout.name + " used " + moveused.name + " for " + dam1 + " damage!", 1);
+	}
 }
 
 function backtonormal(){

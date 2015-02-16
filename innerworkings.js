@@ -1,14 +1,13 @@
 // To implement: 
-// owning pokemon
 // battles
 // 	-better droppings
 // 	-status and stat effects
-// hunger actually doing stuff
 // story
 // soo much data entry
 // items doing stuff
 // feeling the need for some OOP, making instances would be nice 
 // I can probably get away with just copying the things in data
+// cleaning up this town[of code] is A Good Idea, but later.. 
 // trainer battles
 // idk how much data you can actually save...
 // it might actually be an issue
@@ -25,12 +24,13 @@
 // More than 26 items is an issue
 //
 
-newgame();
-function newgame(){
+newgame("Welcome!");
+function newgame(message){
 	resetthings();
 	fillstats(p1);
 	charout = p1; 
 	changeroom(STARTINGROOM, STARTINGPOS); 
+	output("#bug0", message);
 }
 
 $("body").keypress(function(event){
@@ -183,14 +183,16 @@ function startpos(post){
 
 function update(){
 	statusupdate();
-	hunt = thingsat(curroom.items, p1.pos);
-	if(hunt.length > 0){
-		string = "You see here: ";
-		hunt.forEach(function(element, index){
-			if(index > 0) string += ", ";
-			string += "A " + element.name;
-		});
-		output("#bug1", string);
+	if(mode == WALKMODE){
+		hunt = thingsat(curroom.items, p1.pos);
+		if(hunt.length > 0){
+			string = "You see here: ";
+			hunt.forEach(function(element, index){
+				if(index > 0) string += ", ";
+				string += "A " + element.name;
+			});
+			output("#bug1", string);
+		}
 	}
 	drawmap();
 }
@@ -385,14 +387,13 @@ function passtime(timetopass){
 		dancenpcdance();
 	}
 	update();
-	if(hunger == 0) { // if hunger gets changed anywhere else moveme/copyme
+	if(hunger <= 0) { // if hunger gets changed anywhere else moveme/copyme
 		playerdeath();
 	}
 }
 
 function playerdeath(){
-	newgame();
-	output("#bug0", "You dead");
+	newgame("You dead");
 }
 
 //append is an optional flag, appends if true

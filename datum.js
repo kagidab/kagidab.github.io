@@ -116,17 +116,13 @@ GROWL = {
 	special : false,
 }
 
-NILMOVE = {
-	name : "",
-}
-
 RED = {
 	name: "Red", fn: "red.png",
 	phrases: ["I'm so alone"],
 	pos : {x: 3, y: 4},
 	baseatt: 10, basehp: 25, basedef: 10, basespd: 10, //these in newgame()
 	basespc: 10, exp:0, level: 5,
-	moves: [THROWROCK,NILMOVE, NILMOVE, NILMOVE],
+	moves: [THROWROCK],
 	type1 : NORMAL, type2 : NILTYPE
 }
 
@@ -504,6 +500,6 @@ pokemon =
 
 items = [CORPSE, POKEBALL, POTION];
 
-moves = [THROWROCK, TACKLE, GROWL, NILMOVE];
+moves = [THROWROCK, TACKLE, GROWL];
 
 p1 = RED;

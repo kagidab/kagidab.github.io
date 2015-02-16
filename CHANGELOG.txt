@@ -1,0 +1,10 @@
+0.1.1
+
+Features:
+Pokemon fight back, your pokemon die
+
+Fixes:
+Removed pointless NILMOVE nonsense
+Made sure death occurs with negative hunger
+Now levelling only replenishes the change in HP
+Map creation no longer goes into infinite loop

@@ -181,24 +181,24 @@ function makemap(specs){
 
 	//this section expands the initial rectangles to lower heights
 	count=0;
-	ATTEMPTS = specs.y * specs.x / 10000;
+	ATTEMPTS = specs.y * specs.x / 100;
 	for(i = 0; i < rekt.length; i++) {
 		expand(map, visited, rekt[i], specs.height - 1);
 		expand(map, visited, {y:rekt[i].y-1,x:rekt[i].x}, specs.height - 1);
 	}
 	for(height = specs.height - 1; height > 0; height--){
-		for(attno = 0; attno < ATTEMPTS;){
+		for(attno = 0; attno < ATTEMPTS; attno++){
 			ranpos = {y : randI(bounds.up, bounds.down), x : randI(bounds.left, bounds.right)};
 			if(ap(map, ranpos) == height) {
-				attno++;
+				attno += 100;
 				expand(map, visited, ranpos, height);
 			}
 		}
 		if(height != 1){
-			for(attno = 0; attno < ATTEMPTS;){
+			for(attno = 0; attno < ATTEMPTS; attno++){
 				ranpos = {y : randI(bounds.up, bounds.down), x : randI(bounds.left, bounds.right)};
 				if(ap(map, ranpos) == height){
-					attno++;
+					attno += 100;
 					expand(map, visited, ranpos, height - 1);
 					while(true){
 						ranpos.x++;
@@ -220,8 +220,6 @@ function makemap(specs){
 		}
 	}
 
-	//I have some nice looking  hills now... need to figure out how to make paths
-	// Lets try making a path from a random rekt square to a 0... should work eventually
 	for(i = 0; i < PATHSIZE; i++){
 		charmap[bounds.down][i + entx] = '.'; //this keeps the entrance clear, helpful for DFS later, ruins nice hills
 	}
@@ -241,7 +239,6 @@ function makemap(specs){
 
 	//nowitsamap, cleanup
 	pos = {y:0, x:0};
-
 	for(pos.y = bounds.up; pos.y < bounds.down; pos.y++){
 		for(pos.x = bounds.left; pos.x < bounds.right; pos.x++){
 			if(friends(charmap, pos) == 0) 
