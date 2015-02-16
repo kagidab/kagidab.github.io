@@ -1,12 +1,8 @@
 // To implement: 
 // owning pokemon
-// 	-levelling
-// 	-evolve
-// pokemon types
-// proper battles
-// 	-implement moves 
+// battles
 // 	-better droppings
-// stats
+// 	-status and stat effects
 // hunger actually doing stuff
 // story
 // soo much data entry
@@ -21,16 +17,21 @@
 //
 //Split into more files maybe
 //
-//
 // TOFIX: 
 // hiding is a bit awkward, don't want NPCs appearing on rooftops
+// 	currently not actually relevant... OK fix is to make HIDEALL and HIDESOME tags
 // animations unsync =/
 // Can walk through Reds house from top side, can't think of a easy/good way to fix
 // More than 26 items is an issue
+//
 
-fillstats(p1);
-charout = p1; 
-changeroom(BEDROOM, {y:4, x:3}); //in newgame()... rename STARTINGROOM, STARTINGPOS
+newgame();
+function newgame(){
+	resetthings();
+	fillstats(p1);
+	charout = p1; 
+	changeroom(STARTINGROOM, STARTINGPOS); 
+}
 
 $("body").keypress(function(event){
 	bugspray();
@@ -47,7 +48,7 @@ $("body").keypress(function(event){
 		if(anykey) {
 			$("#grid").removeClass("blinkonceforyes"); 
 			anykey = false;
-			monout = p1;
+			update();
 			fightmenu = NORMALMENU;
 			fightingmessage();
 		} else demsbefightinkeys(key);
@@ -95,6 +96,7 @@ function getitem(nextitem){
 		newpokemon = nextitem.contains;
 		nextitem.newpok = false;
 		nextitem.contains = newmon(newpokemon, nextitem.lev);
+		nextitem.contains.ballref = nextitem;
 	}
 	p1.inventory.push(nextitem);
 }
@@ -155,13 +157,12 @@ function keytodir(keyn){
 	if(keyn == KEY.J) return DOWN;
 	if(keyn == KEY.K) return UP;
 	if(keyn == KEY.L) return RIGHT;
+	if(keyn == KEY.Y) return UPLEFT;
+	if(keyn == KEY.U) return UPRIGHT;
+	if(keyn == KEY.B) return DOWNLEFT;
+	if(keyn == KEY.N) return DOWNRIGHT;
 	if(keyn == KEY.PERIOD) return ZENITH;
 	return NOTADIR;
-}
-
-//for accessing all those 2d arrays
-function ap(array, pos){
-	return array[pos.y][pos.x];
 }
 
 //uncertain how function if GXGY even
@@ -203,12 +204,22 @@ function drawmap(){
 	}
 }
 
+function howhungryami(){
+	if(hunger > 1000) return {message: "Satisfied", affectstats: 0};
+	if(hunger < 100) return {message: "Weak", affectstats: -5};
+	if(hunger < 300) return {message: "Hungry", affectstats: -2};
+	else return {message: "", affectstats: 0};
+}
+
 function statusupdate(){
-	output("#status11",  p1.name);//)"Red, Pokemon Trainer");
+	output("#status11",  charout.name); // title?
 	output("#status12", "At:" + charout.att + " Df:" + 
-			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc);
-	output("#status2", curroom.name + " &ETH:" + doge + " HP:" + charout.curhp +
-			"("+ charout.maxhp + ") Exp:"+charout.level+ " T:"+turns+ " Hunger:" + hunger);
+			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc+
+			" Own:" + owned + "(" + seen+")");
+	output("#status2", curroom.name + " &ETH:" + p1.doge + " HP:" + charout.curhp +
+			"("+ charout.maxhp + ") Exp:"+charout.level+"("+xptogo(charout)+
+			") T:" + turns + " ");
+	output("#status2", howhungryami().message, 1);
 }
 
 function exitdest(pos){
@@ -223,7 +234,11 @@ function tileat(pos){
 
 function drawsquare(pos){
 	ijda = addpos(startpos(p1.pos), pos);// pos is position on grid, ijda is on map
-	if(inbounds(ijda)){ 
+	if(curroom.heightmap != undefined && ap(curroom.heightmap, ijda) > ap(curroom.heightmap, p1.pos)
+			&& distance(ijda, p1.pos) > LINEOFSIGHT){
+		toohigh = true; //#420blazin
+	} else toohigh = false;
+	if(inbounds(ijda) && !toohigh){ 
 		$(ap(gridimgs,pos)).show();
 		newtile = tileat(ijda);
 
@@ -280,20 +295,6 @@ function changeroom(newroom, newpos){
 	update();
 }
 
-function randI(lo, hi){ //random int [lo, hi]
-	return lo + Math.floor(Math.random()*(1+hi-lo));
-}
-
-
-//check if two positions are the same
-function equpos(pos1, pos2){
-	return pos1.y==pos2.y && pos1.x==pos2.x;
-}
-
-function addpos(pos1, pos2){
-	return {y: pos1.y + pos2.y, x: pos1.x + pos2.x};
-}
-
 function thingsat(list, pos){
 	rlist = [];
 	list.forEach(function(element){
@@ -316,7 +317,6 @@ function checkforthings(pos){
 	return null;
 }
 
-
 function checktile(nexttile, pos, dir){
 	if(nexttile.danger){
 		if(randI(0, 5) == 0){ //encounter chance
@@ -325,8 +325,8 @@ function checktile(nexttile, pos, dir){
 		}
 	} else if(nexttile.exit){
 		p1.pos = pos; exit(); return true;
-	} else if(nexttile.jumpd != -1 && equpos(DIRS[nexttile.jumpd], dir)){ 
-		tryjump(nexttile, dir, pos);
+	} else if(nexttile.jumpd != -1 && equpos(DIRS[nexttile.jumpd], dir)){  //to avoid this, can change data structure to LEFT, RIGHT, etc
+		tryjump(nexttile, dir, pos); return true;
 	}
 	return false; //nothing to stop movement
 }
@@ -340,20 +340,22 @@ function tryjump(nexttile, dir, pos){
 }
 
 function move(peep, dir){ 
+	op = {y:peep.pos.y, x:peep.pos.x};
 	np = addpos(peep.pos, dir);
 
-	if(!inbounds(np)) return; 
+	if(!inbounds(np)) return false; 
 	nexttile = tileat(np);
 	things = checkforthings(np); 
 
 	if(peep == p1){
 		//could use object instead of direction
 		if(things != null && things.type == NPC) chat(dir); 
-		else if(checktile(nexttile, np, dir)) return; //dontmove
+		else if(checktile(nexttile, np, dir)) return !equpos(peep.pos, op); //special things eg jump
 	}  
 
 	if((things == null || things.type == ITEM) && nexttile.walk) {
 		peep.pos = np; 
+		return true;
 	}
 }
 
@@ -366,26 +368,34 @@ function inbounds(pos){
 }
 
 function movebutt(dir){
-	if(dir != ZENITH) //not moving might cause problems
-		move(p1, dir);
-	passtime(1);
+	if(!equpos(dir, ZENITH)){ //solving invisible bugs
+		if(move(p1, dir)) passtime(1);
+	} else passtime(1);
 }
 
 function passtime(timetopass){
 	for(i = 0; i < timetopass; i++) {
 		turns++;
 		hunger--;
+		hungercheck = howhungryami().affectstats;
+		if(hungercheck != hungerstatus){
+			p1.att -= hungerstatus - hungercheck;
+			hungerstatus = hungercheck;
+		}
 		dancenpcdance();
 	}
 	update();
+	if(hunger == 0) { // if hunger gets changed anywhere else moveme/copyme
+		playerdeath();
+	}
 }
 
-function justanyol(thing){
-	return thing[randI(0, thing.length-1)];
+function playerdeath(){
+	newgame();
+	output("#bug0", "You dead");
 }
 
-//This is actually longer than just typing it out each time...
-//I guess I might need to modify it
+//append is an optional flag, appends if true
 function output(divname, message, append){ 
 	if(append) { $(divname).append(message); }
 	else{ $(divname).html(message); }

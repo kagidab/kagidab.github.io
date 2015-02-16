@@ -6,12 +6,15 @@ GDIM = {y:11, x:19};
 PLAYA = 0; NPC = 1; POKEMON = 2; ITEM = 3; TILE = 4; ROOM = 5;
 NORMALMENU=0; ATTACKMENU=1; ITEMMENU=2; SWITCHMENU=3;//fightmenus
 WALKMODE = 0; TALKMODE = 1; BATTLEMODE = 2; EATMODE = 3; //walkingmenus
-MAXDIM = 30;  //biggest dimensions of maps
+MAXDIM = 60;  //biggest dimensions of maps
 MAXEXITS = 1000; //max total exits, need to change map structre if it needs to be bigger
 
+NIL = {};
 LEFT = {y:0, x:-1}; RIGHT = {y:0, x:1}; UP = {y:-1, x:0};
 DOWN = {y:1, x:0}; ZENITH = {y:0, x:0}; NOTADIR = {}; 
-DIRS = [LEFT, RIGHT, UP, DOWN, ZENITH, NOTADIR]
+UPLEFT = {y:-1, x:-1}; UPRIGHT = {y:-1, x:1}; DOWNLEFT = {y:1, x:-1};
+DOWNRIGHT = {y:1, x:1};
+DIRS = [LEFT, RIGHT, UP, DOWN, ZENITH, UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT, NOTADIR]
 KEY = {A:97, B:98, C:99, D:100, E:101, F:102, G:103,
 	H:104, I:105, J:106, K:107, L:108, M:109, N:110,
 	O:111, P:112, Q:113, R:114, S:115, T:116, U:117,
@@ -63,6 +66,11 @@ function makeitem(type, map, position){
 exitrs = new Array(MAXEXITS); //Which room is each exit 
 exitps = new Array(MAXEXITS); //xandy of each exit
 rooms.forEach( function(room, roomid) {
+	if(room.map == undefined){
+		newmap = makemap(room.mapprop);
+		room.map = newmap.map;
+		room.heightmap = newmap.heightmap;
+	}
 	room.dim = {y: room.map.length, x: room.map[0].length};
 	if(room.npcs == undefined) room.npcs=[];
 	if(room.defitems == undefined) room.items=[];
@@ -78,7 +86,7 @@ rooms.forEach( function(room, roomid) {
 			}
 		});
 	}
-	room.map.forEach( function(row, rid) {
+	room.map.forEach(function(row, rid) {
 		row.forEach( function(element, cid) {
 			if(room.map[rid][cid] > 1e6){ //awful exithack 
 				id1 = Math.floor((element % 1e6) / 1000);
@@ -117,10 +125,27 @@ for(i=0;i<GDIM.y;i++){
 $("#grid").html(bigstring);
 $(".ge").append("<img src='dot.png'></img>");
 
-//zero some other stuff 
-turns = 0; 
-mode = WALKMODE; //movingmode
-itemnum = 0;
-hunger = 300;
-p1.inventory=[];
-doge = 0;
+seen = new Array(pokemon.length);
+owned = new Array(pokemon.length);
+STARTINGROOM = BEDROOM;
+STARTINGPOS = {y:4, x:3};
+LINEOFSIGHT = 17;
+
+
+function resetthings(){
+	turns = 0; 
+	mode = WALKMODE; //movingmode
+	itemnum = 0;
+	hunger = 800;
+	hungerstatus = 0;
+	p1.inventory = [];
+	p1.level = 5;
+	p1.xp = xpatlevel(p1.level);
+	p1.doge = 200;
+	seen = 0;
+	owned = 0;
+	for(i = 0; i < pokemon.length; i++){
+		seen[i] = false;
+		owned[i] = false;
+	}
+}

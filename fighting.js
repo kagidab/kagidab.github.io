@@ -1,4 +1,3 @@
-
 function fightingmessage(){
 	if(monout == p1){
 		output("#bug0", "You are battling a wild " + encpok.name+ "!");
@@ -41,9 +40,8 @@ function listitems(){
 		output("#bug1", listonseverallines(listofitems));
 		output("#bug3", "(ESC) Back");
 	} else {
-		fightingmessage();
+		backtonormal();
 		output("#bug0", "You have no usable items"); 
-		fightmenu = NORMALMENU;
 	}
 }
 
@@ -55,9 +53,8 @@ function switchpoke(){
 		output("#bug2", "(" + alphabet[listofpoke.length] + ") " + p1.name);
 		output("#bug3", "(ESC) Back");
 	} else {
-		fightingmessage();
+		backtonormal();
 		output("#bug0", "No Pokemon to switch to");
-		fightmenu = NORMALMENU;
 	}
 
 }
@@ -74,25 +71,23 @@ function listusable(){
 
 function nthitemoftype(nth, type){
 	count = 0;
-	p1.inventory.forEach(function (element, index){
-		if(element.itemtype == type){
-			if(count == nth) return {item:element, index:index};
+	for(i = 0; i < p1.inventory.length; i++){
+		if(p1.inventory[i].itemtype == type){
+			if(count == nth) return {item: p1.inventory[i], index: i};
 			count++;
 		}
-	});
+	};
 	return NIL;
 }
 
-function itemchoice(key){
+function itemchoice(key) {
 	alphanum = key - KEY.A;
-	if(key == KEY.ESC){ fightmenu = NORMALMENU; }
-	else {
-		itemused = nthitem(alphanum);
-		if(itemused != NIL){
-			p1.inventory.splice(itemused.index, 1);
-			output("#bug0", "You use a " + itemused.item.name);
-			fightmenu = NORMALMENU;
-		}
+	itemused = nthitemoftype(alphanum, USABLE);
+	if(key == KEY.ESCAPE) backtonormal();
+	else if(itemused != NIL){
+		p1.inventory.splice(itemused.index, 1);
+		backtonormal();
+		output("#bug0", "You use a " + itemused.item.name);
 	}
 }
 
@@ -101,7 +96,7 @@ function attackchoice(key){
 	else if(key == KEY.S){ attack(monout.moves[1]);}
 	else if(key == KEY.D){ attack(monout.moves[2]);}
 	else if(key == KEY.F){ attack(monout.moves[3]);}
-	else if(key == KEY.ESCAPE) { fightingmessage(); fightmenu = NORMALMENU};
+	else if(key == KEY.ESCAPE) backtonormal();
 }
 
 function menuchoice(key){
@@ -116,35 +111,29 @@ function menuchoice(key){
 function attack(moveused){
 	dam = damage(moveused, monout, encpok);
 	encpok.curhp -= dam;
-	if(encpok.curhp <= 0){
-		output("#bug1", monout.name + " kills the " + encpok.name+ "!");
-		pokedeath();
-	} else {
-		fightingmessage();
-		fightmenu = NORMALMENU;
-	}
+	if(encpok.curhp <= 0) pokedeath(monout, encpok);
+	else backtonormal();
 	output("#bug0", monout.name + " used " + moveused.name + " for " + dam + " damage!");
 }
 
-function pokedeath(){
-	monout.exp++;
-	newitem = makeitem(CORPSE, curroom, encpok.pos);
-	newitem.name = encpok.name + " corpse";
-	backtowalk();
+function backtonormal(){
+	fightingmessage();
+	fightmenu = NORMALMENU;
 }
 
 function switchout(key){
 	alphanum = key - KEY.A;
 	pokelist = listpoke();
-	if(alphanum < pokelist.length){
+	if(alphanum >= 0 && alphanum < pokelist.length){
 		monout = pokelist[alphanum];
 		charout = monout;
-		fightmenu = NORMALMENU
+		backtonormal();
+		output("#bug0", "It's your turn, " + monout.name + "!");
 	} else if(alphanum == pokelist.length){
 		charout = p1;
 		monout = p1;
-		fightmenu = NORMALMENU
-	}
+		backtonormal();
+	} else if(key == KEY.ESCAPE) backtonormal();
 	update();
 }
 
@@ -155,7 +144,7 @@ function flee(){
 }
 
 function backtowalk(){
-	charout = p1;
 	mode = WALKMODE;
 	update();
+	charout = p1;
 }

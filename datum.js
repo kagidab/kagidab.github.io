@@ -21,7 +21,7 @@ DOWNSTAIRMAP = [
 
 PALLETTOWNMAP = [
 	[11,11,11,11,11,11,11,12,16008009,16010011,16012013,12,11,11,11,11,11,11,11],
-	[11,11,11,11,11,11,11,12,13014015,13016017,13018019,12,11,11,11,11,11,11,11],
+	[11,11,11,11,11,11,11,12,13,13,13,12,11,11,11,11,11,11,11],
 	[11,11,11,11,11,11,11,12,13,13,13,12,11,11,11,11,11,11,11],
 	[11,11,11,12,12,12,12,12,13,13,13,12,12,12,12,12,11,11,11],
 	[11,11,11,12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,12,11,11,11],
@@ -65,25 +65,6 @@ POINTLESSHOUSEMAP = [
 	[2,0,0,0,2],
 	[1,1,6007006,1,1]
 ];
-
-ROUTE1MAP = [
-	[11,11,11,11,11,11,11,11,11,11,11, 0, 0,11,11,11],
-	[11,11,11,11,11,11,11,11,11,11,11, 0, 0,11,11,11],
-	[11,11,11,13,13,13,13,13,13,13,13,13,13,11,11,11],
-	[11,11,11,13,13,13,13,13,13,13,13,13,13,11,11,11],
-	[11,11,11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11,11,11],
-	[11,11,11,21,21,21,21,21,21,21,21, 0,21,11,11,11],
-	[11,11,11,13,13,13,13,13,13,13,13,13,13,11,11,11],
-	[11,11,11,13,13,13,13,13,13,13,13,13,13,11,11,11],
-	[11,11,11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11,11,11],
-	[11,11,11,21, 0,21,21,21,21,21,21,21,21,11,11,11],
-	[11,11,11,13,13,13,13,13,13,13,13,13,13,11,11,11],
-	[11,11,11,13,13,13,13,13,13,13,13,13,13,11,11,11],
-	[11,11,11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,11,11,11],
-	[11,11,11,11,11,12, 0, 0, 0,12,11,11,11,11,11,11],
-	[11,11,11,11,11,12,13009008,13011010,13013012,12,11,11,11,11,11,11],
-	[11,11,11,11,11,12,17015014,17017016,17019018,12,11,11,11,11,11,11]
-]
 
 NORMAL = {}; FIRE = {}; WATER = {}; ELECTRIC = {}; GRASS = {};
 ICE = {}; FIGHTING = {}; POISON = {}; GROUND = {}; FLYING = {};
@@ -253,80 +234,188 @@ RIGHTCLIFF = {
 	name: "Cliff", fn: "rightcliff.png",
 	jumpd: 1
 }
+SHORTGRASS = {
+	name: "Short grass", fn: "shortgrass.png",
+	walk: true
+}
+CLIFFFACE = { name: "Cliff face", fn: "cliffface.png", }
+CLIFFFACE1 = { name: "Cliff face", fn: "cliffface1.png", }
+CLIFFFACE2 = { name: "Cliff face", fn: "cliffface2.png", }
 
-BULBASAUR={ 
-	name: "Bulbasaur",
-	fn:"bulasaur.png",
+VENASAUR = {
+	name: "Venasaur", fn:"venasaur.png",
+	entry:"Just a much bigger, uglier one. Why would you ever pick this line?",
+	basehp: 2, baseatt: 3, basespc: 2,basedef: 3,  basespd: 3, weight: 50,
+	type1: GRASS, type2: NILTYPE,
+	moves: [TACKLE, GROWL]
+}
+
+IVYSAUR = { 
+	name: "Ivysaur", fn:"ivysaur.png",
+	entry: "Ivysaur is well known for its role in the film 'Batman: Triassic'",
+	basehp: 2, baseatt: 3, basespc: 2,basedef: 3,  basespd: 3, weight: 50,
+	type1: GRASS, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: VENASAUR, at: 36}
+}
+
+BULBASAUR = { 
+	name: "Bulbasaur", fn:"bulbasaur.png",
 	entry:"Bulbasaur enjoys swinging from vines and talking with the jungle creatures",
 	basehp: 2, baseatt: 3, basespc: 2,basedef: 3,  basespd: 3, weight: 50,
-		type1: GRASS, type2: NILTYPE,
-		moves : [TACKLE, GROWL]
+	type1: GRASS, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: IVYSAUR, at: 16}
 }
-IVYSAUR={ 
-}
-VENASAUR={
-}
-SQUIRTLE={ 
-	name: "Squirtle",
-	fn:"squirtle.png",
-	entry:"Squirtle likes to hang out in gangs and wear sunglasses. A froody dude.",
+
+BLASTOISE = {
+	name: "Blastoise", fn: "blastoise.png",
+	entry: "",
 	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
 	type1: WATER, type2: NILTYPE,
-		moves : [TACKLE, GROWL]
+	moves: [TACKLE, GROWL]
 }
-WARTORTLE={
+
+WARTORTLE = {
+	name: "Wartortle", fn: "wartortle.png",
+	entry: "You evolved your Squirtle? I HOPE YOU KNOW THIS MEANS WARTORTLE",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
+	type1: WATER, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: BLASTOISE, at: 36}
 }
-BLASTOISE={
+
+SQUIRTLE = { 
+	name: "Squirtle",
+	fn:"squirtle.png",
+	entry:"Squirtle likes to hang out in gangs and wear sunglasses. A real froody dude.",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
+	type1: WATER, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: WARTORTLE, at: 16}
 }
-CHARMANDER={
-	name: "Charmander",
-	fn:"charmander.png",
+
+CHARIZARD = {
+	name: "Charizard", fn:"charizard.png",
+	entry:"Cha... aaa.. aaari baby[chari baby], won't you come out tonight?",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
+	type1: FIRE, type2: NILTYPE,
+	moves : [TACKLE, GROWL],
+}
+
+CHARMELION = {
+	name: "Charmelion", fn:"charmelion.png",
+	entry:"CHARMELION GONNA BURN YO' FACE OFF",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
+	type1: FIRE, type2: NILTYPE,
+	moves : [TACKLE, GROWL],
+	evolve: {to: CHARIZARD, at: 36}
+}
+
+CHARMANDER = {
+	name: "Charmander", fn:"charmander.png",
 	entry:"Charmander is the best starter, anyone who says differently is a h8r",
 	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
-		type1: FIRE, type2: NILTYPE,
-		moves : [TACKLE, GROWL]
+	type1: FIRE, type2: NILTYPE,
+	moves : [TACKLE, GROWL],
+	evolve: {to: CHARMELION, at: 16}
 }
-CHARMELION={
+
+PIDGEOT = {
+	name: "Pidgeot", fn:"pidgeot.png",
+	entry: "Pidgeot can fly faster than the speed of light and can even catch up to a mid blast-off Team Rocket",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
+	type1: FLYING, type2: NILTYPE,
+	moves: [TACKLE, GROWL]
 }
-CHARIZARD={
+
+PIDGEOTTO = {
+	name: "Pidgeotto", fn:"pidgeotto.png",
+	entry:"Ol' reliable. When your starter is struggling, trusty Pidgeotto will always step in to finish the job",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
+	type1: FLYING, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: PIDGEOT, at: 32}
 }
 
 PIDGEY={
-	name: "Pidgey",
-	fn:"pidgey.png",
-	entry:"Pidgey is known for its cruel PKing tactics, often hanging near new player spawn spots",
+	name: "Pidgey", fn:"pidgey.png",
+	entry: "Pidgey is known for its cruel PKing tactics, often hanging near new player spawn spots",
 	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 50,
-		type1: FLYING, type2: NILTYPE,
-		moves : [TACKLE, GROWL]
+	type1: FLYING, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: PIDGEOTTO, at: 16}
 }
 
-PIDGEOTTO={
-}
-PIDGEOT={
-}
-
-RATTATA={
-	name: "Rattata", fn:"rattata.png",
-	entry:"Rattatae were once members of the imfamous Team Rocket, having been transmogrified as a punishment for snitching.",
+RATICATE = {
+	name: "Raticate", fn:"rattata.png",
+	entry:"Rat, a cat? No! Rat not a cat",
 	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
-		type1: NORMAL, type2: NILTYPE,
-		moves : [TACKLE, GROWL]
+	type1: NORMAL, type2: NILTYPE,
+	moves: [TACKLE, GROWL]
 }
 
-RATICATE={
+RATTATA = {
+	name: "Rattata", fn:"rattata.png",
+	entry: "Rattatae were once members of the imfamous Team Rocket, having been transmogrified as a punishment for snitching",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: NORMAL, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: RATICATE, at: 18}
 }
-CATERPIE={
+
+BUTTERFREE = {
+	name: "Butterfree", fn:"butterfree.png",
+	entry: "The current confimed death count for hurricanes caused by butterfrees flapping their wings stands at: 1.6 million",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: BUG, type2: NILTYPE,
+	moves: [TACKLE, GROWL]
 }
-METAPOD={ 
+
+METAPOD = {
+	name: "Metapod", fn:"metapod.png",
+	entry: "Ironically, male metapod genitalia are extremely soft",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: BUG, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: BUTTERFREE, at: 14}
 }
-BUTTERFREE={
+
+CATERPIE = {
+	name: "Caterpie", fn:"caterpie.png",
+	entry: "Little known fact: Spiderman actually just had caterpies up his sleeves",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: BUG, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: METAPOD, at: 8}
 }
-WEEDLE={
+
+BEEDRILL = {
+	name: "Beedrill", fn:"beedrill.png",
+	entry: "During a peyote trip, Beedrill realised even the monarchy was limited in power. This led him to build a drill to pierce the heavens and challenge God.",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: BUG, type2: NILTYPE,
+	moves: [TACKLE, GROWL]
 }
-KAKUNA={ 
+
+KAKUNA = { 
+	name: "Kakuna", fn:"kakuna.png",
+	entry: "Kakuna is a bit of a slacker, just sits around smoking weedle all day and repeating its motto: 'Kakuna matata!'",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: BUG, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: BEEDRILL, at: 14}
 }
-BEDRILL ={
+
+WEEDLE = {
+	name: "Weedle", fn:"weedle.png",
+	entry: "So young, so curious! Weedle will go far, maybe even be king one day!",
+	basehp: 2, baseatt: 3, basedef: 3, basespc: 2, basespd: 3, weight: 100,
+	type1: BUG, type2: NILTYPE,
+	moves: [TACKLE, GROWL],
+	evolve: {to: KAKUNA, at: 8}
 }
+
 
 FOOD = 0; BALL = 1; USABLE = 2;
 
@@ -388,10 +477,11 @@ POINTLESSHOUSE = {
 
 ROUTE1 = {
 	name: "Route 1",
-	map: ROUTE1MAP,
-	npcs: [TRAINERJOEY, TRAINERBILLY],
-	pokemon: [PIDGEY, RATTATA],
-	poklev: 5,
+	mapprop: {y: 80, x:80, height: 5, 
+		ent: [{innum:9, outnum:8}, {innum:11, outnum:10}, {innum:13, outnum:12}]},
+		npcs:[TRAINERJOEY, TRAINERBILLY],
+		pokemon: [PIDGEY, RATTATA],
+		poklev: 5,
 }
 
 rooms = [BEDROOM, DOWNSTAIR, PALLETTOWN, OAKSLAB, POINTLESSHOUSE, ROUTE1];
@@ -400,7 +490,8 @@ tiles = [GROUND, WALLHOR, WALLVER, STAIRDOWN, STAIRUP,
 			MISCOBJECT, DOOR, HOUSELEFT, HOUSERIGHT, HOUSEMID, 
 			HOUSETOP, TREE, BLOCKADE, TALLGRASS, WATERTILE,
 			FENCE, MCHANGEUP, MCHANGEDOWN, MCHANGELEFT, MCHANGERIGHT,
-			UPCLIFF, DOWNCLIFF, LEFTCLIFF, RIGHTCLIFF
+			UPCLIFF, DOWNCLIFF, LEFTCLIFF, RIGHTCLIFF, SHORTGRASS,
+			CLIFFFACE, CLIFFFACE1, CLIFFFACE2
 ];
 pokemon = 
 [BULBASAUR, IVYSAUR, VENASAUR,
@@ -409,7 +500,7 @@ pokemon =
 	PIDGEY, PIDGEOTTO, PIDGEOT,
 	RATTATA, RATICATE,
 	CATERPIE, METAPOD, BUTTERFREE,
-	WEEDLE, KAKUNA, BEDRILL];
+	WEEDLE, KAKUNA, BEEDRILL];
 
 items = [CORPSE, POKEBALL, POTION];
 
