@@ -1,20 +1,11 @@
 // To implement: 
 // battles
-// 	-better droppings
-// 	-status and stat effects
+// 	-droppings?
 // story
-// soo much data entry
 // items doing stuff
-// feeling the need for some OOP, making instances would be nice 
-// I can probably get away with just copying the things in data
-// cleaning up this town[of code] is A Good Idea, but later.. 
+// more OOP!
 // trainer battles
-// idk how much data you can actually save...
-// it might actually be an issue
-// Also, I should try to be clear which things actually change
-// E.g. I'm keeping Red's stats in the variable from the data file
-//
-//Split into more files maybe
+// saving... idk how much data you can actually save...
 //
 // TOFIX: 
 // hiding is a bit awkward, don't want NPCs appearing on rooftops
@@ -27,53 +18,67 @@
 newgame("Welcome!");
 function newgame(message){
 	resetthings();
-	fillstats(p1);
 	charout = p1; 
 	changeroom(STARTINGROOM, STARTINGPOS); 
 	output("#bug0", message);
 }
 
-$("body").keypress(function(event){
+$("body").keydown(function(event){
 	bugspray();
-	key = event.which;
-	//console.log(key);
-	//console.log(mode);
-	dir = keytodir(key);
-	if(mode == WALKMODE){ walking(key); } 
-	else if(mode == EATMODE){ eat(key); } 
-	else if(mode == TALKMODE){
-		chat(dir);
-		mode = WALKMODE;
+	//console.log(event);
+	key = event.key;
+	keyn = event.keyCode;
+	dir = keytodir(keyn);
+	console.log(key);
+	if(mode == WALKMODE){ walking(keyn, key); } 
+	else if(mode == EATMODE){ eat(keyn, key); } 
+	else if(mode == TALKMODE){ chat(dir); mode = WALKMODE;
 	} else if(mode == BATTLEMODE){
 		if(anykey) {
 			$("#grid").removeClass("blinkonceforyes"); 
 			anykey = false;
 			update();
 			fightmenu = NORMALMENU;
-			fightingmessage();
-		} else demsbefightinkeys(key);
-	}
+			fightingmessage(true);
+		} else demsbefightinkeys(keyn);
+	} else if(mode == GETMODE) getzeitems(keyn, key); 
+	else if(mode == DROPMODE); //dropitem(key); 
+	else if(mode == USEMODE);// useitem(key); 
+	else if(mode == POKEMODE) ;//checkpoke(key); 
 });
 
-function walking(key){
+function walking(key, keyc){
 	bugspray();
 	if(dir != NOTADIR){ movebutt(dir); } 
-	else if(key == KEY.LESSTHAN || key == KEY.GREATERTHAN){ exit() } 
-	else if(key == KEY.T){
-		mode = TALKMODE; output("#bug0", "Talk to whom?");
-	} else if(key == KEY.COMMA){ getitems(); }
-	else if(key == KEY.E){ listedibles(); }
-	else if(key == KEY.P){ listpokemon(); }
-	else if(key == KEY.I){ listitems(); }
+	else if(keyc == "<" || keyc == ">"){ exit(); } 
+	else if(key == KEY.T){ mode = TALKMODE; output("#bug0", "Talk to whom?");
+	} else if(keyc == ","){ getitems(); }
+	else if(key == KEY.E){ changetomode(EATMODE); }
+	else if(key == KEY.P);//{ changetomode(POKEMODE); }
+	else if(key == KEY.I);//{ changetomode(USEMODE); }
+	else if(key == KEY.D);//{ changetomode(DROPMODE); }
 	else if(key == KEY.S){ savegame();}
+	else if(key == KEY.W){ passtime(10);}
 }
 
 function listonseverallines(list){
 	string = "";
 	list.forEach(function(element, index){
-		string += "("+alphabet[index] + ") " + element.name + "<br>";
+		string += "("+alphabet[index] + ") " + element + "<br>";
 	});
 	return string;
+}
+
+function pagebypage(list, page){
+	output("#bug1", "");
+	for(i = 0; i < ITEMSPERPAGE; i++){
+		if(i + page * ITEMSPERPAGE >= list.length) break;
+		if(i > 0) output("#bug1", "<br>", 1);
+		output("#bug1", "(" + alphabet[i] + ")" + list[page*ITEMSPERPAGE + i], 1);
+	}
+	output("#bug2", "");
+	if(page != 0) output("#bug2", "(<) Prev ")
+		if((page + 1) * ITEMSPERPAGE < list.length) output("#bug2", "(>) Next")
 }
 
 function listpokemon(){
@@ -91,77 +96,16 @@ function savegame(){
 	output("#bug0", "Game saved... jk");
 }
 
-function getitem(nextitem){
-	if(nextitem.itemtype == BALL && nextitem.newpok){
-		newpokemon = nextitem.contains;
-		nextitem.newpok = false;
-		nextitem.contains = newmon(newpokemon, nextitem.lev);
-		nextitem.contains.ballref = nextitem;
-	}
-	p1.inventory.push(nextitem);
-}
-
-function getitems(){ 
-	string = "You get: "; count = 0;
-	for(i = curroom.items.length - 1; i >= 0; i--){
-		if(equpos(curroom.items[i].pos, p1.pos)){
-			nextitem = curroom.items.splice(i,1)[0];
-			if(count > 0) string += ", ";
-			string += "A " + nextitem.name;
-			getitem(nextitem);
-			count++;
-		}
-	}
-	if(count == 0) string = "Nothing here";
-	output("#bug0", string);
-	update();
-}
-
-function listedibles(){
-	mode = EATMODE;
-	count=0;
-	string = "Eat what?";
-	p1.inventory.forEach(function(element, index){
-		if(element.itemtype == FOOD){
-			string += "<br>("+alphabet[count]+") " + element.name;
-			count++;
-		}
-	});
-	if(count==0) {
-		string = "You have nothing to eat";
-		mode = WALKMODE;
-	}
-	output("#bug0", string);
-}
-
-function eat(key){
-	index = key - KEY.A;
-	count=0;
-	output("#bug0", "You can't eat that");
-	p1.inventory.forEach(function(element, ind){
-		if(element.itemtype == FOOD){
-			if(count == index){
-				itemtoeat = p1.inventory.splice(ind, 1)[0];
-				output("#bug0", "You eat a " + itemtoeat.name + ". Nom nom");
-				hunger += itemtoeat.nutrition;
-			}
-			count++;
-		}
-	});
-	mode = WALKMODE;
-	update();
-}
-
-function keytodir(keyn){
-	if(keyn == KEY.H) return LEFT;
-	if(keyn == KEY.J) return DOWN;
-	if(keyn == KEY.K) return UP;
-	if(keyn == KEY.L) return RIGHT;
-	if(keyn == KEY.Y) return UPLEFT;
-	if(keyn == KEY.U) return UPRIGHT;
-	if(keyn == KEY.B) return DOWNLEFT;
-	if(keyn == KEY.N) return DOWNRIGHT;
-	if(keyn == KEY.PERIOD) return ZENITH;
+function keytodir(keyn, keyc){
+	if(keyn == KEY.H || keyn == KEY.LEFT) return LEFT;
+	if(keyn == KEY.J || keyn == KEY.DOWN) return DOWN;
+	if(keyn == KEY.K || keyn == KEY.UP) return UP;
+	if(keyn == KEY.L || keyn == KEY.RIGHT) return RIGHT;
+	if(keyn == KEY.Y || keyn == KEY.HOME) return UPLEFT;
+	if(keyn == KEY.U || keyn == KEY.PAGEUP) return UPRIGHT;
+	if(keyn == KEY.B || keyn == KEY.END) return DOWNLEFT;
+	if(keyn == KEY.N || keyn == KEY.PAGEDOWN) return DOWNRIGHT;
+	if(keyc == '.') return ZENITH;
 	return NOTADIR;
 }
 
@@ -181,15 +125,15 @@ function startpos(post){
 	return val;
 }
 
-function update(){
+function update(lookatmeimanargument){
 	statusupdate();
-	if(mode == WALKMODE){
+	if(mode == WALKMODE && !lookatmeimanargument){
 		hunt = thingsat(curroom.items, p1.pos);
 		if(hunt.length > 0){
 			string = "You see here: ";
 			hunt.forEach(function(element, index){
 				if(index > 0) string += ", ";
-				string += "A " + element.name;
+				string += "A " + element;
 			});
 			output("#bug1", string);
 		}
@@ -199,9 +143,9 @@ function update(){
 
 function drawmap(){
 	$("#cursor").remove();
-	for(ii=0;ii<GDIM.y;ii++){
-		for(jj=0;jj<GDIM.x;jj++){
-			drawsquare({y:ii, x:jj});
+	for(ii = 0; ii < GDIM.y; ii++){
+		for(jj = 0; jj < GDIM.x; jj++){
+			drawsquare({y: ii, x: jj});
 		}
 	}
 }
@@ -216,12 +160,13 @@ function howhungryami(){
 function statusupdate(){
 	output("#status11",  charout.name); // title?
 	output("#status12", "At:" + charout.att + " Df:" + 
-			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc+
-			" Own:" + owned + "(" + seen+")");
-	output("#status2", curroom.name + " &ETH:" + p1.doge + " HP:" + charout.curhp +
-			"("+ charout.maxhp + ") Exp:"+charout.level+"("+xptogo(charout)+
+			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
+			" Own:" + ownedtotal + "(" + seentotal + ")");
+	output("#status2", curroom + " &ETH:" + p1.doge + " HP:" + charout.curhp +
+			"("+ charout.maxhp + ") Exp:" + charout.level + "(" + xptogo(charout) +
 			") T:" + turns + " ");
-	output("#status2", howhungryami().message, 1);
+	output("#status2", howhungryami().message + " ", 1);
+	output("#status2", charout.howareyou() + " ", 1);
 }
 
 function exitdest(pos){
@@ -323,6 +268,7 @@ function checktile(nexttile, pos, dir){
 	if(nexttile.danger){
 		if(randI(0, 5) == 0){ //encounter chance
 			wildmon(pos);
+			encpok.checkifseen(false);
 			return true;
 		}
 	} else if(nexttile.exit){
@@ -381,8 +327,17 @@ function passtime(timetopass){
 		hunger--;
 		hungercheck = howhungryami().affectstats;
 		if(hungercheck != hungerstatus){
-			p1.att -= hungerstatus - hungercheck;
+			p1.att -= hungerstatus - hungercheck; p1.def -= hungerstatus - hungercheck;
+			p1.spd -= hungerstatus - hungercheck; p1.spc -= hungerstatus - hungercheck;
 			hungerstatus = hungercheck;
+		}
+		if(turns % 20 == 0) {
+			p1.regen();  
+			if(p1.curhp <= 0) playerdeath(); 
+			listpoke().forEach(function(element){
+				element.regen();
+				if(element.curhp <= 0) pokedeath(0, element, 2); 
+			});
 		}
 		dancenpcdance();
 	}
@@ -393,6 +348,7 @@ function passtime(timetopass){
 }
 
 function playerdeath(){
+	bugspray();
 	newgame("You dead");
 }
 
@@ -406,7 +362,7 @@ function chat(dir){
 	chkp = addpos(p1.pos, dir);
 	thing = checkforthings(chkp);
 	if(thing != null && (thing.type == NPC || thing.type == PLAYA)){
-		output("#bug0", thing.name +": "+ justanyol(thing.phrases));
+		output("#bug0", thing +": "+ justanyol(thing.phrases));
 	}
 }
 

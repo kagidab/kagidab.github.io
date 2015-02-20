@@ -1,0 +1,18 @@
+WALKING:
+hjklyubn 8-fold movement
+. wait 1 unit
+w wait 10 units
+t [DIR] talk in direction
+, pickup
+d [ITEMLETTER] drop
+p [POKEMONLETTER] check pokemon
+e [ITEMLETTER] eat
+s save [NOT IMPLEMENTED]
+i [ITEMLETTER] use item
+x Pokedex [NOT IMPLEMENTED]
+? Help [NOT IMPLEMENTED]
+v view
+
+BATTLE:
+Controls are given onscreen
+

@@ -52,10 +52,10 @@ function connected(charmap, visited, start, end){//doesn't check jumps, owel
 		next = stack.pop();
 		if(equpos(next, end)) return true;
 		for(dirnum = 0; dirnum < 4; dirnum++){
-			move = addpos(next, DIRS[dirnum]);
-			if(!ap(visited, move) && ap(charmap, move) == '.'){
-				visited[move.y][move.x] = true;
-				stack.push(move);
+			moveto = addpos(next, DIRS[dirnum]);
+			if(!ap(visited, moveto) && ap(charmap, moveto) == '.'){
+				visited[moveto.y][moveto.x] = true;
+				stack.push(moveto);
 			}
 		}
 	}
@@ -73,10 +73,10 @@ function expand(map, visited, pos, newnum){
 		next = stack.pop();
 		if(map[next.y][next.x] == num) {
 			for(dirnum = 0; dirnum < 4; dirnum++){
-				move = addpos(next, DIRS[dirnum]);
-				if(!visited[move.y][move.x]){
-					visited[move.y][move.x] = true;
-					stack.push(move);
+				moveto = addpos(next, DIRS[dirnum]);
+				if(!visited[moveto.y][moveto.x]){
+					visited[moveto.y][moveto.x] = true;
+					stack.push(moveto);
 				}
 			}
 		} else if(map[next.y][next.x] < num) map[next.y][next.x] = newnum;
@@ -100,8 +100,8 @@ function gradi(pos, bounds){
 function friends(charmap, pos){
 	count = 0;
 	for(i = 0; i < 4; i++){
-		move = addpos(DIRS[i], pos);
-		if(ap(charmap, pos) != '.') count++;
+		moveto = addpos(DIRS[i], pos);
+		if(ap(charmap, moveto) != '.') count++;
 	}
 	return count;
 }
@@ -145,7 +145,7 @@ function makemap(specs){
 	//this section makes rectangles randomly
 	//could make it jump randomly instead, but it's helpful for the following bit to know the topest rectangle
 	rekt = [];
-	RECCHANCE = specs.x ;
+	RECCHANCE = specs.x/10 ;
 	while(rekt.length < 1){//actual problem if no recs created{
 		for(i = bounds.up; i < bounds.down; i++){ 
 			for(j = bounds.left; j < bounds.right; j++){
@@ -259,13 +259,12 @@ function makemap(specs){
 	//icould check if it's possible to get stuck, but that seems like a feature
 	for(att = 0; att < specs.y * specs.y / 3; att++){
 		next = {y: randI(bounds.up, bounds.down), x: randI(bounds.left, bounds.right)}
-		//if(ap(charmap, next) == '.') charmap[next.y][next.x] = TALLGRASS.id;
+		if(ap(charmap, next) == '.') charmap[next.y][next.x] = TALLGRASS.id;
 	}
 
 	for(i=0; i < specs.y; i++){
 		string = "";
 		for(j=0; j< specs.x; j++){
-			//string += charmap[i][j];
 			if(charmap[i][j]=='.') charmap[i][j] = SHORTGRASS.id;
 			if(charmap[i][j]=='<') charmap[i][j] = LEFTCLIFF.id;
 			if(charmap[i][j]=='>') charmap[i][j] = RIGHTCLIFF.id;
@@ -278,11 +277,15 @@ function makemap(specs){
 			if(charmap[i][j]=='/') charmap[i][j] = CLIFFFACE2.id;
 			string += map[i][j];
 		}
-		console.log(string + "" + i);
+		//console.log(string + "" + i);
 	}
 	for(i=0; i < PATHSIZE; i++){
 		charmap[specs.y-1][entx+i] = MCHANGEDOWN.id*1e6+ specs.ent[i].innum*1e3+specs.ent[i].outnum;
 	}
+	for(i=0; i < PATHSIZE; i++){
+		charmap[0][exix+i] = MCHANGEUP.id*1e6+ specs.exi[i].innum*1e3+specs.exi[i].outnum;
+	}
+
 
 	return {heightmap: map, map: charmap};
 	}
