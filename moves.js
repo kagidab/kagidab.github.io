@@ -15,7 +15,7 @@ function Move(name, type, cat, base, pp, acc, effect){
 		effective = EFFECTIVE[this.type][mon2.type1]*
 			EFFECTIVE[this.type][mon2.type2];
 		if(critical(mon1)){ crit = 2; } else crit = 1;
-		rndfac = 0.85 + 0.15 * Math.random();
+		rndfac = 0.85 + 0.15 * prandom();
 		mod = stab * effective * crit * rndfac;
 		if(this.type == FIRE || this.type == GRASS || this.type == DRAGON || this.type ==
 				WATER || this.type == ELECTRIC || this.type == PSYCHIC || this.type == ICE)
@@ -38,8 +38,8 @@ function Move(name, type, cat, base, pp, acc, effect){
 			if(this.effect != NOEFFECT) {
 				affected = this.useeffect(mon1, mon2);
 			}
+			output("#bug0", this.usemessage(mon1, mon2, dam, affected), 1);
 		}
-		output("#bug0", this.usemessage(mon1, mon2, dam, affected), 1);
 	}
 
 	this.useeffect = function(mon1, mon2){
@@ -83,5 +83,5 @@ function Move(name, type, cat, base, pp, acc, effect){
 }
 
 function critical(mon){
-	if(Math.random() > mon.spd/512) return true; else return false;
+	if(prandom() > mon.spd/512) return true; else return false;
 }

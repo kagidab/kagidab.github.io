@@ -98,9 +98,28 @@ function menuchoice(key){
 	if(key == KEY.A){ fightmenu = ATTACKMENU; listattacks();}
 	else if(key == KEY.S){ fightmenu = SWITCHMENU; switchpoke(); }
 	else if(key == KEY.F){ flee(); }
-	else if(key == KEY.D){ fightmenu = ITEMMENU; listitems(); }
+	else if(key == KEY.D){ throwball(); }
+	//else if(key == KEY.D){ fightmenu = ITEMMENU; listitems(); }
 	else if(key == KEY.P){ output("#bug0", "Pokedex say: " + encpok.entry); }
 	else fightingmessage(true);
+}
+
+function throwball(){
+	balltouse = grabballs()[0];
+	if(balltouse != null){
+		purgeitemfromlist(p1.inv.usable, balltouse);
+		if(Math.random() > encpok.curhp / encpok.maxhp){
+			balltouse.contains = encpok;
+			if(!p1.owned[encpok.id]) owned++;
+			p1.owned[encpok.id] = true;
+			balltouse.itemtype = USABLE;
+			output("#bug0", "You catch the " + encpok + "!");
+			p1.inv.balls.push(balltouse);
+			backtowalk();
+		} else {
+			output("#bug0", "You don't catch the " + encpok + "!");
+		}
+	} else output("#bug0", "YOU AIN'T GOT THE BALLS TO CATCH IT");
 }
 
 //mon1 is to be checked, mon2 is the opponent, 
@@ -177,6 +196,8 @@ function backtowalk(){
 	});
 	p1.endoffight();
 	mode = WALKMODE;
+	p1.att += hungerstatus; p1.def += hungerstatus;
+	p1.spd += hungerstatus; p1.spc += hungerstatus;
 	update();
 	charout = p1;
 }

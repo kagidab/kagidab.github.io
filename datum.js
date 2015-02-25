@@ -102,174 +102,196 @@ PHYSICAL = 0; STATUS = 1; SPECIAL =2;
 MOVETYPES = [PHYSICAL, STATUS, SPECIAL];
 //name,type, cat, base, PP, ACC, EFFECT
 THROWROCK= new Move("Throw Rock", NORMAL, PHYSICAL, 100, 10, 10, NOEFFECT);
+ABSORB = new Move("Absorb", GRASS, SPECIAL,20, 100,25, NOEFFECT);//
+ACID = new Move("Acid", POISON, SPECIAL,40,100,30, SPECIALDOWN);
+ACIDARMOR = new Move("Acid Armor", POISON, STATUS, -1, -1, 20, DEFENSEUP);
+AGILITY = new Move("Agility",  PSYCHIC, STATUS, -1, -1, 30, SPEEDUP);
+AMNESIA = new Move("Amnesia",  PSYCHIC, STATUS, -1, -1, 20, SPECIALUP);
+AURORABEAM = new Move("Aurora Beam", ICE, SPECIAL, 65, 100, 20, ATTACKDOWN);
+BARRAGE = new Move("Barrage",  NORMAL, PHYSICAL, 65, 85, 20, NOEFFECT);
+BARRIER = new Move("Barrier",  PSYCHIC, STATUS, -1, -1, 20, DEFENSEUP);
+BIDE = new Move("Bide",  NORMAL, PHYSICAL, 50, -1, 10, NOEFFECT);//
+BIND = new Move("Bind",  NORMAL, PHYSICAL, 55, 85, 20, NOEFFECT);//
+BITE = new Move("Bite",  NORMAL, PHYSICAL, 60, 100, 25, NOEFFECT);//
+BLIZZARD = new Move("Blizzard",  ICE, SPECIAL, 110, 70, 5, FREEZES);
+BODYSLAM = new Move("Body Slam", NORMAL, PHYSICAL, 85, 100, 15, PARALYZES);
+BONECLUB = new Move("Bone Club", GROUNDTYPE, PHYSICAL, 65, 85, 20, NOEFFECT);//
+BONEMERANG = new Move("Bonemerang",  GROUNDTYPE, PHYSICAL, 100, 90, 10, NOEFFECT);//
+BUBBLE = new Move("Bubble",  WATER, SPECIAL, 40, 100, 30, SPEEDDOWN);
+BUBBLEBEAM = new Move("Bubble Beam", WATER, SPECIAL, 65, 100, 20,  SPEEDDOWN);
+CLAMP = new Move("Clamp",  WATER, PHYSICAL, 65, 85, 10, NOEFFECT);//
+COMETPUNCH = new Move("Comet Punch",  NORMAL, PHYSICAL, 58, 85, 15, NOEFFECT);//
+CONFUSERAY = new Move("Confuse Ray", GHOST, STATUS, -1, 100, 10, CONFUSES);
+CONFUSION = new Move("Confusion",  PSYCHIC, SPECIAL, 50, 100, 25, CONFUSES);
+CONSTRICT = new Move("Constrict",  NORMAL, PHYSICAL, 10, 100, 35, SPEEDDOWN);
+CONVERSION = new Move("Conversion",  NORMAL, STATUS, 50, -1, 30, NOEFFECT);//wat
+COUNTER = new Move("Counter",  FIGHTING, PHYSICAL, 50, 100, 20, NOEFFECT);//
+CRABHAMMER = new Move("Crabhammer",  WATER, PHYSICAL, 100, 90, 10, NOEFFECT);//
+CUT = new Move("Cut",  NORMAL, PHYSICAL, 50, 95, 30, NOEFFECT);
+DEFENSECURL = new Move("Defense Curl",  NORMAL, STATUS, -1, -1, 40, DEFENSEUP);
+DIG = new Move("Dig",  GROUNDTYPE, PHYSICAL, 80, 100, 10, NOEFFECT);//
+DISABLE = new Move("Disable",  NORMAL, STATUS, 50, 100, 20, NOEFFECT);//
+DIZZYPUNCH = new Move("Dizzy Punch",  NORMAL, PHYSICAL, 70, 100,10, CONFUSES);
+DOUBLEKICK = new Move("Double Kick",  FIGHTING, PHYSICAL, 60, 100,30, NOEFFECT);//
+DOUBLESLAP = new Move("Double Slap",  NORMAL, PHYSICAL, 60, 85,10, NOEFFECT);//
+DOUBLETEAM = new Move("Double Team",  NORMAL, STATUS, -1, -1,15, NOEFFECT);//
+DOUBLEEDGE= new Move("Double-Edge", NORMAL, PHYSICAL, 120, 100, 15, NOEFFECT);
+DRAGONRAGE = new Move("Dragon Rage",  DRAGON, SPECIAL, 50, 100, 10, NOEFFECT);//
+DREAMEATER = new Move("Dream Eater",  PSYCHIC, SPECIAL, 100, 100, 20, NOEFFECT);//
+DRILLPECK = new Move("Drill Peck",  FLYING, PHYSICAL, 80, 100, 20, NOEFFECT);
+EARTHQUAKE = new Move("Earthquake",  GROUNDTYPE, PHYSICAL, 100, 100, 10, NOEFFECT);//
+EGGBOMB = new Move("Egg Bomb",  NORMAL, PHYSICAL, 100, 75,  10, NOEFFECT);
+EMBER = new Move("Ember",  FIRE, SPECIAL, 40, 100, 25, BURNS);
+EXPLOSION = new Move("Explosion",  NORMAL, PHYSICAL, 100, 100, 5, NOEFFECT);//
+FIREBLAST = new Move("Fire Blast",  FIRE, SPECIAL, 110, 85,5, BURNS);
+FIREPUNCH = new Move("Fire Punch",  FIRE, PHYSICAL, 75, 100,15, BURNS);
+FIRESPIN = new Move("Fire Spin", FIRE, SPECIAL, 75, 85, 15, NOEFFECT);
+FISSURE = new Move("Fissure",  GROUNDTYPE, PHYSICAL, 100, -1, 5, NOEFFECT);//
+FLAMETHROWER = new Move("Flamethrower",  FIRE, SPECIAL, 90, 100, 15, BURNS);
+FLASH = new Move("Flash",  NORMAL, STATUS, -1, 100, 20, SPEEDDOWN);//
+FLY = new Move("Fly",  FLYING, PHYSICAL, 90, 95, 15, NOEFFECT);//
+FOCUSENERGY = new Move("Focus Energy", NORMAL, STATUS, -1, -1, 30, SPEEDUP);//
+FURYATTACK = new Move("Fury Attack",  NORMAL, PHYSICAL, 65, 85, 20, NOEFFECT);//
+FURYSWIPES = new Move("Fury Swipes",  NORMAL, PHYSICAL, 68, 80, 15, NOEFFECT);//
+GLARE = new Move("Glare",  NORMAL, STATUS, -1, 100, 30, PARALYZES);
+GROWL = new Move("Growl",  NORMAL, STATUS, -1, 100, 40, ATTACKDOWN);
+GROWTH = new Move("Growth",  NORMAL, STATUS, -1, -1, 40, ATTACKUP);//
+GUILLOTINE = new Move("Guillotine",  NORMAL, PHYSICAL, 100, -1, 5, NOEFFECT);//
+GUST = new Move("Gust",  FLYING, SPECIAL, 40, 100, 35, NOEFFECT);//
+HARDEN = new Move("Harden",  NORMAL, STATUS, 40, -1, 30, DEFENSEUP);//...
+HAZE = new Move("Haze",  ICE, STATUS, 50, -1, 30, NOEFFECT);//
+HEADBUTT = new Move("Headbutt",  NORMAL, PHYSICAL, 70, 100, 15, NOEFFECT);//
+HIJUMPKICK = new Move("High Jump Kick", FIGHTING, PHYSICAL, 130, 90, 10, NOEFFECT);//
+HORNATTACK = new Move("Horn Attack",  NORMAL, PHYSICAL, 65, 100, 25, NOEFFECT);
+HORNDRILL = new Move("Horn Drill", NORMAL, PHYSICAL, -1, -1, 5, NOEFFECT);//
+HYDROPUMP = new Move("Hydro Pump",  WATER, SPECIAL, 110, 80, 5, NOEFFECT);
+HYPERBEAM = new Move("Hyper Beam",  NORMAL, SPECIAL, 110, 90, 5, NOEFFECT);//
+HYPERFANG = new Move("Hyper Fang",  NORMAL, PHYSICAL, 80, 90, 15, NOEFFECT);//
+HYPNOSIS = new Move("Hypnosis",  PSYCHIC, STATUS, -1, 60, 20, PUTSASLEEP);
+ICEBEAM = new Move("Ice Beam",  ICE, SPECIAL, 90, 100, 10, FREEZES);
+ICEPUNCH = new Move("Ice Punch",  ICE, PHYSICAL, 75, 100, 15, FREEZES);
+JUMPKICK = new Move("Jump Kick",  FIGHTING, PHYSICAL, 100, 95,10,  NOEFFECT);//
+KARATECHOP = new Move("Karate Chop", FIGHTING, PHYSICAL, 50, 100,25, NOEFFECT);//
+KINESIS = new Move("Kinesis",  PSYCHIC, STATUS, 50, 80, 15, NOEFFECT);//
+LEECHLIFE = new Move("Leech Life",  BUG, PHYSICAL, 20, 100,15, NOEFFECT);//
+LEECHSEED = new Move("Leech Seed",  GRASS, STATUS, -1, 90, 10, NOEFFECT);//
+LEER = new Move("Leer",  NORMAL, STATUS, -1, 100, 30, DEFENSEDOWN);
+LICK = new Move("Lick",  GHOST, PHYSICAL, 30, 100, 30, PARALYZES);
+LIGHTSCREEN = new Move("Light Screen",  PSYCHIC, STATUS, -1, -1,30, SPECIALDOWN);//
+LOVELYKISS = new Move("Lovely Kiss",  NORMAL, STATUS, -1, 75, 10, PUTSASLEEP);
+LOWKICK = new Move("Low Kick",  FIGHTING, PHYSICAL, 80, 100,20, NOEFFECT);//
+MEDITATE = new Move("Meditate",  PSYCHIC, STATUS, -1, -1, 40, ATTACKUP);
+MEGADRAIN = new Move("Mega Drain", GRASS, SPECIAL, 40, 100, 15, NOEFFECT);//
+MEGAKICK = new Move("Mega Kick",  NORMAL, PHYSICAL, 120, 75, 5, NOEFFECT);
+MEGAPUNCH = new Move("Mega Punch",  NORMAL, PHYSICAL, 80, 85, 20, NOEFFECT);
+METRONOME = new Move("Metronome",  NORMAL, STATUS, 100, -1, 10, NOEFFECT);//
+MIMIC = new Move("Mimic",  NORMAL, STATUS, 50, -1, 10, NOEFFECT);//
+MINIMIZE = new Move("Minimize",  NORMAL, STATUS, -1, -1, 10, SPEEDUP);//
+MIRRORMOVE = new Move("Mirror Move",  FLYING, STATUS, 50, -1, 20, NOEFFECT);//
+MIST = new Move("Mist",  ICE, STATUS, -1, -1, 30, DEFENSEUP);//
+NIGHTSHADE = new Move("Night Shade",  GHOST, SPECIAL, 100, 100, 15, NOEFFECT);//
+PAYDAY = new Move("Pay Day", NORMAL, PHYSICAL, 40, 100, 20, NOEFFECT);//
+PECK = new Move("Peck",  FLYING, PHYSICAL, 35, 100, 35, NOEFFECT);
+PETALDANCE = new Move("Petal Dance",  GRASS, SPECIAL, 120, 100, 10, NOEFFECT);//
+PINMISSILE = new Move("Pin Misile",  BUG, PHYSICAL, 55, 85, 20, NOEFFECT);//
+POISONGAS = new Move("Poison Gas",  POISON, STATUS, -1, 90, 20, POISON);
+POISONPOWDER = new Move("Poison Powder", POISON, STATUS, -1, 75, 20, POISON);
+POISONSTING = new Move("Poison Sting",  POISON, PHYSICAL, 15, 100, 20, POISON);
+POUND = new Move("Pound",  NORMAL, PHYSICAL, 40, 100, 35, NOEFFECT);
+PSYBEAM = new Move("Psybeam",  PSYCHIC, SPECIAL, 65, 100, 20, CONFUSES);
+PSYCHICMOVE = new Move("Psychic",  PSYCHIC, SPECIAL, 90, 100, 10, SPECIALDOWN);
+PSYWAVE = new Move("Psywave",  PSYCHIC, SPECIAL, 60, 80, 15, NOEFFECT);//
+QUICKATTACK = new Move("Quick Attack",  NORMAL, PHYSICAL, 40, 100, 20, NOEFFECT);//
+RAGE = new Move("Rage",  NORMAL, PHYSICAL, 20, 100, 20, ATTACKUP);//
+RAZORLEAF = new Move("Razor Leaf",  GRASS, PHYSICAL, 55, 95, 20, NOEFFECT);//
+RAZORWIND = new Move("Razor Wind",  NORMAL, SPECIAL, 80, 100, 20, NOEFFECT);//
+RECOVER = new Move("Recover",  NORMAL, STATUS, -1, -1, 10, DEFENSEUP);//
+REFLECT = new Move("Reflect",  PSYCHIC, STATUS, -1, -1, 20, DEFENSEUP);//
+REST = new Move("Rest",  PSYCHIC, STATUS, -1, -1, 10, PUTSASLEEP);//
+ROAR = new Move("Roar",  NORMAL, STATUS, -1, -1, 20, ATTACKUP);//
+ROCKSLIDE = new Move("Rock Slide", ROCK, PHYSICAL, 75, 90, 20, NOEFFECT);//
+ROCKTHROW = new Move("Rock Throw", ROCK, PHYSICAL, 50, 90, 20, NOEFFECT);
+ROLLINGKICK = new Move("Rolling Kick", FIGHTING, PHYSICAL, 60, 85, 20, NOEFFECT);//
+SANDATTACK = new Move("Sand Attack",  GROUNDTYPE, STATUS, -1, 100, 20, SPEEDDOWN);//
+SCRATCH = new Move("Scratch",  NORMAL, PHYSICAL, 40, 100, 35, NOEFFECT);
+SCREECH = new Move("Screech",  NORMAL, STATUS, -1, 85, 40, DEFENSEDOWN);//
+SEISMICTOSS = new Move("Seismic Toss",  FIGHTING, PHYSICAL, 100, -1, 100, NOEFFECT);//
+SELFDESTRUCT= new Move("Self-Destruct", NORMAL, PHYSICAL, 100, 100, 5, NOEFFECT);//
+SHARPEN = new Move("Sharpen",  NORMAL, STATUS, -1, -1, 30, ATTACKUP);
+SING = new Move("Sing",  NORMAL, STATUS, -1, 55, 15, PUTSASLEEP);
+SKULLBASH = new Move("Skull Bash",NORMAL, PHYSICAL, 130, 100, 10, NOEFFECT);
+SKYATTACK = new Move("Sky Attack", FLYING, PHYSICAL, 110, 90, 20, NOEFFECT);//
+SLAM = new Move("Slam",  NORMAL, PHYSICAL, 80, 75, 20, NOEFFECT);
+SLASH = new Move("Slash",  NORMAL, PHYSICAL, 70, 100, 20, NOEFFECT);//
+SLEEPPOWDER = new Move("Sleep Powder",  GRASS, STATUS, -1, 75, 20, PUTSASLEEP);
+SLUDGE = new Move("Sludge",  POISON, SPECIAL, 65, 100, 20, POISON);
+SMOG = new Move("Smog",  POISON, SPECIAL, 30, 70, 20, POISON);
+SMOKESCREEN = new Move("Smokescreen",  NORMAL, STATUS, -1, 100, 20, SPEEDDOWN);//
+SOFTBOILED= new Move("Softboiled", NORMAL, STATUS, -1, -1, 10, DEFENSEUP);//
+SOLARBEAM = new Move("Solar Beam",  GRASS, SPECIAL, 110, 100, 20, NOEFFECT);//
+SONICBOOM = new Move("Sonic Boom",  NORMAL, SPECIAL, 50, -1, 90, NOEFFECT); //
+SPIKECANNON = new Move("Spike Cannon", NORMAL, PHYSICAL, 50, 100, 20, NOEFFECT);//
+SPLASH = new Move("Splash",  NORMAL, STATUS, 40, -1, 40, NOEFFECT);//forjustice
+SPORE = new Move("Spore",  GRASS, STATUS, -1, 100, 15, PUTSASLEEP);
+STOMP = new Move("Stomp",  NORMAL, PHYSICAL, 65, 100, 20, NOEFFECT);
+STRINGSHOT = new Move("String Shot",  BUG, STATUS, -1, 95, 40, SPEEDDOWN);//
+STRENGTH = new Move("Strength",  NORMAL, PHYSICAL, 80, 100, 15, NOEFFECT);//
+STRUGGLE = new Move("Struggle",  NORMAL, PHYSICAL, 50, 100, -1, NOEFFECT);
+STUNSPORE = new Move("Stun Spore",  GRASS, STATUS, -1, 75, 20, PARALYZES);
+SUBMISSION = new Move("Submission",  FIGHTING, PHYSICAL, 80, 80, 25, NOEFFECT);//
+SUBSTITUTE = new Move("Substitute",  NORMAL, STATUS, -1, -1, 10, DEFENSEUP);//
+SUPERFANG = new Move("Super Fang",  NORMAL, PHYSICAL, 50, 90, 20, NOEFFECT);//
+SUPERSONIC = new Move("Supersonic",  NORMAL, STATUS, -1, 55, 20, CONFUSES);
+SURF = new Move("Surf",  WATER, SPECIAL, 90, 100, 15, NOEFFECT);//
+SWIFT = new Move("Swift",  NORMAL, SPECIAL, 60, 100, 20, NOEFFECT);//
+SWORDSDANCE = new Move("Swords Dance",  NORMAL, STATUS, -1, -1, 20, ATTACKUP);//
+TACKLE = new Move("Tackle",  NORMAL, PHYSICAL, 50, 100, 35, NOEFFECT);
+TAILWHIP = new Move("Tail Whip",  NORMAL, STATUS, -1, -1, 30, DEFENSEDOWN);
+TAKEDOWN = new Move("Take Down",  NORMAL, PHYSICAL, 90, 85, 20, NOEFFECT); //
+TELEPORT = new Move("Teleport",  PSYCHIC, STATUS, 40, -1, 20, NOEFFECT);//forabra
+THRASH = new Move("Thrash",  NORMAL, PHYSICAL, 90, 100, 10, NOEFFECT);//
+THUNDER = new Move("Thunder",  ELECTRIC, SPECIAL, 110, 70, 10, PARALYZES);
+THUNDERPUNCH = new Move("Thunder Punch", ELECTRIC, PHYSICAL, 75, 100, 20, PARALYZES);
+THUNDERSHOCK = new Move("Thunder Shock", ELECTRIC, SPECIAL, 40, 100, 20, PARALYZES);
+THUNDERWAVE = new Move("Thunder Wave",  ELECTRIC, STATUS, -1, 100, 20, PARALYZES);
+THUNDERBOLT = new Move("Thunderbolt",  ELECTRIC, SPECIAL, 90, 100, 15, PARALYZES);
+TOXIC = new Move("Toxic",  POISON, STATUS, -1, 90, 10, POISON);
+TRANSFORM = new Move("Transform",  NORMAL, STATUS, 40, -1, 10, NOEFFECT);//forditto
+TRIATTACK = new Move("Tri Attack",  NORMAL, SPECIAL, 80, 100, 20, FREEZES);//
+TWINEEDLE = new Move("Twineedle",  BUG, PHYSICAL, 50, 100, 20, POISON);//
+VICEGRIP = new Move("Vice Grip",  NORMAL, PHYSICAL, 55, 100, 20, NOEFFECT);
+VINEWHIP = new Move("Vine Whip", GRASS, PHYSICAL, 45, 100, 20, NOEFFECT);
+WATERGUN = new Move("Water Gun",  WATER, SPECIAL, 40, 100, 20, NOEFFECT);
+WATERFALL = new Move("Waterfall",  WATER, PHYSICAL, 80, 100, 15, NOEFFECT);//
+WHIRLWIND = new Move("Whirlwind",  NORMAL, STATUS, 50, -1, 20, NOEFFECT);//
+WINGATTACK = new Move("Wing Attack",FLYING, PHYSICAL, 60, 100, 20, NOEFFECT);
+WITHDRAW = new Move("Withdraw",  WATER, STATUS, -1, -1, 40, NOEFFECT);
+WRAP = new Move("Wrap",  NORMAL, PHYSICAL, 55, 90, 20, NOEFFECT);//
 
-ABSORB = new Move("Absorb", GRASS, SPECIAL ,20, 100 ,25, NOEFFECT);
-ACID = new Move("Acid", POISON , SPECIAL ,40 ,100 ,30, NOEFFECT);
-ACIDARMOR = new Move("Acid Armor", POISON , STATUS , -1 , -1 , 20 , NOEFFECT);
-AGILITY = new Move("Agility",  PSYCHIC , STATUS , -1 , -1 , 30 , NOEFFECT);
-AMNESIA = new Move("Amnesia",  PSYCHIC , STATUS , -1 , -1 , 20 , NOEFFECT);
-AURORABEAM = new Move("Aurora Beam", ICE , SPECIAL , 65 , 100 , 20, NOEFFECT);
-BARRAGE = new Move("Barrage",  NORMAL , PHYSICAL , 15 , 85 , 20 , NOEFFECT);
-BARRIER = new Move("Barrier",  PSYCHIC , STATUS , -1 , -1 , 20 , NOEFFECT);
-BIDE = new Move("Bide",  NORMAL , PHYSICAL , -1 , -1 , 10 , NOEFFECT);
-BIND = new Move("Bind",  NORMAL , PHYSICAL , 15 , 85 , 20 , NOEFFECT);
-BITE = new Move("Bite",  NORMAL , PHYSICAL , 60 , 100 , 25 , NOEFFECT);
-BLIZZARD = new Move("Blizzard",  ICE , SPECIAL , 110 , 70 , 5 , NOEFFECT);
-BODYSLAM = new Move("Body Slam", NORMAL , PHYSICAL , 85 , 100 , 15, NOEFFECT);
-BONECLUB = new Move("Bone Club", GROUNDTYPE , PHYSICAL , 65 , 85 , 20, NOEFFECT);
-BONEMERANG = new Move("Bonemerang",  GROUNDTYPE , PHYSICAL , 50 , 90 , 10 , NOEFFECT);
-BUBBLE = new Move("Bubble",  WATER , SPECIAL , 40 , 100 , 30 , NOEFFECT);
-BUBBLEBEAM = new Move("Bubble Beam", WATER , SPECIAL , 65 , 100 , 20,  NOEFFECT);
-CLAMP = new Move("Clamp",  WATER , PHYSICAL , 35 , 85 , 10 , NOEFFECT);
-COMETPUNCH = new Move("Comet Punch",  NORMAL , PHYSICAL , 18 , 85 , 15, NOEFFECT);
-CONFUSERAY = new Move("Confuse Ray", GHOST , STATUS , -1 , 100 , 10, NOEFFECT);
-CONFUSION = new Move("Confusion",  PSYCHIC , SPECIAL , 50 , 100 , 25 , NOEFFECT);
-CONSTRICT = new Move("Constrict",  NORMAL , PHYSICAL , 10 , 100 , 35 , NOEFFECT);
-CONVERSION = new Move("Conversion",  NORMAL , STATUS , -1 , -1 , 30 , NOEFFECT);
-COUNTER = new Move("Counter",  FIGHTING , PHYSICAL , -1 , 100 , 20 , NOEFFECT);
-CRABHAMMER = new Move("Crabhammer",  WATER , PHYSICAL , 100 , 90 , 10 , NOEFFECT);
-CUT = new Move("Cut",  NORMAL , PHYSICAL , 50 , 95 , 30 , NOEFFECT);
-DEFENSECURL = new Move("Defense Curl",  NORMAL , STATUS , -1 , -1 , 40 , NOEFFECT);
-DIG = new Move("Dig",  GROUNDTYPE , PHYSICAL , 80 , 100 , 10 , NOEFFECT);
-DISABLE = new Move("Disable",  NORMAL , STATUS , -1 , 100 , 20 , NOEFFECT);
-DIZZYPUNCH = new Move("Dizzy Punch",  NORMAL , PHYSICAL , 70 , 100 ,10, NOEFFECT);
-DOUBLEKICK = new Move("Double Kick",  FIGHTING , PHYSICAL , 30 , 100 ,30, NOEFFECT);
-DOUBLESLAP = new Move("Double Slap",  NORMAL , PHYSICAL , 15 , 85 ,10, NOEFFECT);
-DOUBLETEAM = new Move("Double Team",  NORMAL , STATUS , -1 , -1 ,15, NOEFFECT);
-DOUBLEEDGE= new Move("Double-Edge", NORMAL , PHYSICAL, 120, 100, 15, NOEFFECT);
-DRAGONRAGE = new Move("Dragon Rage",  DRAGON , SPECIAL , -1 , 100 , 10, NOEFFECT);
-DREAMEATER = new Move("Dream Eater",  PSYCHIC , SPECIAL , 100 , 100 , NOEFFECT);
-DRILLPECK = new Move("Drill Peck",  FLYING , PHYSICAL , 80 , 100 , 20, NOEFFECT);
-EARTHQUAKE = new Move("Earthquake",  GROUNDTYPE , PHYSICAL , 100 , 100 , 10 , NOEFFECT);
-EGGBOMB = new Move("Egg Bomb",  NORMAL , PHYSICAL , 100 , 75 ,  10, NOEFFECT);
-EMBER = new Move("Ember",  FIRE , SPECIAL , 40 , 100 , 25 , NOEFFECT);
-EXPLOSION = new Move("Explosion",  NORMAL , PHYSICAL , 250 , 100 , 5 , NOEFFECT);
-FIREBLAST = new Move("Fire Blast",  FIRE , SPECIAL , 110 , 85 ,5, NOEFFECT);
-FIREPUNCH = new Move("Fire Punch",  FIRE , PHYSICAL , 75 , 100 ,15, NOEFFECT);
-FIRESPIN = new Move("Fire Spin", FIRE , SPECIAL , 35 , 85 , 15, NOEFFECT);
-FISSURE = new Move("Fissure",  GROUNDTYPE , PHYSICAL , -1 , -1 , 5 , NOEFFECT);
-FLAMETHROWER = new Move("Flamethrower",  FIRE , SPECIAL , 90 , 100 , 15 , NOEFFECT);
-FLASH = new Move("Flash",  NORMAL , STATUS , -1 , 100 , 20 , NOEFFECT);
-FLY = new Move("Fly",  FLYING , PHYSICAL , 90 , 95 , 15 , NOEFFECT);
-FOCUSENERGY = new Move("Focus Energy", NORMAL , STATUS , -1 , -1 , 30, NOEFFECT);
-FURYATTACK = new Move("Fury Attack",  NORMAL , PHYSICAL , 15 , 85 , 20, NOEFFECT);
-FURYSWIPES = new Move("Fury Swipes",  NORMAL , PHYSICAL , 18 , 80 , 15, NOEFFECT);
-GLARE = new Move("Glare",  NORMAL , STATUS , -1 , 100 , 30 , NOEFFECT);
-GROWL = new Move("Growl",  NORMAL , STATUS , -1 , 100 , 40 , NOEFFECT);
-GROWTH = new Move("Growth",  NORMAL , STATUS , -1 , -1 , 40 , NOEFFECT);
-GUILLOTINE = new Move("Guillotine",  NORMAL , PHYSICAL , -1 , -1 , 5 , NOEFFECT);
-GUST = new Move("Gust",  FLYING , SPECIAL , 40 , 100 , 35 , NOEFFECT);
-HARDEN = new Move("Harden",  NORMAL , STATUS , -1 , -1 , 30 , NOEFFECT);
-HAZE = new Move("Haze",  ICE , STATUS , -1 , -1 , 30 , NOEFFECT);
-HEADBUTT = new Move("Headbutt",  NORMAL , PHYSICAL , 70 , 100 , 15 , NOEFFECT);
-HIJUMPKICK = new Move("High Jump Kick", FIGHTING , PHYSICAL , 130 , 90, 10, NOEFFECT);
-HORNATTACK = new Move("Horn Attack",  NORMAL , PHYSICAL , 65 , 100 , 25, NOEFFECT);
-HORNDRILL = new Move("Horn Drill", NORMAL , PHYSICAL , -1 , -1 , 5, NOEFFECT);
-HYDROPUMP = new Move("Hydro Pump",  WATER , SPECIAL , 110 , 80 , 5, NOEFFECT);
-HYPERBEAM = new Move("Hyper Beam",  NORMAL , SPECIAL , 150 , 90 , 5, NOEFFECT);
-HYPERFANG = new Move("Hyper Fang",  NORMAL , PHYSICAL , 80 , 90 , 15, NOEFFECT);
-HYPNOSIS = new Move("Hypnosis",  PSYCHIC , STATUS , -1 , 60 , 20 , NOEFFECT);
-ICEBEAM = new Move("Ice Beam",  ICE , SPECIAL , 90 , 100 , 10, NOEFFECT);
-ICEPUNCH = new Move("Ice Punch",  ICE , PHYSICAL , 75 , 100 , 15, NOEFFECT);
-JUMPKICK = new Move("Jump Kick",  FIGHTING , PHYSICAL , 100 , 95 ,10,  NOEFFECT);
-KARATECHOP = new Move("Karate Chop", FIGHTING , PHYSICAL , 50 , 100 ,25, NOEFFECT);
-KINESIS = new Move("Kinesis",  PSYCHIC , STATUS , -1 , 80 , 15 , NOEFFECT);
-LEECHLIFE = new Move("Leech Life",  BUG , PHYSICAL , 20 , 100 ,15, NOEFFECT);
-LEECHSEED = new Move("Leech Seed",  GRASS , STATUS , -1 , 90 , 10, NOEFFECT);
-LEER = new Move("Leer",  NORMAL , STATUS , -1 , 100 , 30 , NOEFFECT);
-LICK = new Move("Lick",  GHOST , PHYSICAL , 30 , 100 , 30 , NOEFFECT);
-LIGHTSCREEN = new Move("Light Screen",  PSYCHIC , STATUS , -1 , -1 ,30, NOEFFECT);
-LOVELYKISS = new Move("Lovely Kiss",  NORMAL , STATUS , -1 , 75 , 10, NOEFFECT);
-LOWKICK = new Move("Low Kick",  FIGHTING , PHYSICAL , -1 , 100 ,20, NOEFFECT);
-MEDITATE = new Move("Meditate",  PSYCHIC , STATUS , -1 , -1 , 40 , NOEFFECT);
-MEGADRAIN = new Move("Mega Drain", GRASS , SPECIAL , 40 , 100 , 15, NOEFFECT);
-MEGAKICK = new Move("Mega Kick",  NORMAL , PHYSICAL , 120 , 75 , 5, NOEFFECT);
-MEGAPUNCH = new Move("Mega Punch",  NORMAL , PHYSICAL , 80 , 85 , 20, NOEFFECT);
-METRONOME = new Move("Metronome",  NORMAL , STATUS , -1 , -1 , 10 , NOEFFECT);
-MIMIC = new Move("Mimic",  NORMAL , STATUS , -1 , -1 , 10 , NOEFFECT);
-MINIMIZE = new Move("Minimize",  NORMAL , STATUS , -1 , -1 , 10 , NOEFFECT);
-MIRRORMOVE = new Move("Mirror Move",  FLYING , STATUS , -1 , -1 , NOEFFECT);
-MIST = new Move("Mist",  ICE , STATUS , -1 , -1 , 30 , NOEFFECT);
-NIGHTSHADE = new Move("Night Shade",  GHOST , SPECIAL , -1 , 100 , NOEFFECT);
-PAYDAY = new Move("Pay Day", NORMAL , PHYSICAL , 40 , 100 , NOEFFECT);
-PECK = new Move("Peck",  FLYING , PHYSICAL , 35 , 100 , 35 , NOEFFECT);
-PETALDANCE = new Move("Petal Dance",  GRASS , SPECIAL , 120 , 100 , 10 , NOEFFECT);
-PINMISSILE = new Move("Pin Misile",  BUG , PHYSICAL , 25 , 85 , NOEFFECT);
-POISONGAS = new Move("Poison Gas",  POISON , STATUS , -1 , 90 , NOEFFECT);
-POISONPOWDER = new Move("Poison Powder", POISON , STATUS , -1 , 75 , NOEFFECT);
-POISONSTING = new Move("Poison Sting",  POISON , PHYSICAL , 15 , 100 , NOEFFECT);
-POUND = new Move("Pound",  NORMAL , PHYSICAL , 40 , 100 , 35 , NOEFFECT);
-PSYBEAM = new Move("Psybeam",  PSYCHIC , SPECIAL , 65 , 100 , 20, NOEFFECT);
-PSYCHIC = new Move("Psychic",  PSYCHIC , SPECIAL , 90 , 100 , 10 , NOEFFECT);
-PSYWAVE = new Move("Psywave",  PSYCHIC , SPECIAL , -1 , 80 , 15 , NOEFFECT);
-QUICKATTACK = new Move("Quick Attack",  NORMAL , PHYSICAL , 40 , 100 , NOEFFECT);
-RAGE = new Move("Rage",  NORMAL , PHYSICAL , 20 , 100 , 20 , NOEFFECT);
-RAZORLEAF = new Move("Razor Leaf",  GRASS , PHYSICAL , 55 , 95 , NOEFFECT);
-RAZORWIND = new Move("Razor Wind",  NORMAL , SPECIAL , 80 , 100 , NOEFFECT);
-RECOVER = new Move("Recover",  NORMAL , STATUS , -1 , -1 , 10 , NOEFFECT);
-REFLECT = new Move("Reflect",  PSYCHIC , STATUS , -1 , -1 , 20 , NOEFFECT);
-REST = new Move("Rest",  PSYCHIC , STATUS , -1 , -1 , 10 , NOEFFECT);
-ROAR = new Move("Roar",  NORMAL , STATUS , -1 , -1 , 20 , NOEFFECT);
-ROCKSLIDE = new Move("Rock Slide", ROCK , PHYSICAL , 75 , 90 , NOEFFECT);
-ROCKTHROW = new Move("Rock Throw", ROCK , PHYSICAL , 50 , 90 , NOEFFECT);
-ROLLINGKICK = new Move("Rolling Kick", FIGHTING , PHYSICAL , 60 , 85 , NOEFFECT);
-SANDATTACK = new Move("Sand Attack",  GROUNDTYPE , STATUS , -1 , 100 , NOEFFECT);
-SCRATCH = new Move("Scratch",  NORMAL , PHYSICAL , 40 , 100 , 35 , NOEFFECT);
-SCREECH = new Move("Screech",  NORMAL , STATUS , -1 , 85 , 40 , NOEFFECT);
-SEISMICTOSS = new Move("Seismic Toss",  FIGHTING , PHYSICAL , -1 , 100 , NOEFFECT);
-SELFDESTRUCT= new Move("Self-Destruct", NORMAL , PHYSICAL, 200,100, 5 , NOEFFECT);
-SHARPEN = new Move("Sharpen",  NORMAL , STATUS , -1 , -1 , 30 , NOEFFECT);
-SING = new Move("Sing",  NORMAL , STATUS , -1 , 55 , 15 , NOEFFECT);
-SKULLBASH = new Move("Skull Bash",NORMAL , PHYSICAL , 130 , 100 , NOEFFECT);
-SKYATTACK = new Move("Sky Attack", FLYING , PHYSICAL , 140 , 90 , NOEFFECT);
-SLAM = new Move("Slam",  NORMAL , PHYSICAL , 80 , 75 , 20, NOEFFECT);
-SLASH = new Move("Slash",  NORMAL , PHYSICAL , 70 , 100 , 20, NOEFFECT);
-SLEEPPOWDER = new Move("Sleep Powder",  GRASS , STATUS , -1 , 75 , NOEFFECT);
-SLUDGE = new Move("Sludge",  POISON , SPECIAL , 65 , 100 , 20 , NOEFFECT);
-SMOG = new Move("Smog",  POISON , SPECIAL , 30 , 70 , 20 , NOEFFECT);
-SMOKESCREEN = new Move("Smokescreen",  NORMAL , STATUS , -1 , 100 , 20 , NOEFFECT);
-SOFTBOILED= new Move("Softboiled", NORMAL , STATUS , NOEFFECT);
-SOLARBEAM = new Move("Solar Beam",  GRASS , SPECIAL , 120 , 100 , NOEFFECT);
-SONICBOOM = new Move("Sonic Boom",  NORMAL , SPECIAL , -1 , 90 , NOEFFECT);
-SPIKECANNON = new Move("Spike Cannon", NORMAL , PHYSICAL , 20 , 100 , NOEFFECT);
-SPLASH = new Move("Splash",  NORMAL , STATUS , -1 , -1 , 40 , NOEFFECT);
-SPORE = new Move("Spore",  GRASS , STATUS , -1 , 100 , 15 , NOEFFECT);
-STOMP = new Move("Stomp",  NORMAL , PHYSICAL , 65 , 100 , 20 , NOEFFECT);
-STRINGSHOT = new Move("String Shot",  BUG , STATUS , -1 , 95 , 40, NOEFFECT);
-STRENGTH = new Move("Strength",  NORMAL , PHYSICAL , 80 , 100 , 15, NOEFFECT);
-STRUGGLE = new Move("Struggle",  NORMAL , PHYSICAL , 50 , 100 , -1 , NOEFFECT);
-STUNSPORE = new Move("Stun Spore",  GRASS , STATUS , -1 , 75 , NOEFFECT);
-SUBMISSION = new Move("Submission",  FIGHTING , PHYSICAL , 80 , 80 , 25 , NOEFFECT);
-SUBSTITUTE = new Move("Substitute",  NORMAL , STATUS , -1 , -1 , 10 , NOEFFECT);
-SUPERFANG = new Move("Super Fang",  NORMAL , PHYSICAL , -1 , 90 , NOEFFECT);
-SUPERSONIC = new Move("Supersonic",  NORMAL , STATUS , -1 , 55 , 20 , NOEFFECT);
-SURF = new Move("Surf",  WATER , SPECIAL , 90 , 100 , 15 , NOEFFECT);
-SWIFT = new Move("Swift",  NORMAL , SPECIAL , 60 , 20 , NOEFFECT);
-SWORDSDANCE = new Move("Swords Dance",  NORMAL , STATUS , -1 , -1 , NOEFFECT);
-TACKLE = new Move("Tackle",  NORMAL , PHYSICAL , 50 , 100 , 35 , NOEFFECT);
-TAILWHIP = new Move("Tail Whip",  NORMAL , STATUS , -1 , -1 , 30 , NOEFFECT);
-TAKEDOWN = new Move("Take Down",  NORMAL , PHYSICAL , 90 , 85 , NOEFFECT);
-TELEPORT = new Move("Teleport",  PSYCHIC , STATUS , -1 , -1 , 20 , NOEFFECT);
-THRASH = new Move("Thrash",  NORMAL , PHYSICAL , 120 , 100 , 10 , NOEFFECT);
-THUNDER = new Move("Thunder",  ELECTRIC , SPECIAL , 110 , 70 , 10 , NOEFFECT);
-THUNDERPUNCH = new Move("Thunder Punch", ELECTRIC , PHYSICAL , 75 , 100 , NOEFFECT);
-THUNDERSHOCK = new Move("Thunder Shock", ELECTRIC , SPECIAL , 40 , 100 , NOEFFECT);
-THUNDERWAVE = new Move("Thunder Wave",  ELECTRIC , STATUS , -1 , 100 , NOEFFECT);
-THUNDERBOLT = new Move("Thunderbolt",  ELECTRIC , SPECIAL , 90 , 100 , 15 , NOEFFECT);
-TOXIC = new Move("Toxic",  POISON , STATUS , -1 , 90 , 10 , NOEFFECT);
-TRANSFORM = new Move("Transform",  NORMAL , STATUS , -1 , -1 , 10 , NOEFFECT);
-TRIATTACK = new Move("Tri Attack",  NORMAL , SPECIAL , 80 , 100 , NOEFFECT);
-TWINEEDLE = new Move("Twineedle",  BUG , PHYSICAL , 25 , 100 , 20 , NOEFFECT);
-VICEGRIP = new Move("Vice Grip",  NORMAL , PHYSICAL , 55 , 100 , NOEFFECT);
-VINEWHIP = new Move("Vine Whip", GRASS , PHYSICAL , 45 , 100 , NOEFFECT);
-WATERGUN = new Move("Water Gun",  WATER , SPECIAL , 40 , 100 , NOEFFECT);
-WATERFALL = new Move("Waterfall",  WATER , PHYSICAL , 80 , 100 , 15 , NOEFFECT);
-WHIRLWIND = new Move("Whirlwind",  NORMAL , STATUS , -1 , -1 , 20 , NOEFFECT);
-WINGATTACK = new Move("Wing Attack",FLYING , PHYSICAL , 60 , 100 , NOEFFECT);
-WITHDRAW = new Move("Withdraw",  WATER , STATUS , -1 , -1 , 40 , NOEFFECT);
-WRAP = new Move("Wrap",  NORMAL , PHYSICAL , 15 , 90 , 20 , NOEFFECT);
-
-
+moves = [THROWROCK, ABSORB, ACID, ACIDARMOR, AGILITY, AMNESIA,
+AURORABEAM, BARRAGE, BARRIER, BIDE, BIND, BITE, BLIZZARD,
+BODYSLAM, BONECLUB, BONEMERANG, BUBBLE, BUBBLEBEAM, CLAMP,
+COMETPUNCH, CONFUSERAY, CONFUSION, CONSTRICT, CONVERSION, COUNTER,
+CRABHAMMER, CUT, DEFENSECURL, DIG, DISABLE, DIZZYPUNCH, DOUBLEKICK,
+DOUBLESLAP, DOUBLETEAM, DOUBLEEDGE, DRAGONRAGE, DREAMEATER, DRILLPECK,
+EARTHQUAKE, EGGBOMB, EMBER, EXPLOSION, FIREBLAST, FIREPUNCH,
+FIRESPIN, FISSURE, FLAMETHROWER, FLASH, FLY, FOCUSENERGY, FURYATTACK,
+FURYSWIPES, GLARE, GROWL, GROWTH, GUILLOTINE, GUST, HARDEN, HAZE,
+HEADBUTT, HIJUMPKICK, HORNATTACK, HORNDRILL, HYDROPUMP, HYPERBEAM, HYPERFANG,
+HYPNOSIS, ICEBEAM, ICEPUNCH, JUMPKICK, KARATECHOP, KINESIS, LEECHLIFE,
+LEECHSEED, LEER, LICK, LIGHTSCREEN, LOVELYKISS, LOWKICK, MEDITATE,
+MEGADRAIN, MEGAKICK, MEGAPUNCH, METRONOME, MIMIC, MINIMIZE, MIRRORMOVE,
+MIST, NIGHTSHADE, PAYDAY, PECK, PETALDANCE, PINMISSILE, POISONGAS, POISONPOWDER,
+POISONSTING, POUND, PSYBEAM, PSYCHIC, PSYWAVE, QUICKATTACK, RAGE,
+RAZORLEAF, RAZORWIND, RECOVER, REFLECT, REST, ROAR, ROCKSLIDE, ROCKTHROW,
+ROLLINGKICK, SANDATTACK, SCRATCH, SCREECH, SEISMICTOSS, SELFDESTRUCT, SHARPEN,
+SING, SKULLBASH, SKYATTACK, SLAM, SLASH, SLEEPPOWDER, SLUDGE, SMOG,
+SMOKESCREEN, SOFTBOILED, SOLARBEAM, SONICBOOM, SPIKECANNON, SPLASH, SPORE,
+STOMP, STRINGSHOT, STRENGTH, STRUGGLE, STUNSPORE, SUBMISSION, SUBSTITUTE,
+SUPERFANG, SUPERSONIC, SURF, SWIFT, SWORDSDANCE, TACKLE, TAILWHIP,
+TAKEDOWN, TELEPORT, THRASH, THUNDER, THUNDERPUNCH, THUNDERSHOCK, THUNDERWAVE,
+THUNDERBOLT, TOXIC, TRANSFORM, TRIATTACK, TWINEEDLE, VICEGRIP, VINEWHIP,
+WATERGUN, WATERFALL, WHIRLWIND, WINGATTACK, WITHDRAW, WRAP];
 
 function NPC(name, filename, phrases, dpos, stationary){
 	this.toString= function(){ return this.name; }
@@ -287,17 +309,17 @@ RED= new Pokemon("Red", "red.png", "", 300, 5, 10, 10, 10, 100, NORMAL, NILTYPE,
 
 MOM= new NPC("Yo' momma", "mom.png", 
 		["Rememberto bring fresh underwear",
-		"Andstay out!",
-		"Ihope Blue comes over soon, he knows all the right spots *wink*",
-		"You'rein a coma... just wake up...",
-		"Oneday your father will return..."],
+		"And stay out!",
+		"I hope Blue comes over soon, he knows all the right spots *wink*",
+		"You're in a coma... just wake up...",
+		"One day your father will return..."],
 		{x:4, y: 4}, false
 		);
 
 OAK= new NPC("Professor Oak", "oak.png",
-		["I'mOAK-ay, how are you? HAHAHAHAHAHAH",
-		"Ihope Blue comes over soon, he knows all the right spots *raises eyebrows*",
-		"Areyou REALLY a boy or a girl? Ha! Stupid baby ten year old, thinks gender fits into a binary"],
+		["I'm OAK-ay, how are you? HAHAHAHAHAHAH",
+		"I hope Blue comes over soon, he knows all the right spots *raises eyebrows*",
+		"Are you a boy and a girl?"],
 		{x:3, y: 3}, false
 		);
 
@@ -306,11 +328,11 @@ TRAINERJOEY= new NPC( "Trainer Joey", "joey.png",
 		{x:3, y: 10}, false);
 
 TRAINERBILLY= new NPC("Trainer Billy", "billy.png", 
-		["ManI hate Joey", "I'm on my way to Viridian City, no friends met along the way"],
+		["Man I hate Joey", "I'm on my way to Viridian City, no friends met along the way"],
 		{x:3, y: 4}, false);
 
 STOREJOE= new NPC("Joe", "joe.png", 
-		["Buymy crap"],
+		["Buy my crap"],
 		{x:2, y: 2}, false);
 
 Tile= function(name, filename, walk, exit, hide, blink, jumpd, danger){
@@ -359,20 +381,20 @@ CLIFFFACE2= new Tile("Cliff face", "cliffface2.png");
 
 VENUSAUR= new Pokemon(
 		"Venasaur","venasaur.png",
-		"Justa much bigger, uglier one. Why would you ever pick this line?",
+		"Just a much bigger, uglier one. Why would you ever pick this line?",
 		80,82,83,100,80,221,
 		GRASS,POISON, 
-		[TACKLE,GROWL, LEECHSEED, VINEWHIP],
+		[TACKLE, GROWL, LEECHSEED, VINEWHIP],
 		[LEECHSEED,VINEWHIP, POISONPOWDER, RAZORLEAF, GROWTH, SLEEPPOWDER, SOLARBEAM],
 		[7,13,22,30,43,55,65]
 		);
 //dexis a bit of a stretch
 IVYSAUR= new Pokemon( 
 		"Ivysaur","ivysaur.png",
-		"Ivysauris well known for its role in the film 'Batman in Dinosaurland'",
+		"",
 		60,62,63,80,60,29,
 		GRASS,POISON, 
-		[TACKLE,GROWL, LEECHSEED], 
+		[TACKLE, GROWL,LEECHSEED, VINEWHIP], 
 		[LEECHSEED,VINEWHIP, POISONPOWDER, RAZORLEAF, GROWTH, SLEEPPOWDER, SOLARBEAM],
 		[7,13,22,30,38,46,54],
 		{to:VENUSAUR, at: 32}
@@ -380,10 +402,10 @@ IVYSAUR= new Pokemon(
 
 BULBASAUR= new Pokemon( 
 		"Bulbasaur","bulbasaur.png",
-		"Bulbasaurenjoys swinging from vines and talking with the jungle creatures",
+		"Bulbasaur enjoys swinging from vines and talking with the jungle creatures",
 		45,49,49,65,45,15,
 		GRASS,POISON, 
-		[TACKLE,GROWL], 
+		[TACKLE, GROWL], 
 		[LEECHSEED,VINEWHIP, POISONPOWDER, SLEEPPOWDER, RAZORLEAF, GROWTH, SLEEPPOWDER,
 			SOLARBEAM],
 			[7,13,20,27,34,41,48],
@@ -395,17 +417,17 @@ BLASTOISE= new Pokemon(
 		"",
 		79,83,100,85,78,189,
 		WATER,NILTYPE, 
-		[TACKLE,TAILWHIP], 
+		[TACKLE,TAILWHIP, BUBBLE, WATERGUN], 
 		[BUBBLE,WATERGUN, BITE, SKULLBASH, HYDROPUMP],
 		[8,15,24,31,42,52]
 		);
 
 WARTORTLE= new Pokemon(
 		"Wartortle","wartortle.png",
-		"Youevolved your Squirtle? I HOPE YOU KNOW THIS MEANS WARTORTLE",
+		"You evolved your Squirtle? I HOPE YOU KNOW THIS MEANS WARTORTLE",
 		59,63,80,65,58,50,
 		WATER,NILTYPE, 
-		[TACKLE,TAILWHIP], 
+		[TACKLE,TAILWHIP, BUBBLE, WATERGUN], 
 		[BUBBLE,WATERGUN, BITE, SKULLBASH, HYDROPUMP],
 		[8,15,24,31,39,47],
 		{to:BLASTOISE, at: 36}
@@ -413,7 +435,7 @@ WARTORTLE= new Pokemon(
 
 SQUIRTLE= new Pokemon( 
 		"Squirtle","squirtle.png",
-		"Squirtlelikes to hang out in gangs and wear sunglasses. A real froody dude.",
+		"Squirtle likes to hang out in gangs and wear sunglasses. A real froody dude.",
 		44,48,65,50,43,20,
 		WATER,NILTYPE, 
 		[TACKLE,TAILWHIP], 
@@ -427,17 +449,17 @@ CHARIZARD= new Pokemon(
 		"Cha...aaa.. aaari baby[chari baby], won't you come out tonight?",
 		78,84,78,109,100,200,
 		FIRE,NILTYPE, 
-		[SCRATCH,GROWL], 
+		[SCRATCH,GROWL, EMBER, LEER], 
 		[EMBER,LEER, RAGE, SLASH, FLAMETHROWER, FIRESPIN],
 		[9,15,24,36,46,55]
 		);
 
 CHARMELEON= new Pokemon(
 		"Charmelion","charmelion.png",
-		"CHARMELIONGONNA BURN YO' FACE OFF",
+		"CHARMELION GONNA BURN YO' FACE OFF",
 		58,64,58,80,80,42,
 		FIRE,NILTYPE, 
-		[SCRATCH,GROWL], 
+		[SCRATCH,GROWL,EMBER], 
 		[EMBER,LEER, RAGE, SLASH, FLAMETHROWER, FIRESPIN],
 		[15,24,33,42,56],
 		{to:CHARIZARD, at: 36}
@@ -445,7 +467,7 @@ CHARMELEON= new Pokemon(
 
 CHARMANDER= new Pokemon(
 		"Charmander","charmander.png",
-		"Charmanderis the best starter, anyone who says differently is a h8r",
+		"Charmander is the best starter, anyone who says differently is a h8r",
 		39,52,43,60,65,19,
 		FIRE,NILTYPE, 
 		[SCRATCH,GROWL], 
@@ -456,7 +478,7 @@ CHARMANDER= new Pokemon(
 
 PIDGEOT= new Pokemon(
 		"Pidgeot","pidgeot.png",
-		"Pidgeotcan fly faster than the speed of light and can even catch up to a mid blast-off Team Rocket",
+		"Pidgeot can fly faster than the speed of light and can even catch up to a mid blast-off Team Rocket",
 		83,80,75,70,91,87,
 		FLYING,NORMAL, 
 		[GUST,TACKLE],
@@ -466,7 +488,7 @@ PIDGEOT= new Pokemon(
 
 PIDGEOTTO= new Pokemon(
 		"Pidgeotto","pidgeotto.png",
-		"Ol'reliable. When your starter is struggling, trusty Pidgeotto will always step in to finish the job",
+		"Ol' reliable. When your starter is struggling, trusty Pidgeotto will always step in to finish the job",
 		63,60,55,50,71,66,
 		FLYING,NORMAL, 
 		[GUST,TACKLE],
@@ -477,7 +499,7 @@ PIDGEOTTO= new Pokemon(
 
 PIDGEY=new Pokemon(
 		"Pidgey","pidgey.png",
-		"Pidgeyis known for its cruel PKing tactics, often hanging near new player spawn spots",
+		"Pidgey is known for its cruel PKing tactics, often hanging near new player spawn spots",
 		40,45,40,35,56,4,
 		FLYING,NORMAL, 
 		[GUST,TACKLE], 
@@ -488,7 +510,7 @@ PIDGEY=new Pokemon(
 
 RATICATE= new Pokemon(
 		"Raticate","raticate.png",
-		"Rat,a cat? No! Rat not a cat",
+		"Rat, a cat? No! Rat not a cat",
 		55,81,60,50,97,41,
 		NORMAL,NILTYPE, 
 		[TACKLE,TAILWHIP],
@@ -498,7 +520,7 @@ RATICATE= new Pokemon(
 
 RATTATA= new Pokemon(
 		"Rattata","rattata.png",
-		"Rattataewere once members of the imfamous Team Rocket, having been transmogrified as a punishment for snitching",
+		"Rattatae were once members of the imfamous Team Rocket, having been transmogrified as a punishment for snitching",
 		30,56,35,25,72,8,
 		NORMAL,NILTYPE, 
 		[TACKLE,TAILWHIP],
@@ -509,7 +531,7 @@ RATTATA= new Pokemon(
 
 BUTTERFREE= new Pokemon(
 		"Butterfree","butterfree.png",
-		"Thecurrent confimed death count for hurricanes caused by butterfrees flapping their wings stands at: 1.6 million",
+		"The current confimed death count for hurricanes caused by butterfrees flapping their wings stands at: 1.6 million",
 		60,45,50,80,70,71,
 		BUG,FLYING, 
 		[CONFUSION],
@@ -519,7 +541,7 @@ BUTTERFREE= new Pokemon(
 
 METAPOD= new Pokemon(
 		"Metapod","metapod.png",
-		"Ironically,male metapod genitalia are extremely soft",
+		"Ironically, male metapod genitalia are extremely soft",
 		50,20,55,25,30,22,
 		BUG,NILTYPE, 
 		[HARDEN],[], [],
@@ -528,7 +550,7 @@ METAPOD= new Pokemon(
 
 CATERPIE= new Pokemon(
 		"Caterpie","caterpie.png",
-		"Littleknown fact: Spiderman actually just had caterpies up his sleeves",
+		"Little known fact: Spiderman actually just had caterpies up his sleeves",
 		45,30,35,20,45,6,
 		BUG,NILTYPE, 
 		[TACKLE,STRINGSHOT], [], [],
@@ -537,7 +559,7 @@ CATERPIE= new Pokemon(
 
 BEEDRILL= new Pokemon(
 		"Beedrill","beedrill.png",
-		"Duringa peyote trip, Beedrill realised even the monarchy was limited in power. This led him to build a drill to pierce the heavens and challenge God.",
+		"During a peyote trip, Beedrill realised even the monarchy was limited in power. This led him to build a drill to pierce the heavens and challenge God.",
 		65,80,40,45,75,65,
 		BUG,POISON, 
 		[FURYATTACK],
@@ -547,7 +569,7 @@ BEEDRILL= new Pokemon(
 
 KAKUNA= new Pokemon( 
 		"Kakuna","kakuna.png",
-		"Kakunais a bit of a slacker, just sits around smoking weedle all day and repeating its motto: 'Kakuna matata!'",
+		"Kakuna is a bit of a slacker, just sits around smoking weedle all day and repeating its motto: 'Kakuna matata!'",
 		45,25,50,25,35,22,
 		BUG,POISON, 
 		[HARDEN],[], [],
@@ -556,7 +578,7 @@ KAKUNA= new Pokemon(
 
 WEEDLE= new Pokemon(
 		"Weedle","weedle.png",
-		"Soyoung, so curious! Weedle will go far, maybe even be king one day!",
+		"So young, so curious! Weedle will go far, maybe even be king one day!",
 		40,35,30,20,50,7,
 		BUG,POISON, 
 		[POISONSTING,STRINGSHOT], [], [],
@@ -670,7 +692,7 @@ GRAVELER= new Pokemon(
 
 GEODUDE= new Pokemon(
 		"Geodude","geodude.png",
-		"Acool dude to go on a hike with",
+		"A cool dude to go on a hike with",
 		40,80,100,30,20,44,
 		ROCK,GROUNDTYPE, 
 		[TACKLE],
@@ -830,7 +852,7 @@ PRIMEAPE= new Pokemon( //sp?
 
 MANKEY= new Pokemon(
 		"Mankey","mankey.png",
-		"Protip:it's his stomach",
+		"Protip: it's his stomach",
 		40,80,45,45,80,62,
 		FIGHTING,NILTYPE, 
 		[SCRATCH,LEER],
@@ -885,7 +907,7 @@ VENOMOTH= new Pokemon(
 		70,65,60,90,90,28,
 		POISON,BUG, 
 		[TACKLE,DISABLE, POISONPOWDER, LEECHLIFE],
-		[POISONPOWDER,LEECHLIFE, STUNSPORE, PSYBEAM, SLEEPPOWDER, PSYCHIC],
+		[POISONPOWDER,LEECHLIFE, STUNSPORE, PSYBEAM, SLEEPPOWDER, PSYCHICMOVE],
 		[24,27, 30, 38, 43, 50]
 		);
 
@@ -895,7 +917,7 @@ VENONAT= new Pokemon(
 		60,55,50,40,45,66,
 		POISON,BUG, 
 		[TACKLE,DISABLE], 
-		[POISONPOWDER,LEECHLIFE, STUNSPORE, PSYBEAM, SLEEPPOWDER, PSYCHIC],
+		[POISONPOWDER,LEECHLIFE, STUNSPORE, PSYBEAM, SLEEPPOWDER, PSYCHICMOVE],
 		[24,27,30,35,38,43],
 		{to:VENOMOTH, at: 31}
 		);
@@ -909,7 +931,7 @@ TANGELA= new Pokemon(
 
 NINETALES= new Pokemon(
 		"Ninetales","Ninetales.png",
-		"Namedfor Scherazade's other sister, who only kept the Shiek busy for nine nights, before being killed",
+		"Named for Scherazade's other sister, who only kept the Shiek busy for nine nights, before being killed",
 		73,76,75,81,100,44,
 		FIRE,NILTYPE, 
 		[EMBER,TAILWHIP, QUICKATTACK, ROAR], 
@@ -1061,7 +1083,7 @@ ALAKAZAM= new Pokemon(
 		55,50,45,135,120,106,
 		PSYCHIC,NILTYPE,
 		[TELEPORT,CONFUSION, DISABLE],
-		[CONFUSION,DISABLE, PSYBEAM, RECOVER, PSYCHIC, REFLECT], 
+		[CONFUSION,DISABLE, PSYBEAM, RECOVER, PSYCHICMOVE, REFLECT], 
 		[16,20,27,31,38,42]
 		);
 
@@ -1071,7 +1093,7 @@ KADABRA= new Pokemon(
 		40,35,30,120,105,125,
 		PSYCHIC,NILTYPE,
 		[TELEPORT,CONFUSION, DISABLE],
-		[CONFUSION,DISABLE, PSYBEAM, RECOVER, PSYCHIC, REFLECT], 
+		[CONFUSION,DISABLE, PSYBEAM, RECOVER, PSYCHICMOVE, REFLECT], 
 		[16,20,27,31,38,42],
 		{to:ALAKAZAM, at: 10006}
 		);
@@ -1187,7 +1209,7 @@ SLOWBRO = new Pokemon("Slowbro", "slowbro.png",
 		95,75,119,199,39,173,
 		WATER, PSYCHIC,
 		[CONFUSION, DISABLE, HEADBUTT],
-		[DISABLE, HEADBUTT, GROWL, WITHDRAW, WATERGUN, AMNESIA, PSYCHIC],
+		[DISABLE, HEADBUTT, GROWL, WITHDRAW, WATERGUN, AMNESIA, PSYCHICMOVE],
 		[18,22,27,33,37,44,55]
 		);
 
@@ -1196,7 +1218,7 @@ SLOWPOKE = new Pokemon("Slowpoke", "slowpoke.png",
 		90,65,65,40,15,79,
 		WATER, PSYCHIC,
 		[CONFUSION],
-		[DISABLE, HEADBUTT, GROWL, WATERGUN, AMNESIA, PSYCHIC],
+		[DISABLE, HEADBUTT, GROWL, WATERGUN, AMNESIA, PSYCHICMOVE],
 		[18,22,27,33,40,48],
 		{to:SLOWBRO, at:37}
 		);
@@ -1350,7 +1372,7 @@ HYPNO = new Pokemon("Hypno", "hypno.png",
 		85,73,70,73,67,167,
 		PSYCHIC, NILTYPE,
 		[POUND, HYPNOSIS],
-		[DISABLE, CONFUSION, HEADBUTT, POISONGAS, PSYCHIC, MEDITATE],
+		[DISABLE, CONFUSION, HEADBUTT, POISONGAS, PSYCHICMOVE, MEDITATE],
 		[12,17,24,33,37,43]
 		);
 
@@ -1359,7 +1381,7 @@ DROWZEE = new Pokemon("Drowzee", "drowzee.png",
 		60,48,45,43,42,71,
 		PSYCHIC, NILTYPE,
 		[POUND, HYPNOSIS],
-		[DISABLE, CONFUSION, HEADBUTT, POISONGAS, PSYCHIC, MEDITATE],
+		[DISABLE, CONFUSION, HEADBUTT, POISONGAS, PSYCHICMOVE, MEDITATE],
 		[12,17,24,29,32,37],
 		{to: HYPNO, at: 26}
 		);
@@ -1853,8 +1875,8 @@ MEWTWO = new Pokemon("Mewtwo", "mewtwo.png",
 		"",
 		106,110,90,154,130,269,
 		PSYCHIC, NILTYPE,
-		[CONFUSION, DISABLE, SWIFT, PSYCHIC],
-		[BARRIER, PSYCHIC, RECOVER, MIST, AMNESIA],
+		[CONFUSION, DISABLE, SWIFT, PSYCHICMOVE],
+		[BARRIER, PSYCHICMOVE, RECOVER, MIST, AMNESIA],
 		[63,66,70,75,81]
 		);
 
@@ -1863,7 +1885,7 @@ MEW = new Pokemon("Mew", "mew.png",
 		100,100,100,100,100,9,
 		PSYCHIC, NILTYPE,
 		[POUND],
-		[TRANSFORM, MEGAPUNCH, METRONOME, PSYCHIC],
+		[TRANSFORM, MEGAPUNCH, METRONOME, PSYCHICMOVE],
 		[10,20,30,40]
 		);
 
@@ -1995,8 +2017,8 @@ VDCITYSTORE= new Room("Joe's Storatorium", VDCITYSTOREMAP, [STOREJOE], [], [], 0
 */
 
 rooms= [BEDROOM, DOWNSTAIR, PALLETTOWN, OAKSLAB, POINTLESSHOUSE, ROUTE1,
-ROUTE2, ROUTE3, ROUTE4, ROUTE5, ROUTE6, ROUTE7, ROUTE8, ROUTE9, ROUTE10, ROUTE11, 
-ROUTE12, ROUTE13, ROUTE14, ROUTE15 ]
+ROUTE2, ROUTE3]//, ROUTE4, ROUTE5, ROUTE6, ROUTE7, ROUTE8, ROUTE9, ROUTE10, ROUTE11, 
+//ROUTE12, ROUTE13, ROUTE14, ROUTE15 ]
 	//VIRIDIANCITY,BUGGYFOREST, VDCITYSTORE];
 
 peeps= [RED, MOM, OAK, TRAINERJOEY, TRAINERBILLY];

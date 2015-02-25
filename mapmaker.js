@@ -123,8 +123,8 @@ function makemap(specs){
 	bounds = {up: BORDER, down: specs.y - BORDER - 1, left: BORDER, right: specs.x - BORDER - 1}
 
 	//finds the xval of leftmost piece of entrance/exit
-	entx = bounds.left + Math.floor(Math.random() * (bounds.right - bounds.left - PATHSIZE));
-	exix = bounds.left + Math.floor(Math.random() * (bounds.right - bounds.left - PATHSIZE));
+	entx = bounds.left +Math.floor(prandom() * (bounds.right - bounds.left - PATHSIZE));
+	exix = bounds.left +Math.floor(prandom() * (bounds.right - bounds.left - PATHSIZE));
 
 	//draw border
 	for(i = 0; i < BORDER; i++){ 

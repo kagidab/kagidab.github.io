@@ -13,10 +13,11 @@ preload(CURSORFN);
 
 listinit(peeps);
 listinit(pokemon);
+listinit(moves);
 listinit(items);
 listinit(tiles);
 listinit(rooms);
-listinit(TYPES);//just for id...
+listinit(TYPES);
 
 
 exitrs = new Array(MAXEXITS); //Which room is each exit 
@@ -50,13 +51,13 @@ for(i=0;i<GDIM.y;i++){
 $("#grid").html(bigstring);
 $(".ge").append("<img src='" + IMGDIR + "dot.png'></img>");
 
-seen= new Array(pokemon.length);
-owned= new Array(pokemon.length);
 
 STARTINGROOM = BEDROOM;
 STARTINGPOS = {y:4, x:3};
 
-function resetthings(){
+
+function resetthings(seed){
+	originalseed = seednow = seed;
 	rooms.forEach(function(room, roomid) {
 		if(room.mapprop.rng){ 
 			newmap = makemap(room.mapprop);
@@ -85,18 +86,20 @@ function resetthings(){
 	turns = 0; 
 	mode = WALKMODE; //movingmode
 	itemnum = 0;
-	hunger = 800;
 	hungerstatus = 0;
 	p1 = RED.copy({x: 3, y: 4}, 5);
 	p1.type = PLAYA;
+	p1.hunger = 800;
 	p1.dpos = {x: 3, y: 4};
 	p1.phrases = ["I'm so alone"];
 	p1.inv = {usable: [], balls: [], food: []};
 	p1.doge = 200;
-	seentotal = 0;
-	ownedtotal = 0;
+	p1.seen= new Array(pokemon.length);
+	p1.owned= new Array(pokemon.length);
+	p1.seentotal = 0;
+	p1.ownedtotal = 0;
 	for(i = 0; i < pokemon.length; i++){
-		seen[i] = false;
-		owned[i] = false;
+		p1.seen[i] = false;
+		p1.owned[i] = false;
 	}
 }

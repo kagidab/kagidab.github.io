@@ -8,6 +8,8 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 	this.basespd = basespd; this.weight = weight;
 	this.type1 = type1; this.type2 = type2; 
 	this.moves = moves;
+	this.learn = learn;
+	this.learnlvl = learnlvl;
 	this.evolve = evolve;
 	if(evolve == undefined) this.evolve = {at:1000000};
 	this.type = POKEMON;
@@ -17,22 +19,25 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 	this.copy = function(position, level){
 		newpoke = new Pokemon(this.name, IMGDIR + this.fn, this.entry, this.basehp,
 				this.basespc, this.baseatt, this.basedef, this.basespd, this.weight, 
-				this.type1, this.type2, this.moves, this.evolve);
+				this.type1, this.type2, this.moves, this.learn, this.learnlvl, this.evolve);
 		newpoke.id = this.id;
 		newpoke.pos = position;
 		newpoke.level = level;
 		newpoke.fillstats();
 		newpoke.xp = xpatlevel(level);
+		newpoke.learn = this.learn;
+		newpoke.learnlvl = this.learnlvl;
+		newpoke.evolve = this.evolve;
 		return newpoke;
 	}
 	this.checkifseen = function(ownedaswell){
-		if(!seen[this.id]){
-			seen[this.id] = true;
-			seentotal++;
+		if(!p1.seen[this.id]){
+			p1.seen[this.id] = true;
+			p1.seentotal++;
 		} 
-		if(!owned[this.id] && ownedaswell){
-			owned[this.id] = true;
-			ownedtotal++;
+		if(!p1.owned[this.id] && ownedaswell){
+			p1.owned[this.id] = true;
+			p1.ownedtotal++;
 		}
 	}
 
@@ -125,10 +130,12 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 			}
 		}
 		if(this.statuses[CONFUSED] && result){
-			if(randI(1,2) == 1) {
-				attackanyway = true;
+			if(randI(1,3) == 1) {
 				this.statuses[CONFUSED] = false;
 				output("#bug0", this + " is confused no more!<br>", 1);
+			} else if(randI(1,2) == 1) {
+				output("#bug0", this + " is confused, ", 1);
+				attackanyway = true;
 			} else {
 				output("#bug0", this + " is confused, it hurts itself in confusion.<br>", 1);
 				this.curhp--;
@@ -137,23 +144,25 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 		}
 		if(this.statuses[FROZEN] && result){
 			if(randI(1,2) == 1) {
-				output("#bug0", this + " is frozen, ", 1);
-				attackanyway = true;
-			} else {
+				this.statuses[FROZEN] = false;
+				attackanyway = false;
+				output("#bug0", this + " is no longer frozen.<br>", 1);
+			} else{
 				output("#bug0", this + " is frozen, it cannot attack.<br>", 1);
 				result = false;
 			}
 		}
 		if(this.statuses[PARALYZED] && result){
-			output("#bug0", this + " is paralyzed, ", 1);
-			if(randI(1,2) == 1) {
+			if(randI(1,4) < 4) {
+				output("#bug0", this + " is paralyzed, ", 1);
 				attackanyway = true;
 			} else {
-				output("#bug0", this + "is paralyzed and cannot attack.<br>", 1);
+				output("#bug0", this + " is fully paralyzed!<br>", 1);
 				result = false;
+				attackanyway = false;
 			}
 		}
-		if(attackanyway) output("#bug0", "it attacks anyway!<br>");
+		if(attackanyway && result) output("#bug0", "it attacks anyway!<br>", 1);
 		return result;
 	}
 
@@ -167,18 +176,21 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 	}
 
 	this.evolvecheck = function(){
-		if(this.level >= this.evolve.at){
-			npok = this.evolve.to;
-			this.name = npok.name; this.basehp = npok.basehp; this.baseatt = npok.baseatt;
-			this.basedef = npok.basedef; this.basespc = npok.basespc;
-			this.basespd = npok.basespd; this.fn = npok.fn; this.entry = npok.entry;
-			this.weight = npok.weight; this.type1 = npok.type1; this.type2 = type2; 
-			if(npok.evolve == undefined) this.evolve = {at:1000000};
-			else this.evolve = npok.evolve;
-			this.id = npok.id; this.checkifseen(true); this.fillstats();
-			return true;
+		return this.level >= this.evolve.at;
+	}
+
+	//doesn't limit moves currently... 
+	this.trytolearn = function(move){
+		this.moves.push(move);
+		output("#bug3", this + " learned " + move + "!");
+	}
+
+	this.trylearnsomemoves = function(){
+		for(movenum=0; movenum < this.learn.length; movenum++){
+			if(this.learnlvl[movenum] == this.level){
+				this.trytolearn(this.learn[movenum]);
+			}
 		}
-		return false;
 	}
 
 	this.givexp = function(xptogive){
@@ -188,15 +200,25 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 			oldhp = this.curhp;
 			oldmax = this.maxhp;
 			if(this.evolvecheck()) {
-				this.curhp = oldhp + this.maxhp - oldmax;
+				evolvy(this);
 				return 2;
 			} else {
 				this.fillstats();
 				this.curhp = oldhp + this.maxhp - oldmax; 
+				this.trylearnsomemoves();
 				return 1;
 			}
 		} else return 0;
 	}
+}
+
+function evolvy(mon){
+	npok = mon.evolve.to.copy({}, mon.level);
+	npok.xp = mon.xp;
+	npok.curhp = mon.curhp;
+	npok.checkifseen(true); 
+	npok.ballref = mon.ballref;
+	mon.ballref.contains = npok
 }
 
 function listpoke(){
@@ -248,37 +270,14 @@ function xpgiven(mon){
 	return mon.level * 10;
 }
 
-//mon1 is current mon, mon2 is defeated
-//return 1 if level up, 2 if evolve, 0 otherwise 
-function givexp(){
-	mon1.xp += xpgiven(mon2);
-	if(levelatxp(mon1.xp) > mon1.level){
-		mon1.level = levelatxp(mon1.xp);
-		if(evolvecheck()) return 2;
-		if(mon1.evolve != undefined && mon1.evolve.at <= mon1.level){
-			evolved = newmon(mon1.evolve.to, mon1.level, mon1.pos);
-			evolved.xp = mon1.xp;
-			evolved.ballref = mon1.ballref;
-			evolved.checkifseen(true);
-			mon1.ballref.contains = evolved;
-			return 2;
-		}
-		oldhp = mon1.curhp;
-		oldmax = mon1.maxhp;
-		mon1.fillstats();
-		mon1.curhp = oldhp + mon1.maxhp - oldmax; 
-		return 1;
-	} else return 0;
-}
-
-function gainxp(result, oldname, newname, amount){
-	output("#bug2", oldname + " gains " + amount + "xp!");
+function gainxp(result, mon, amount){
+	output("#bug2", mon + " gains " + amount + "xp!");
 	if(result == 1){
 		output("#bug2", " Level up!", 1);
 	} else if(result == 2){
-		output("#bug2", " Level up! What's this? " + pokename + " evolved into "
-				+ mon1.ballref.contains.name, 1);
-		charout = mon1.ballref.contains;
+		charout = mon.ballref.contains;
+		output("#bug2", " Level up! What's this? " + mon + " evolved into "
+				+ charout, 1);
 	}
 }
 
@@ -288,13 +287,14 @@ function gainxp(result, oldname, newname, amount){
 //0-> your battledeath
 //2-> status death
 function pokedeath(mon1, mon2, situation) {
+	output("#bug3", "");
 	if(situation < 2) output("#bug1", mon1.name + " kills the " + mon2.name + "!"); 
 	if(situation == 1){
 		oldname = mon1.name;
-		//result = xpup(mon1, mon2);
-		//gainxp(result, oldname, mon1.name, xpgiven(mon2));
-		mon1.givexp(xpgiven(mon2));
+		result = mon1.givexp(xpgiven(mon2));
+		gainxp(result, mon1, xpgiven(mon2));
 		cpos = mon2.pos;
+		if(randI(1,10) == 1) POKEBALL.copy(cpos, curroom);
 	} else {
 		for(i = p1.inv.balls.length - 1; i >= 0; i--){
 			if(mon2.ballref == p1.inv.balls[i]) {
@@ -306,5 +306,4 @@ function pokedeath(mon1, mon2, situation) {
 	}
 	newitem = CORPSE.copy(cpos, curroom);
 	newitem.name = mon2.name + " corpse";
-	output("#bug3", "");
 }

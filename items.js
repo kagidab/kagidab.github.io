@@ -1,9 +1,7 @@
 //currently items are pretty lacking
-//it would be cleaner to have seperate containers for items
-//also usables don't do anything currently...
+//usables don't do anything currently...
 //knowing how to use inheritance would help a lot here
-//I think a few of these functions are redundant, because they used to be in different places
-
+//there may be some redundancy here
 FOOD = 0; BALL = 1; USABLE = 2;
 ALL = -1;
 
@@ -83,6 +81,8 @@ function getzeitems(key){
 	} else if(letternum >= 0 && letternum < itemsat(p1.pos).length){
 		itemnum = letternum + curpage * ITEMSPERPAGE;
 		getitem(itemnum);
+	} else {
+		listzeitems();
 	}
 }
 
@@ -105,8 +105,12 @@ function getitem(itemtogetnum){
 		} else p1.doge -= itemtoget.cost;
 	}
 	purgeitemfromlist(curroom.items, itemtoget);
-	if(itemsat(p1.pos).length > 0) listzeitems(); 
-	else { bugspray(); mode = WALKMODE;}
+	if(itemsat(p1.pos).length > 0) {
+		if(itemsat(p1.pos).length == curpage*ITEMSPERPAGE){
+			curpage--;
+		}
+		listzeitems(); 
+	} else { bugspray(); mode = WALKMODE;}
 	output("#bug0", "You get a " + itemtoget.name);
 	if(itemtoget.contains != undefined){
 		itemtoget.itemtype = BALL;
@@ -144,14 +148,25 @@ function eat(key){
 		} else if(index >= 0 && index < p1.inv.food.length){
 			itemtoeat = p1.inv.food.splice(index, 1)[0];
 			output("#bug0", "You eat a " + itemtoeat + ". Nom nom");
-			hunger += itemtoeat.nutrition;
-			if(hunger > MAXHUNGER) hunger = MAXHUNGER;
+			p1.hunger += itemtoeat.nutrition;
+			if(p1.hunger > MAXHUNGER) p1.hunger = MAXHUNGER;
+			passtime(1);
 			mode = WALKMODE;
 		} else if(key == KEY.ESCAPE){ 
 			mode = WALKMODE;
 		} else { listitemsoftype(FOOD, curpage); }
 	}
 	update();
+}
+
+
+function grabballs(){
+	rlist = [];
+	p1.inv.usable.forEach( function(element){
+		if(element.id == POKEBALL.id) rlist.push(element);
+	});
+	if(rlist.length == 0) return [null];
+	else return rlist;
 }
 
 function Item(name, fn, itemtype, cost, nutrition){
@@ -178,6 +193,7 @@ function Item(name, fn, itemtype, cost, nutrition){
 		}
 		newitem.pos = position;
 		room.items.push(newitem);
+		newitem.id = this.id;
 		return newitem;
 	}
 }

@@ -1,23 +1,28 @@
 // To implement: 
+// mostly just need to fix move learning for RC
+// saving makes things too easy, activate singlesave
+// put in endzone
+// flesh out typechart
+//
 // battles
 // 	-droppings?
 // story
 // items doing stuff
 // more OOP!
 // trainer battles
-// saving... idk how much data you can actually save...
+// mapmaking could be better
 //
 // TOFIX: 
 // hiding is a bit awkward, don't want NPCs appearing on rooftops
 // 	currently not actually relevant... OK fix is to make HIDEALL and HIDESOME tags
 // animations unsync =/
 // Can walk through Reds house from top side, can't think of a easy/good way to fix
-// More than 26 items is an issue
+// exits are funky... everything is tho
 //
 
 newgame("Welcome!");
 function newgame(message){
-	resetthings();
+	resetthings(Math.floor(1e7*Math.random()));
 	charout = p1; 
 	changeroom(STARTINGROOM, STARTINGPOS); 
 	output("#bug0", message);
@@ -28,9 +33,10 @@ $("body").keydown(function(event){
 	//console.log(event);
 	key = event.key;
 	keyn = event.keyCode;
-	dir = keytodir(keyn);
-	console.log(key);
-	if(mode == WALKMODE){ walking(keyn, key); } 
+	dir = keytodir(keyn, key);
+	console.log(dir)
+	//console.log(key);
+	if(mode == WALKMODE){ walking(keyn, key, dir); } 
 	else if(mode == EATMODE){ eat(keyn, key); } 
 	else if(mode == TALKMODE){ chat(dir); mode = WALKMODE;
 	} else if(mode == BATTLEMODE){
@@ -44,10 +50,10 @@ $("body").keydown(function(event){
 	} else if(mode == GETMODE) getzeitems(keyn, key); 
 	else if(mode == DROPMODE); //dropitem(key); 
 	else if(mode == USEMODE);// useitem(key); 
-	else if(mode == POKEMODE) ;//checkpoke(key); 
+	else if(mode == POKEMODE);//checkpoke(key); 
 });
 
-function walking(key, keyc){
+function walking(key, keyc, dir){
 	bugspray();
 	if(dir != NOTADIR){ movebutt(dir); } 
 	else if(keyc == "<" || keyc == ">"){ exit(); } 
@@ -58,7 +64,9 @@ function walking(key, keyc){
 	else if(key == KEY.I);//{ changetomode(USEMODE); }
 	else if(key == KEY.D);//{ changetomode(DROPMODE); }
 	else if(key == KEY.S){ savegame();}
+	else if(key == KEY.R){ restoregame();}
 	else if(key == KEY.W){ passtime(10);}
+	else if(key == KEY.Q){ passtime(100);}
 }
 
 function listonseverallines(list){
@@ -94,6 +102,100 @@ function listpokemon(){
 
 function savegame(){
 	output("#bug0", "Game saved... jk");
+	$.jStorage.set("playerroom", curroom.id);
+	$.jStorage.set("seedy", originalseed);
+	$.jStorage.set("saveexists", true);
+	$.jStorage.set("turnnumber", turns);
+	deflatepokemon(p1.inv.balls);
+	roomitems = [];
+	rooms.forEach( function(element){
+		deflatepokemon(element.items);
+		roomitems.push(element.items);
+		//console.log(element.items);
+	});
+	$.jStorage.set("playersave", p1);
+	$.jStorage.set("roomitems", roomitems);
+	inflatepokemon(p1.inv.balls);
+	rooms.forEach( function(element){
+		inflatepokemon(element.items);
+	});
+}
+
+function deflatepokemon(list){
+	for(i=0; i < list.length; i++){
+		if(list[i].contains != undefined){
+		//console.log(list[i].contains);
+			next = list[i].contains;
+			shortform = {id: next.id, xp: next.xp, level: next.level, hp: next.curhp, moves: []};
+			for(j = 0; j < next.moves.length; j++){
+				shortform.moves.push(next.moves[j].id);
+			}
+			list[i].contains = shortform;
+			//console.log(shortform.moves);
+		}
+	}
+}
+
+function inflatepokemon(list){
+	for(i = 0; i < list.length; i++){
+		infl = items[list[i].id].copy(list[i].pos, list[i].room);
+		infl.name = list[i].name;
+		infl.contains = list[i].contains;
+		infl.pos = list[i].pos;
+		if(infl.contains != undefined){
+			nextt = infl.contains;
+			inflated = pokemon[nextt.id].copy({}, nextt.level);
+			inflated.xp = nextt.xp; inflated.curhp = nextt.hp;
+			inflated.moves = new Array(nextt.moves.length);
+			for(j=0; j< nextt.moves.length; j++){
+				inflated.moves[j] = moves[nextt.moves[j]];
+			}
+			inflated.ballref = infl;
+			infl.contains = inflated;
+		}
+		list[i] = infl;
+		//console.log(infl);
+	}
+}
+
+function restoregame(){
+	output("#bug0", "Game restored... jk");
+	restp1 = $.jStorage.get("playersave");
+	//console.log(restp1.inv.balls[0].contains.moves);
+	restroom = $.jStorage.get("playerroom");
+	roomitems = $.jStorage.get("roomitems");
+	//rooms = $.jStorage.get("rooms");
+	//restrooms = $.jStorage.get("rooms");
+	p1 = RED.copy({x: 3, y:4}, restp1.level);
+	p1.type = PLAYA;
+	p1.dpos = {x: 3, y: 4};
+	p1.hunger = restp1.hunger;
+	p1.phrases = ["I'm so alone"];
+	p1.inv = restp1.inv;
+	p1.doge = restp1.doge;
+	p1.seentotal = restp1.seentotal;
+	p1.ownedtotal = restp1.ownedtotal;
+	p1.pos = restp1.pos;
+	p1.xp = restp1.xp;
+	p1.seen = restp1.seen;
+	p1.owned = restp1.owned;
+	inflatepokemon(p1.inv.usable);
+	inflatepokemon(p1.inv.food);
+	inflatepokemon(p1.inv.balls);
+	rooms.forEach( function(element, index){
+		element.items = roomitems[index];
+		inflatepokemon(element.items);
+		//console.log(element.items);
+	});
+	charout = p1;
+	//for(i = 0; i < pokemon.length; i++){
+	//	p1.seen[i] = restp1.seen[i];
+	//	p1.owned[i] = restp1.owned[i];
+	//}
+	curroom = rooms[restroom];
+	savegame();//fixes weird problems with storage..
+
+	update();
 }
 
 function keytodir(keyn, keyc){
@@ -150,10 +252,11 @@ function drawmap(){
 	}
 }
 
+//fixmagicalnumbers
 function howhungryami(){
-	if(hunger > 1000) return {message: "Satisfied", affectstats: 0};
-	if(hunger < 100) return {message: "Weak", affectstats: -5};
-	if(hunger < 300) return {message: "Hungry", affectstats: -2};
+	if(p1.hunger > 1000) return {message: "Satisfied", affectstats: 0};
+	if(p1.hunger < 100) return {message: "Weak", affectstats: -4};
+	if(p1.hunger < 300) return {message: "Hungry", affectstats: -2};
 	else return {message: "", affectstats: 0};
 }
 
@@ -161,7 +264,7 @@ function statusupdate(){
 	output("#status11",  charout.name); // title?
 	output("#status12", "At:" + charout.att + " Df:" + 
 			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
-			" Own:" + ownedtotal + "(" + seentotal + ")");
+			" Own:" + p1.ownedtotal + "(" + p1.seentotal + ")");
 	output("#status2", curroom + " &ETH:" + p1.doge + " HP:" + charout.curhp +
 			"("+ charout.maxhp + ") Exp:" + charout.level + "(" + xptogo(charout) +
 			") T:" + turns + " ");
@@ -323,15 +426,20 @@ function movebutt(dir){
 
 function passtime(timetopass){
 	for(i = 0; i < timetopass; i++) {
+		if(p1.hunger < 100 && timetopass > 1){
+			output("#bug0", "You are too hungry to just sit around");
+			break;
+		}
 		turns++;
-		hunger--;
+		p1.hunger--;
 		hungercheck = howhungryami().affectstats;
+
 		if(hungercheck != hungerstatus){
 			p1.att -= hungerstatus - hungercheck; p1.def -= hungerstatus - hungercheck;
 			p1.spd -= hungerstatus - hungercheck; p1.spc -= hungerstatus - hungercheck;
 			hungerstatus = hungercheck;
 		}
-		if(turns % 20 == 0) {
+		if(turns % REGENTIME == 0) {
 			p1.regen();  
 			if(p1.curhp <= 0) playerdeath(); 
 			listpoke().forEach(function(element){
@@ -342,7 +450,7 @@ function passtime(timetopass){
 		dancenpcdance();
 	}
 	update();
-	if(hunger <= 0) { // if hunger gets changed anywhere else moveme/copyme
+	if(p1.hunger <= 0) { // if hunger gets changed anywhere else moveme/copyme
 		playerdeath();
 	}
 }

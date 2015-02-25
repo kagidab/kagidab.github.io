@@ -10,7 +10,7 @@ function addpos(pos1, pos2){
 }
 
 function randI(lo, hi){ //random int [lo, hi]
-	return lo + Math.floor(Math.random()*(1+hi-lo));
+	return lo + Math.floor(prandom()*(1+hi-lo));
 }
 
 function justanyol(thing){
@@ -24,4 +24,12 @@ function ap(array, pos){
 
 function distance(pos1, pos2){
 	return Math.pow(pos1.x-pos2.x,2)+Math.pow(pos1.y-pos2.y,2);
+}
+
+originalseed = Math.floor(1e7*Math.random());
+seednow = originalseed;
+
+function prandom(){
+	x = Math.sin(seednow++) * 10000;
+	return x - Math.floor(x);
 }
