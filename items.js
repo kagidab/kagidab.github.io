@@ -65,7 +65,7 @@ function getitems(){
 function listzeitems(){
 	listofitems = itemsat(p1.pos);
 	output("#bug1", "Which item to get?");
-	output("#bug2", pagebypage(listofitems, curpage));
+	pagebypage(listofitems, curpage);
 	output("#bug3", "(ESC) Back");
 }
 
@@ -169,10 +169,19 @@ function grabballs(){
 	else return rlist;
 }
 
+function isininv(itemtocheck){
+	listtocheck = listoftype(itemtocheck.itemtype);
+	for(var i = 0; i < listtocheck.length; i++){
+		if(itemtocheck == listtocheck[i]) return true;
+	}
+	return false;
+}
+
 function Item(name, fn, itemtype, cost, nutrition){
 	this.toString = function(){
 		if(this.contains != undefined){
-			return this.name + " containing a " + this.contains;
+			if(isininv(this)) return "" + this.contains;
+			else return this.name + " containing a " + this.contains;
 		} else if(curroom.mapprop.store){
 			return this.name + " [&ETH" + this.cost + "]";
 		} else return this.name;
@@ -192,7 +201,7 @@ function Item(name, fn, itemtype, cost, nutrition){
 			newitem.contains.ballref = newitem;
 		}
 		newitem.pos = position;
-		room.items.push(newitem);
+		if(room != undefined) room.items.push(newitem);
 		newitem.id = this.id;
 		return newitem;
 	}

@@ -1,13 +1,26 @@
 body{
 	background-color:black;
 }
-@keyframes blink{
+
+@-webkit-keyframes blink {
 	0%{ opacity: 1; }
 	50%{ opacity: 0; }
 	100%{ opacity: 1; }
 }
 
-@keyframes semiblink{
+@-webkit-keyframes semiblink {
+	0%{ opacity: 1; }
+	50%{ opacity: 0.5; }
+	100%{ opacity: 1; }
+}
+
+@keyframes blink {
+	0%{ opacity: 1; }
+	50%{ opacity: 0; }
+	100%{ opacity: 1; }
+}
+
+@keyframes semiblink {
 	0%{ opacity: 1; }
 	50%{ opacity: 0.5; }
 	100%{ opacity: 1; }
@@ -45,11 +58,17 @@ img {
 }
 
 .blinking{
+	-webkit-animation: blink 2s;
+	-webkit-animation-iteration-count: infinite;
+	-moz-animation: blink 2s;
 	animation: blink 2s;
 	animation-iteration-count: infinite;
 }
 
 .blinkonceforyes{
+	-webkit-animation: semiblink .4s;
+	-webkit-animation-iteration-count: 2;
+	-moz-animation: semiblink .4s;
 	animation: semiblink .4s;
 	animation-iteration-count: 2;
 }

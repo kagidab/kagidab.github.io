@@ -30,6 +30,7 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 		newpoke.evolve = this.evolve;
 		return newpoke;
 	}
+
 	this.checkifseen = function(ownedaswell){
 		if(!p1.seen[this.id]){
 			p1.seen[this.id] = true;
@@ -166,9 +167,9 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 		return result;
 	}
 
-	this.fillstats = function(curhp){
+	this.fillstats = function(keepcurhp){
 		this.maxhp = this.hpcalc(); 
-		if(!curhp) this.curhp = this.maxhp; //not always wanted
+		if(!keepcurhp) this.curhp = this.maxhp; //not always wanted
 		this.att = this.statcalc(this.baseatt);
 		this.def = this.statcalc(this.basedef);
 		this.spd = this.statcalc(this.basespd);
@@ -181,12 +182,22 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 
 	//doesn't limit moves currently... 
 	this.trytolearn = function(move){
-		this.moves.push(move);
-		output("#bug3", this + " learned " + move + "!");
+		output("#bug3", "");
+		for(i = 0; i < this.moves.length; i++){
+			if(this.moves[i] == move) return; //shouldn't, but probably will happen
+		}
+		if(this.moves.length < 4){ 
+			this.moves.push(move);
+		} else {
+			movetoforget = this.moves[randI(0, 3)];
+			output("#bug3", this + " forgot " + movetoforget + "... and ", true);
+			this.moves.push(move);
+		}
+		output("#bug3", this + " learned " + move + "!", true);
 	}
 
 	this.trylearnsomemoves = function(){
-		for(movenum=0; movenum < this.learn.length; movenum++){
+		for(movenum = 0; movenum < this.learn.length; movenum++){
 			if(this.learnlvl[movenum] == this.level){
 				this.trytolearn(this.learn[movenum]);
 			}

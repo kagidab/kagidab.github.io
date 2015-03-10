@@ -1,4 +1,5 @@
 //map generator
+//REVISEME
 //
 //idea was to make a hill climb, with somewhat interesting maziness
 //algorithm makes height map by creating rectangles at the top height
@@ -230,7 +231,7 @@ function makemap(specs){
 		sometoggle = false;
 		while(true){
 			if(ap(charmap, npos) == 'T' || ap(charmap, npos) == 'e') break;
-			if(sometoggle && (ap(charmap, npos) == '.')) break;
+			if(sometoggle && (ap(map, npos) == 0)) break;
 			if(ap(charmap, npos) != '.') sometoggle = true;
 			charmap[npos.y][npos.x] = '.';
 			npos = addpos(npos, DIRS[dir]);
@@ -257,6 +258,7 @@ function makemap(specs){
 	}
 
 	//icould check if it's possible to get stuck, but that seems like a feature
+	//
 	for(att = 0; att < specs.y * specs.y / 3; att++){
 		next = {y: randI(bounds.up, bounds.down), x: randI(bounds.left, bounds.right)}
 		if(ap(charmap, next) == '.') charmap[next.y][next.x] = TALLGRASS.id;

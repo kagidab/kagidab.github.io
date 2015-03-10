@@ -55,6 +55,7 @@ $(".ge").append("<img src='" + IMGDIR + "dot.png'></img>");
 STARTINGROOM = BEDROOM;
 STARTINGPOS = {y:4, x:3};
 
+curpage = 0;
 
 function resetthings(seed){
 	originalseed = seednow = seed;

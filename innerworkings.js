@@ -11,6 +11,7 @@
 // more OOP!
 // trainer battles
 // mapmaking could be better
+// spritesheet
 //
 // TOFIX: 
 // hiding is a bit awkward, don't want NPCs appearing on rooftops
@@ -33,9 +34,10 @@ $("body").keydown(function(event){
 	//console.log(event);
 	key = event.key;
 	keyn = event.keyCode;
-	dir = keytodir(keyn, key);
-	console.log(dir)
+	dir = keytodir(keyn, event.shiftKey);
+	//console.log(dir)
 	//console.log(key);
+	//console.log(keyn);
 	if(mode == WALKMODE){ walking(keyn, key, dir); } 
 	else if(mode == EATMODE){ eat(keyn, key); } 
 	else if(mode == TALKMODE){ chat(dir); mode = WALKMODE;
@@ -78,15 +80,19 @@ function listonseverallines(list){
 }
 
 function pagebypage(list, page){
-	output("#bug1", "");
-	for(i = 0; i < ITEMSPERPAGE; i++){
-		if(i + page * ITEMSPERPAGE >= list.length) break;
+	output("#bug1", ""); itemsonpage = ITEMSPERPAGE;
+	for(var i = 0; i < ITEMSPERPAGE; i++){
+		if(i + page * ITEMSPERPAGE >= list.length){
+			itemsonpage = i;
+			break;
+		}
 		if(i > 0) output("#bug1", "<br>", 1);
-		output("#bug1", "(" + alphabet[i] + ")" + list[page*ITEMSPERPAGE + i], 1);
+		output("#bug1", "(" + alphabet[i] + ") " + list[page*ITEMSPERPAGE + i], 1);
 	}
 	output("#bug2", "");
-	if(page != 0) output("#bug2", "(<) Prev ")
-		if((page + 1) * ITEMSPERPAGE < list.length) output("#bug2", "(>) Next")
+	if(page != 0) output("#bug2", "(<) Prev ");
+	if((page + 1) * ITEMSPERPAGE < list.length) output("#bug2", "(>) Next", 1);
+	return itemsonpage;
 }
 
 function listpokemon(){
@@ -101,7 +107,7 @@ function listpokemon(){
 }
 
 function savegame(){
-	output("#bug0", "Game saved... jk");
+	output("#bug0", "Game saved!");
 	$.jStorage.set("playerroom", curroom.id);
 	$.jStorage.set("seedy", originalseed);
 	$.jStorage.set("saveexists", true);
@@ -115,16 +121,16 @@ function savegame(){
 	});
 	$.jStorage.set("playersave", p1);
 	$.jStorage.set("roomitems", roomitems);
-	inflatepokemon(p1.inv.balls);
+	inflateitems(p1.inv.balls);
 	rooms.forEach( function(element){
-		inflatepokemon(element.items);
+		inflateitems(element.items);
 	});
 }
 
 function deflatepokemon(list){
 	for(i=0; i < list.length; i++){
 		if(list[i].contains != undefined){
-		//console.log(list[i].contains);
+			//console.log(list[i].contains);
 			next = list[i].contains;
 			shortform = {id: next.id, xp: next.xp, level: next.level, hp: next.curhp, moves: []};
 			for(j = 0; j < next.moves.length; j++){
@@ -136,13 +142,15 @@ function deflatepokemon(list){
 	}
 }
 
-function inflatepokemon(list){
-	for(i = 0; i < list.length; i++){
-		infl = items[list[i].id].copy(list[i].pos, list[i].room);
-		infl.name = list[i].name;
-		infl.contains = list[i].contains;
-		infl.pos = list[i].pos;
+function inflateitems(list){
+	list.forEach( function(itemtoinf, index, array) {
+		infl = items[itemtoinf.id].copy(itemtoinf.pos);
+		infl.name = itemtoinf.name;
+		infl.contains = itemtoinf.contains;
+		infl.pos = itemtoinf.pos;
 		if(infl.contains != undefined){
+			console.log(itemtoinf.contains.moves);
+			infl.itemtype = BALL;
 			nextt = infl.contains;
 			inflated = pokemon[nextt.id].copy({}, nextt.level);
 			inflated.xp = nextt.xp; inflated.curhp = nextt.hp;
@@ -152,14 +160,14 @@ function inflatepokemon(list){
 			}
 			inflated.ballref = infl;
 			infl.contains = inflated;
+			console.log(infl.contains.moves[0]);
 		}
-		list[i] = infl;
+		array[index] = infl;
 		//console.log(infl);
-	}
+	});
 }
 
 function restoregame(){
-	output("#bug0", "Game restored... jk");
 	restp1 = $.jStorage.get("playersave");
 	//console.log(restp1.inv.balls[0].contains.moves);
 	restroom = $.jStorage.get("playerroom");
@@ -179,26 +187,27 @@ function restoregame(){
 	p1.xp = restp1.xp;
 	p1.seen = restp1.seen;
 	p1.owned = restp1.owned;
-	inflatepokemon(p1.inv.usable);
-	inflatepokemon(p1.inv.food);
-	inflatepokemon(p1.inv.balls);
+	inflateitems(p1.inv.usable);
+	inflateitems(p1.inv.food);
+	inflateitems(p1.inv.balls);
 	rooms.forEach( function(element, index){
 		element.items = roomitems[index];
-		inflatepokemon(element.items);
+		if(element.items != undefined) inflateitems(element.items);
+		else element.items = [];
 		//console.log(element.items);
+		element.npcs.forEach( function(npc){
+			npc.pos = npc.dpos;
+		});
 	});
 	charout = p1;
-	//for(i = 0; i < pokemon.length; i++){
-	//	p1.seen[i] = restp1.seen[i];
-	//	p1.owned[i] = restp1.owned[i];
-	//}
 	curroom = rooms[restroom];
 	savegame();//fixes weird problems with storage..
 
+	output("#bug0", "Game restored!");
 	update();
 }
 
-function keytodir(keyn, keyc){
+function keytodir(keyn, shifted){
 	if(keyn == KEY.H || keyn == KEY.LEFT) return LEFT;
 	if(keyn == KEY.J || keyn == KEY.DOWN) return DOWN;
 	if(keyn == KEY.K || keyn == KEY.UP) return UP;
@@ -207,7 +216,7 @@ function keytodir(keyn, keyc){
 	if(keyn == KEY.U || keyn == KEY.PAGEUP) return UPRIGHT;
 	if(keyn == KEY.B || keyn == KEY.END) return DOWNLEFT;
 	if(keyn == KEY.N || keyn == KEY.PAGEDOWN) return DOWNRIGHT;
-	if(keyc == '.') return ZENITH;
+	if(keyn == KEY.PERIOD && !shifted) return ZENITH;
 	return NOTADIR;
 }
 
@@ -265,7 +274,7 @@ function statusupdate(){
 	output("#status12", "At:" + charout.att + " Df:" + 
 			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
 			" Own:" + p1.ownedtotal + "(" + p1.seentotal + ")");
-	output("#status2", curroom + " &ETH:" + p1.doge + " HP:" + charout.curhp +
+	output("#status2", curroom + " &#x0E3F:" + p1.doge + " HP:" + charout.curhp +
 			"("+ charout.maxhp + ") Exp:" + charout.level + "(" + xptogo(charout) +
 			") T:" + turns + " ");
 	output("#status2", howhungryami().message + " ", 1);
@@ -300,9 +309,12 @@ function drawsquare(pos){
 		if(newtile.type == TILE && newtile.blink) $(ap(gridimgs,pos)).addClass("blinking");
 		else $(ap(gridimgs, pos)).removeClass("blinking");
 
-		if(ap(at, pos) != newtile){
+		//console.log(ap(at, pos))
+		//console.log(newtile)
+		if(newtile.type == TILE && ap(at, pos) != newtile.id || peepat != null){
 			$(ap(gridimgs,pos)).attr("src", newtile.fn);
-			at[pos.y][pos.x] = newtile;
+			if(peepat == null) at[pos.y][pos.x] = newtile.id;
+			else at[pos.y][pos.x] = -1;
 		}
 		if(hideme) blinky(pos);
 	} else $(ap(gridimgs,pos)).hide(); //OOB
@@ -441,11 +453,11 @@ function passtime(timetopass){
 		}
 		if(turns % REGENTIME == 0) {
 			p1.regen();  
-			if(p1.curhp <= 0) playerdeath(); 
 			listpoke().forEach(function(element){
 				element.regen();
 				if(element.curhp <= 0) pokedeath(0, element, 2); 
 			});
+			if(p1.curhp <= 0) playerdeath(); //might be good to link hpchanges tothis
 		}
 		dancenpcdance();
 	}

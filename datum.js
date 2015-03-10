@@ -158,7 +158,7 @@ GROWL = new Move("Growl",  NORMAL, STATUS, -1, 100, 40, ATTACKDOWN);
 GROWTH = new Move("Growth",  NORMAL, STATUS, -1, -1, 40, ATTACKUP);//
 GUILLOTINE = new Move("Guillotine",  NORMAL, PHYSICAL, 100, -1, 5, NOEFFECT);//
 GUST = new Move("Gust",  FLYING, SPECIAL, 40, 100, 35, NOEFFECT);//
-HARDEN = new Move("Harden",  NORMAL, STATUS, 40, -1, 30, DEFENSEUP);//...
+HARDEN = new Move("Harden",  NORMAL, STATUS, -1, -1, 30, DEFENSEUP);
 HAZE = new Move("Haze",  ICE, STATUS, 50, -1, 30, NOEFFECT);//
 HEADBUTT = new Move("Headbutt",  NORMAL, PHYSICAL, 70, 100, 15, NOEFFECT);//
 HIJUMPKICK = new Move("High Jump Kick", FIGHTING, PHYSICAL, 130, 90, 10, NOEFFECT);//
@@ -231,7 +231,7 @@ SOFTBOILED= new Move("Softboiled", NORMAL, STATUS, -1, -1, 10, DEFENSEUP);//
 SOLARBEAM = new Move("Solar Beam",  GRASS, SPECIAL, 110, 100, 20, NOEFFECT);//
 SONICBOOM = new Move("Sonic Boom",  NORMAL, SPECIAL, 50, -1, 90, NOEFFECT); //
 SPIKECANNON = new Move("Spike Cannon", NORMAL, PHYSICAL, 50, 100, 20, NOEFFECT);//
-SPLASH = new Move("Splash",  NORMAL, STATUS, 40, -1, 40, NOEFFECT);//forjustice
+SPLASH = new Move("Splash",  NORMAL, STATUS, -1, -1, 40, NOEFFECT);//forjustice
 SPORE = new Move("Spore",  GRASS, STATUS, -1, 100, 15, PUTSASLEEP);
 STOMP = new Move("Stomp",  NORMAL, PHYSICAL, 65, 100, 20, NOEFFECT);
 STRINGSHOT = new Move("String Shot",  BUG, STATUS, -1, 95, 40, SPEEDDOWN);//
@@ -248,7 +248,7 @@ SWORDSDANCE = new Move("Swords Dance",  NORMAL, STATUS, -1, -1, 20, ATTACKUP);//
 TACKLE = new Move("Tackle",  NORMAL, PHYSICAL, 50, 100, 35, NOEFFECT);
 TAILWHIP = new Move("Tail Whip",  NORMAL, STATUS, -1, -1, 30, DEFENSEDOWN);
 TAKEDOWN = new Move("Take Down",  NORMAL, PHYSICAL, 90, 85, 20, NOEFFECT); //
-TELEPORT = new Move("Teleport",  PSYCHIC, STATUS, 40, -1, 20, NOEFFECT);//forabra
+TELEPORT = new Move("Teleport",  PSYCHIC, STATUS, -1, -1, 20, NOEFFECT);//forabra
 THRASH = new Move("Thrash",  NORMAL, PHYSICAL, 90, 100, 10, NOEFFECT);//
 THUNDER = new Move("Thunder",  ELECTRIC, SPECIAL, 110, 70, 10, PARALYZES);
 THUNDERPUNCH = new Move("Thunder Punch", ELECTRIC, PHYSICAL, 75, 100, 20, PARALYZES);
@@ -304,11 +304,11 @@ function NPC(name, filename, phrases, dpos, stationary){
 	preload(this.fn);
 }
 
-RED= new Pokemon("Red", "red.png", "", 300, 5, 10, 10, 10, 100, NORMAL, NILTYPE,
+RED= new Pokemon("Satoshi", "red.png", "", 300, 5, 10, 10, 10, 100, NORMAL, NILTYPE,
 		[THROWROCK]);
 
 MOM= new NPC("Yo' momma", "mom.png", 
-		["Rememberto bring fresh underwear",
+		["Remember to bring fresh underwear",
 		"And stay out!",
 		"I hope Blue comes over soon, he knows all the right spots *wink*",
 		"You're in a coma... just wake up...",
@@ -388,7 +388,7 @@ VENUSAUR= new Pokemon(
 		[LEECHSEED,VINEWHIP, POISONPOWDER, RAZORLEAF, GROWTH, SLEEPPOWDER, SOLARBEAM],
 		[7,13,22,30,43,55,65]
 		);
-//dexis a bit of a stretch
+
 IVYSAUR= new Pokemon( 
 		"Ivysaur","ivysaur.png",
 		"",
@@ -544,7 +544,7 @@ METAPOD= new Pokemon(
 		"Ironically, male metapod genitalia are extremely soft",
 		50,20,55,25,30,22,
 		BUG,NILTYPE, 
-		[HARDEN],[], [],
+		[HARDEN, TACKLE],[], [],
 		{to:BUTTERFREE, at: 9}
 		);
 
@@ -645,7 +645,7 @@ PIKACHU= new Pokemon(
 		[THUNDERSHOCK,GROWL], 
 		[THUNDERWAVE,QUICKATTACK, SWIFT, AGILITY, THUNDER],
 		[9,16,26,33,43],
-		{to:RAICHU, at: 1000} //stones?
+		{to:RAICHU, at: 45} //stones?
 		);
 
 SANDSLASH= new Pokemon(
@@ -687,7 +687,7 @@ GRAVELER= new Pokemon(
 		[TACKLE,DEFENSECURL], 
 		[DEFENSECURL,ROCKTHROW, SELFDESTRUCT, HARDEN, EARTHQUAKE, EXPLOSION],
 		[11,16,21,29,36,43],
-		{to:GOLEM, at: 2000} //trade?
+		{to:GOLEM, at: 45} //trade?
 		);
 
 GEODUDE= new Pokemon(
@@ -719,7 +719,7 @@ NIDORINA= new Pokemon(
 		[TACKLE,GROWL, SCRATCH], 
 		[SCRATCH,POISONSTING, TAILWHIP, BITE, FURYSWIPES, DOUBLEKICK], 
 		[8,14,23,32,41,50],
-		{to:NIDOQUEEN, at: 20000} //leafstone?
+		{to:NIDOQUEEN, at: 51} //leafstone?
 		);
 
 NIDORANF= new Pokemon( 
@@ -751,7 +751,7 @@ NIDORINO= new Pokemon(
 		[TACKLE,LEER, HORNATTACK], 
 		[HORNATTACK,POISONSTING, FOCUSENERGY, FURYATTACK, HORNDRILL, DOUBLEKICK]
 		[8,14,23,32,41,50],
-		{to:NIDOQUEEN, at: 20000} //leafstone?
+		{to:NIDOQUEEN, at: 51} //leafstone?
 		);
 
 NIDORANM= new Pokemon( 
@@ -805,7 +805,7 @@ GLOOM= new Pokemon(
 		[ABSORB,POISONPOWDER, STUNSPORE],
 		[POISONPOWDER,STUNSPORE, SLEEPPOWDER, ACID, PETALDANCE, SOLARBEAM],
 		[15,17,19,28,38,52],
-		{to:VILEPLUME, at: 20000}
+		{to:VILEPLUME, at: 54}
 		);
 
 ODDISH= new Pokemon(
@@ -840,7 +840,7 @@ PARAS= new Pokemon(
 		{to:PARASECT, at: 24}
 		);
 
-PRIMEAPE= new Pokemon( //sp?
+PRIMEAPE= new Pokemon( 
 		"Primeape","primeape.png",
 		"",
 		65,105,60,60,95,71,
@@ -878,7 +878,7 @@ CLEFAIRY= new Pokemon(
 		[POUND,GROWL], 
 		[SING,DOUBLESLAP, MINIMIZE, METRONOME, DEFENSECURL, LIGHTSCREEN],
 		[13,18,24,31,39,48],
-		{to:CLEFABLE, at: 20000} //mooonstone
+		{to:CLEFABLE, at: 50} //mooonstone
 		);
 
 WIGGLYTUFF= new Pokemon(
@@ -895,10 +895,10 @@ JIGGLYPUFF= new Pokemon(
 		"",
 		115,45,20,45,20,12,
 		NORMAL,NILTYPE, 
-		[SING],
-		[POUND,DISABLE, DEFENSECURL, DOUBLESLAP, REST, BODYSLAM, DOUBLEEDGE]
+		[SING, POUND],
+		[POUND, DISABLE, DEFENSECURL, DOUBLESLAP, REST, BODYSLAM, DOUBLEEDGE]
 		[9,14,19,24,29,34,39],
-		{to:WIGGLYTUFF, at: 20000} //moonstone
+		{to:WIGGLYTUFF, at: 40} //moonstone
 		);
 
 VENOMOTH= new Pokemon(
@@ -1103,7 +1103,7 @@ ABRA= new Pokemon(
 		"",
 		25,20,15,105,90,43,
 		PSYCHIC,NILTYPE,
-		[TELEPORT],
+		[TELEPORT, TACKLE],
 		[],[],
 		{to:KADABRA, at: 16}
 		);
@@ -1687,9 +1687,9 @@ MAGIKARP = new Pokemon("Magikarp", "magikarp.png",
 		"",
 		20,10,55,15,80,22,
 		WATER, NILTYPE,
-		[SPLASH],
-		[TACKLE],
-		[15],
+		[SPLASH, TACKLE],
+		[],
+		[],
 		{to: GYARADOS, at: 20}
 		);
 
@@ -2017,8 +2017,8 @@ VDCITYSTORE= new Room("Joe's Storatorium", VDCITYSTOREMAP, [STOREJOE], [], [], 0
 */
 
 rooms= [BEDROOM, DOWNSTAIR, PALLETTOWN, OAKSLAB, POINTLESSHOUSE, ROUTE1,
-ROUTE2, ROUTE3]//, ROUTE4, ROUTE5, ROUTE6, ROUTE7, ROUTE8, ROUTE9, ROUTE10, ROUTE11, 
-//ROUTE12, ROUTE13, ROUTE14, ROUTE15 ]
+ROUTE2, ROUTE3, ROUTE4, ROUTE5, ROUTE6, ROUTE7, ROUTE8, ROUTE9, ROUTE10, ROUTE11
+,ROUTE12, ROUTE13, ROUTE14, ROUTE15 ]
 	//VIRIDIANCITY,BUGGYFOREST, VDCITYSTORE];
 
 peeps= [RED, MOM, OAK, TRAINERJOEY, TRAINERBILLY];

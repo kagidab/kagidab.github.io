@@ -48,7 +48,7 @@ function Move(name, type, cat, base, pp, acc, effect){
 		} else if(this.effect < POISONS){
 			return mon2.changestat(this.effect - ATTACKDOWN, -1);
 		} else {
-			if(this.base == 0 || randI(1, 5) == 1){
+			if(this.base == -1 || randI(1, 5) == 1){
 				return mon2.become(this.effect - POISONS);
 			}
 		}

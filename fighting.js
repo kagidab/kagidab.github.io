@@ -7,7 +7,7 @@ function fightingmessage(bug0toggle){
 		}
 	}
 	output("#bug1", "(A) Attack (S) Switch");
-	output("#bug2", "(D) Items (F) Flee");
+	output("#bug2", "(D) Catch (F) Flee");
 	output("#bug3", "HP: " + encpok.curhp + " / " + encpok.maxhp);
 }
 
@@ -33,13 +33,14 @@ function holdon(key){
 	if(key == KEY.Y) {
 		if(listpoke().length > 0){
 			fightmenu = SWITCHMENU; 
+			curpage = 0;
 			switchpoke();
 		} else { 
 			monout = p1;
 			backtonormal(true);
 			update();
 		}
-	} else if(key == KEY.N) flee();
+	} else if(key == KEY.N) { bugspray(); backtowalk();}
 }
 
 function listattacks(){
@@ -52,11 +53,11 @@ function listattacks(){
 }
 
 function switchpoke(){
-	listofpoke = listpoke();
+	listofpoke = listoftype(BALL);
 	if(listofpoke.length != 0){
 		output("#bug0", "Which Pokemon to switch to?");
-		output("#bug1", listonseverallines(listofpoke));
-		output("#bug2", "(" + alphabet[listofpoke.length] + ") " + p1);
+		listofpoke.push(p1);
+		itemsonpage = pagebypage(listofpoke, curpage);
 		output("#bug3", "(ESC) Back");
 	} else {
 		backtonormal(false);
@@ -96,7 +97,7 @@ function attackchoice(key){
 
 function menuchoice(key){
 	if(key == KEY.A){ fightmenu = ATTACKMENU; listattacks();}
-	else if(key == KEY.S){ fightmenu = SWITCHMENU; switchpoke(); }
+	else if(key == KEY.S){ fightmenu = SWITCHMENU; curpage = 0; switchpoke(); }
 	else if(key == KEY.F){ flee(); }
 	else if(key == KEY.D){ throwball(); }
 	//else if(key == KEY.D){ fightmenu = ITEMMENU; listitems(); }
@@ -104,20 +105,22 @@ function menuchoice(key){
 	else fightingmessage(true);
 }
 
+
 function throwball(){
 	balltouse = grabballs()[0];
 	if(balltouse != null){
 		purgeitemfromlist(p1.inv.usable, balltouse);
-		if(Math.random() > encpok.curhp / encpok.maxhp){
+		if(Math.random() + 0.3 > encpok.curhp / encpok.maxhp){
 			balltouse.contains = encpok;
-			if(!p1.owned[encpok.id]) owned++;
+			if(!p1.owned[encpok.id]) p1.ownedtotal++;
 			p1.owned[encpok.id] = true;
-			balltouse.itemtype = USABLE;
+			encpok.ballref = balltouse;
+			balltouse.itemtype = BALL;
 			output("#bug0", "You catch the " + encpok + "!");
 			p1.inv.balls.push(balltouse);
 			backtowalk();
 		} else {
-			output("#bug0", "You don't catch the " + encpok + "!");
+			output("#bug0", "You fail to catch the " + encpok + "!");
 		}
 	} else output("#bug0", "YOU AIN'T GOT THE BALLS TO CATCH IT");
 }
@@ -128,6 +131,7 @@ function checkfordeath(mon1, mon2, enemy){
 		if(enemy){
 			backtowalk();
 			pokedeath(mon2, mon1, 1);
+			charout = p1;
 		} else{
 			if(mon1 == p1) playerdeath();
 			else {
@@ -141,23 +145,28 @@ function checkfordeath(mon1, mon2, enemy){
 	return false;
 }
 
-//have only slightly tested with pokemon with > spd
-function attack(moveused){
+//this seems like it could be split better
+function attack(moveused, onlyenemy){
 	encmov = justanyol(encpok.moves);
-	output("#bug0", "");
-	if(monout.spd >= encpok.spd){
-		moveused.use(monout, encpok, false);
-		if(!checkfordeath(encpok, monout, true)){ 
-			output("#bug0", "<br>", 1);
-			encmov.use(encpok, monout, true);
-			if(!checkfordeath(monout, encpok, false)) backtonormal();
-		}
-	} else {
+	if(onlyenemy){
 		encmov.use(encpok, monout, true);
-		if(!checkfordeath(monout, encpok, false)){
-			output("#bug0", "<br>", 1);
+		if(!checkfordeath(monout, encpok)) backtonormal();
+	} else {
+		output("#bug0", "");
+		if(monout.spd >= encpok.spd){
 			moveused.use(monout, encpok, false);
-			if(!checkfordeath(encpok, monout, true)) backtonormal();
+			if(!checkfordeath(encpok, monout, true)){ 
+				output("#bug0", "<br>", 1);
+				encmov.use(encpok, monout, true);
+				if(!checkfordeath(monout, encpok, false)) backtonormal();
+			}
+		} else {
+			encmov.use(encpok, monout, true);
+			if(!checkfordeath(monout, encpok, false)){
+				output("#bug0", "<br>", 1);
+				moveused.use(monout, encpok, false);
+				if(!checkfordeath(encpok, monout, true)) backtonormal();
+			}
 		}
 	}
 	update(true);
@@ -170,24 +179,39 @@ function backtonormal(bug0toggle){
 
 function switchout(key){
 	alphanum = key - KEY.A;
+	num = curpage*ITEMSPERPAGE + alphanum;
 	pokelist = listpoke();
-	if(alphanum >= 0 && alphanum < pokelist.length){
-		monout = pokelist[alphanum];
+	pokelist.push(p1);
+	if(alphanum >= 0 && num < pokelist.length && alphanum < ITEMSPERPAGE){
+		monout = pokelist[num];
 		charout = monout;
 		output("#bug0", "It's your turn, " + monout + "!");
 		backtonormal(false);
-	} else if(alphanum == pokelist.length){
+	} else if(num == pokelist.length && alphanum < ITEMSPERPAGE){
+			//list.length < ITEMSPERPAGE && alphanum == pokelist.length 
+			//|| pokelist.length > ITEMSPERPAGE && alphanum == ITEMSPERPAGE){
 		charout = p1;
 		monout = p1;
 		backtonormal(true);
+	} else if(key == KEY.LESSTHAN){ 
+		if(curpage > 0) curpage--;
+		switchpoke();
+	} else if(key == KEY.GREATERTHAN){ 
+		if((1 + curpage) * ITEMSPERPAGE < pokelist.length) curpage++;
+		switchpoke();
 	} else if(key == KEY.ESCAPE) backtonormal();
 	update();
 }
 
 function flee(){
-	bugspray();
-	output("#bug0", "You cower from the " + encpok);
-	backtowalk();
+	if(randI(1, 3) < 3){
+		bugspray();
+		output("#bug0", "You cower from the " + encpok);
+		backtowalk();
+	} else {
+		output("#bug0", "You fail to run!<br>");
+		attack(null, true);
+	}
 }
 
 function backtowalk(){
