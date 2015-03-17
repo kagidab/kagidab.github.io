@@ -177,6 +177,14 @@ function isininv(itemtocheck){
 	return false;
 }
 
+function havefossil(){
+	listtocheck = listoftype(USABLE);
+	for(var i = 0; i < listtocheck.length; i++){
+		if(HELIXFOSSIL.id == listtocheck[i].id) return true;
+	}
+	return false;
+}
+
 function Item(name, fn, itemtype, cost, nutrition){
 	this.toString = function(){
 		if(this.contains != undefined){

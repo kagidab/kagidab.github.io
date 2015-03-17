@@ -1,24 +1,25 @@
 // To implement: 
-// mostly just need to fix move learning for RC
-// saving makes things too easy, activate singlesave
-// put in endzone
-// flesh out typechart
+// wild pokemon should have moves depending on level
+//
 //
 // battles
-// 	-droppings?
+// 	-when items implemented properly, a systematic way of dropping
 // story
 // items doing stuff
-// more OOP!
+// OOPier!
 // trainer battles
 // mapmaking could be better
 // spritesheet
+// lots of things could be cleaned up, I think having a menu object would be useful
 //
 // TOFIX: 
+// eating menu lets you eat past ITEMSPERPAGE... causes no actual problems, just confusing 
 // hiding is a bit awkward, don't want NPCs appearing on rooftops
 // 	currently not actually relevant... OK fix is to make HIDEALL and HIDESOME tags
 // animations unsync =/
 // Can walk through Reds house from top side, can't think of a easy/good way to fix
 // exits are funky... everything is tho
+//
 //
 
 newgame("Welcome!");
@@ -32,14 +33,14 @@ function newgame(message){
 $("body").keydown(function(event){
 	bugspray();
 	//console.log(event);
-	key = event.key;
-	keyn = event.keyCode;
-	dir = keytodir(keyn, event.shiftKey);
+	key = event.keyCode;
+	shifted = event.shiftKey;
+	dir = keytodir(key, shifted);
 	//console.log(dir)
 	//console.log(key);
 	//console.log(keyn);
-	if(mode == WALKMODE){ walking(keyn, key, dir); } 
-	else if(mode == EATMODE){ eat(keyn, key); } 
+	if(mode == WALKMODE){ walking(key, shifted, dir); } 
+	else if(mode == EATMODE){ eat(key); } 
 	else if(mode == TALKMODE){ chat(dir); mode = WALKMODE;
 	} else if(mode == BATTLEMODE){
 		if(anykey) {
@@ -48,19 +49,19 @@ $("body").keydown(function(event){
 			update();
 			fightmenu = NORMALMENU;
 			fightingmessage(true);
-		} else demsbefightinkeys(keyn);
-	} else if(mode == GETMODE) getzeitems(keyn, key); 
+		} else demsbefightinkeys(key);
+	} else if(mode == GETMODE) getzeitems(key); 
 	else if(mode == DROPMODE); //dropitem(key); 
 	else if(mode == USEMODE);// useitem(key); 
 	else if(mode == POKEMODE);//checkpoke(key); 
 });
 
-function walking(key, keyc, dir){
+function walking(key, shifted, dir){
 	bugspray();
 	if(dir != NOTADIR){ movebutt(dir); } 
-	else if(keyc == "<" || keyc == ">"){ exit(); } 
+	else if(key == KEY.GREATERTHAN && shifted || key == KEY.LESSTHAN && shifted){ exit(); } 
 	else if(key == KEY.T){ mode = TALKMODE; output("#bug0", "Talk to whom?");
-	} else if(keyc == ","){ getitems(); }
+	} else if(key == KEY.COMMA && !shifted){ getitems(); }
 	else if(key == KEY.E){ changetomode(EATMODE); }
 	else if(key == KEY.P);//{ changetomode(POKEMODE); }
 	else if(key == KEY.I);//{ changetomode(USEMODE); }
@@ -95,11 +96,12 @@ function pagebypage(list, page){
 	return itemsonpage;
 }
 
+
 function listpokemon(){
 	listofpoke = listpoke();
 	if(listofpoke.length != 0){
 		output("#bug0", "Check out which Pokemon?");
-		output("#bug1", listonseverallines(listofpoke));
+		output("#bug1", listonseverallines(listofpoke));//CHAGME
 	} else {
 		output("#bug0", "No Pokemon");
 		mode = WALKMODE;
@@ -144,12 +146,13 @@ function deflatepokemon(list){
 
 function inflateitems(list){
 	list.forEach( function(itemtoinf, index, array) {
+		console.log(itemtoinf);
 		infl = items[itemtoinf.id].copy(itemtoinf.pos);
 		infl.name = itemtoinf.name;
 		infl.contains = itemtoinf.contains;
 		infl.pos = itemtoinf.pos;
 		if(infl.contains != undefined){
-			console.log(itemtoinf.contains.moves);
+			//console.log(itemtoinf.contains.moves);
 			infl.itemtype = BALL;
 			nextt = infl.contains;
 			inflated = pokemon[nextt.id].copy({}, nextt.level);
@@ -160,7 +163,7 @@ function inflateitems(list){
 			}
 			inflated.ballref = infl;
 			infl.contains = inflated;
-			console.log(infl.contains.moves[0]);
+			//console.log(infl.contains.moves[0]);
 		}
 		array[index] = infl;
 		//console.log(infl);

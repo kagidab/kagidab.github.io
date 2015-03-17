@@ -8,6 +8,9 @@ function fightingmessage(bug0toggle){
 	}
 	output("#bug1", "(A) Attack (S) Switch");
 	output("#bug2", "(D) Catch (F) Flee");
+	if(havefossil()){
+		output("#bug2", "<br>(X) Use Helix Fossil", 1);
+	}
 	output("#bug3", "HP: " + encpok.curhp + " / " + encpok.maxhp);
 }
 
@@ -101,8 +104,13 @@ function menuchoice(key){
 	else if(key == KEY.F){ flee(); }
 	else if(key == KEY.D){ throwball(); }
 	//else if(key == KEY.D){ fightmenu = ITEMMENU; listitems(); }
-	else if(key == KEY.P){ output("#bug0", "Pokedex say: " + encpok.entry); }
-	else fightingmessage(true);
+	else{
+		fightingmessage(true);
+		if(key == KEY.P){ output("#bug0", "Pokedex say: " + encpok.entry); }
+		else if(key == KEY.X && havefossil()){
+			output("#bug0", "This isn't the time to use that!");
+		} 
+	}
 }
 
 
@@ -188,8 +196,8 @@ function switchout(key){
 		output("#bug0", "It's your turn, " + monout + "!");
 		backtonormal(false);
 	} else if(num == pokelist.length && alphanum < ITEMSPERPAGE){
-			//list.length < ITEMSPERPAGE && alphanum == pokelist.length 
-			//|| pokelist.length > ITEMSPERPAGE && alphanum == ITEMSPERPAGE){
+		//list.length < ITEMSPERPAGE && alphanum == pokelist.length 
+		//|| pokelist.length > ITEMSPERPAGE && alphanum == ITEMSPERPAGE){
 		charout = p1;
 		monout = p1;
 		backtonormal(true);
@@ -201,27 +209,27 @@ function switchout(key){
 		switchpoke();
 	} else if(key == KEY.ESCAPE) backtonormal();
 	update();
-}
-
-function flee(){
-	if(randI(1, 3) < 3){
-		bugspray();
-		output("#bug0", "You cower from the " + encpok);
-		backtowalk();
-	} else {
-		output("#bug0", "You fail to run!<br>");
-		attack(null, true);
 	}
-}
 
-function backtowalk(){
-	listpoke().forEach(function(pokemon){
-		pokemon.endoffight();
-	});
-	p1.endoffight();
-	mode = WALKMODE;
-	p1.att += hungerstatus; p1.def += hungerstatus;
-	p1.spd += hungerstatus; p1.spc += hungerstatus;
-	update();
-	charout = p1;
-}
+	function flee(){
+		if(randI(1, 3) < 3){
+			bugspray();
+			output("#bug0", "You cower from the " + encpok);
+			backtowalk();
+		} else {
+			output("#bug0", "You fail to run!<br>");
+			attack(null, true);
+		}
+	}
+
+	function backtowalk(){
+		listpoke().forEach(function(pokemon){
+			pokemon.endoffight();
+		});
+		p1.endoffight();
+		mode = WALKMODE;
+		p1.att += hungerstatus; p1.def += hungerstatus;
+		p1.spd += hungerstatus; p1.spc += hungerstatus;
+		update();
+		charout = p1;
+	}

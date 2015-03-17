@@ -87,10 +87,10 @@ VIRIDIANCITYMAP= [
 	[11,11,11,12,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,12,11,11,11],
 	[11,11,11,12,12,12,12,12,0, 0, 0,12,12,12,12,12,11,11,11],
 	[11,11,11,11,11,11,11,11,0, 0, 0,11,11,11,11,11,11,11,11],
-	[11,11,11,11,11,11,11,11,17015014,17017016,17019018,11,11,11,11,11,11,11,11]
+	[11,11,11,11,11,11,11,11,17,17,17,11,11,11,11,11,11,11,11]
 	];
 
-VDCITYSTOREMAP= [
+VDCITYSTOREMAP = [
 	[1,1,1,1,1],
 	[2,0,0,0,2],
 	[2,0,0,0,2],
@@ -98,7 +98,15 @@ VDCITYSTOREMAP= [
 	[1,1,6033032,1,1]
 ];
 
-PHYSICAL = 0; STATUS = 1; SPECIAL =2;
+VIKTOR = [
+	[11,11,11,11,11,11,11],
+	[11,0,0,0,0,0,11],
+	[11,0,0,0,0,0,11],
+	[11,0,0,0,0,0,11],
+	[11,11,6099098,6101100,6103102,11,11]
+];
+
+PHYSICAL = 0; STATUS = 1; SPECIAL = 2;
 MOVETYPES = [PHYSICAL, STATUS, SPECIAL];
 //name,type, cat, base, PP, ACC, EFFECT
 THROWROCK= new Move("Throw Rock", NORMAL, PHYSICAL, 100, 10, 10, NOEFFECT);
@@ -305,7 +313,7 @@ function NPC(name, filename, phrases, dpos, stationary){
 }
 
 RED= new Pokemon("Satoshi", "red.png", "", 300, 5, 10, 10, 10, 100, NORMAL, NILTYPE,
-		[THROWROCK]);
+		[THROWROCK],[],[]);
 
 MOM= new NPC("Yo' momma", "mom.png", 
 		["Remember to bring fresh underwear",
@@ -1890,12 +1898,11 @@ MEW = new Pokemon("Mew", "mew.png",
 		);
 
 
-
-
 //name,filename, itemtype, cost, nutrition
-CORPSE= new Item("Corpse", "corpse.png", FOOD, 200, 200);
-POKEBALL= new Item("Pokeball", "pokeball.png", USABLE, 200);
-POTION= new Item("Potion", "potion.png", USABLE, 200);
+CORPSE = new Item("Corpse", "corpse.png", FOOD, 200, 200);
+POKEBALL = new Item("Pokeball", "pokeball.png", USABLE, 200);
+POTION = new Item("Potion", "potion.png", USABLE, 200);
+HELIXFOSSIL = new Item("Helix Fossil", "hfossil.png", USABLE, 20000);
 
 //name,map, npcs, items, pokemon, poklev, mapprop
 BEDROOM= new Room("Your bedroom", BEDROOMMAP, [], []);
@@ -1906,9 +1913,11 @@ OAKSLAB= new Room("Oak's Lab", OAKSLABMAP, [OAK], [
 		{itemtype:POKEBALL, pos: {y: 2, x: 7}, contains: SQUIRTLE, lev: 5},
 		{itemtype:POKEBALL, pos: {y: 2, x: 8}, contains: BULBASAUR, lev: 5}]);
 POINTLESSHOUSE= new Room("Guy's house", POINTLESSHOUSEMAP, [], [
-		{itemtype:POTION,pos: {y: 1, x: 1}},
-		{itemtype:POTION,pos: {y: 1, x: 3}}]);
+		{itemtype: POTION, pos: {y: 1, x: 1}},
+		{itemtype: POTION, pos: {y: 1, x: 3}}]);
 
+ENDZONE = new Room("Victory Cul-de-sac", VIKTOR, [], [
+		{itemtype: HELIXFOSSIL, pos: {y: 2, x: 3}}]);
 
 ROUTE1= new Room("Route 1", [], [], [], 
 		[NIDORANM,NIDORANF, PIDGEY, RATTATA, CATERPIE, WEEDLE, METAPOD, KAKUNA, SPEAROW, EKANS]
@@ -2006,7 +2015,8 @@ ROUTE15= new Room("Route 15", [], [], [],
 		[MEW, MEWTWO, MOLTRES, ARTICUNO, ZAPDOS], 75,
 		{rng:true, store: false, y: 77, x:50, height: 5, 
 			ent:[{innum: 93, outnum: 92}, {innum: 95, outnum: 88}, {innum: 97, outnum: 96}],
-			exi:[{innum: 98, outnum: 99}, {innum: 100, outnum: 101}, {innum: 96, outnum: 103}]});
+			exi:[{innum: 98, outnum: 99}, {innum: 100, outnum: 101}, {innum: 102, outnum: 103}]});
+
 /*
 VIRIDIANCITY= new Room("Viridian City", VIRIDIANCITYMAP, [], []);
 BUGGYFOREST= new Room("Bug Forest", [], [], [], [CATERPIE, METAPOD, WEEDLE, KAKUNA], 7,
@@ -2016,14 +2026,14 @@ BUGGYFOREST= new Room("Bug Forest", [], [], [], [CATERPIE, METAPOD, WEEDLE, KAKU
 VDCITYSTORE= new Room("Joe's Storatorium", VDCITYSTOREMAP, [STOREJOE], [], [], 0, {store: true, rng: false});
 */
 
-rooms= [BEDROOM, DOWNSTAIR, PALLETTOWN, OAKSLAB, POINTLESSHOUSE, ROUTE1,
+rooms = [BEDROOM, DOWNSTAIR, PALLETTOWN, OAKSLAB, POINTLESSHOUSE, ROUTE1,
 ROUTE2, ROUTE3, ROUTE4, ROUTE5, ROUTE6, ROUTE7, ROUTE8, ROUTE9, ROUTE10, ROUTE11
-,ROUTE12, ROUTE13, ROUTE14, ROUTE15 ]
+,ROUTE12, ROUTE13, ROUTE14, ROUTE15, ENDZONE]
 	//VIRIDIANCITY,BUGGYFOREST, VDCITYSTORE];
 
-peeps= [RED, MOM, OAK, TRAINERJOEY, TRAINERBILLY];
+peeps = [RED, MOM, OAK, TRAINERJOEY, TRAINERBILLY];
 
-tiles= [GROUND, WALLHOR, WALLVER, STAIRDOWN, STAIRUP, 
+tiles = [GROUND, WALLHOR, WALLVER, STAIRDOWN, STAIRUP, 
 	MISCOBJECT,DOOR, HOUSELEFT, HOUSERIGHT, HOUSEMID, 
 	HOUSETOP,TREE, BLOCKADE, TALLGRASS, WATERTILE,
 	FENCE,MCHANGEUP, MCHANGEDOWN, MCHANGELEFT, MCHANGERIGHT,
@@ -2058,8 +2068,8 @@ pokemon = [
 	EEVEE, VAPOREON, JOLTEON, FLAREON, PORYGON, OMANYTE,
 	OMASTAR, KABUTO, KABUTOPS, AERODACTYL, SNORLAX, ARTICUNO,
 	ZAPDOS, MOLTRES, DRATINI, DRAGONAIR, DRAGONITE, MEWTWO,
-	MEW]
+	MEW];
 
 
-	items= [CORPSE, POKEBALL, POTION];
-	storeitems= [POKEBALL, POTION];//items that appear in stores
+items = [CORPSE, POKEBALL, POTION, HELIXFOSSIL];
+storeitems = [POKEBALL, POTION];//items that appear in stores
