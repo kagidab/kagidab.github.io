@@ -5,12 +5,13 @@
 // battles
 // 	-when items implemented properly, a systematic way of dropping
 // story
-// items doing stuff
+// using items 
 // OOPier!
 // trainer battles
 // mapmaking could be better
 // spritesheet
-// lots of things could be cleaned up, I think having a menu object would be useful
+// make a better output system, currently just waiting until something weird happens
+// Split this file into html interaction things and higher level things
 //
 // TOFIX: 
 // eating menu lets you eat past ITEMSPERPAGE... causes no actual problems, just confusing 
@@ -23,49 +24,47 @@
 //
 
 newgame("Welcome!");
+
 function newgame(message){
 	resetthings(Math.floor(1e7*Math.random()));
 	charout = p1; 
 	changeroom(STARTINGROOM, STARTINGPOS); 
-	output("#bug0", message);
+	output(0, message);
 }
 
+// Make modes objects with functions 
 $("body").keydown(function(event){
-	bugspray();
-	//console.log(event);
-	key = event.keyCode;
-	shifted = event.shiftKey;
-	dir = keytodir(key, shifted);
-	//console.log(dir)
-	//console.log(key);
-	//console.log(keyn);
-	if(mode == WALKMODE){ walking(key, shifted, dir); } 
-	else if(mode == EATMODE){ eat(key); } 
-	else if(mode == TALKMODE){ chat(dir); mode = WALKMODE;
-	} else if(mode == BATTLEMODE){
+	clearoutputs();
+	var key = event.keyCode;
+	var shifted = event.shiftKey;
+	var dir = keytodir(key, shifted);
+	if(mode == MODE_WALK){ walking(key, shifted, dir); } 
+	else if(mode == MODE_EAT){ eat(key); } 
+	else if(mode == MODE_TALK){ chat(dir); mode = MODE_WALK;
+	} else if(mode == MODE_BATTLE){
 		if(anykey) {
-			$("#grid").removeClass("blinkonceforyes"); 
+			$("#grid").removeClass("blinkonce"); 
 			anykey = false;
 			update();
 			fightmenu = NORMALMENU;
 			fightingmessage(true);
-		} else demsbefightinkeys(key);
-	} else if(mode == GETMODE) getzeitems(key); 
-	else if(mode == DROPMODE); //dropitem(key); 
-	else if(mode == USEMODE);// useitem(key); 
-	else if(mode == POKEMODE);//checkpoke(key); 
+		} else fightinkeys(key);
+	} else if(mode == MODE_GET) gettheitems(key); 
+	else if(mode == MODE_DROP); //dropitem(key); 
+	else if(mode == MODE_USE); // useitem(key); 
+	else if(mode == MODE_POKE);//checkpoke(key); 
 });
 
 function walking(key, shifted, dir){
-	bugspray();
-	if(dir != NOTADIR){ movebutt(dir); } 
+	clearoutputs();
+	if(dir != DIR_NOTADIR){ movechar(dir); } 
 	else if(key == KEY.GREATERTHAN && shifted || key == KEY.LESSTHAN && shifted){ exit(); } 
-	else if(key == KEY.T){ mode = TALKMODE; output("#bug0", "Talk to whom?");
+	else if(key == KEY.T){ mode = MODE_TALK; output(0, "Talk to whom?");
 	} else if(key == KEY.COMMA && !shifted){ getitems(); }
-	else if(key == KEY.E){ changetomode(EATMODE); }
-	else if(key == KEY.P);//{ changetomode(POKEMODE); }
-	else if(key == KEY.I);//{ changetomode(USEMODE); }
-	else if(key == KEY.D);//{ changetomode(DROPMODE); }
+	else if(key == KEY.E){ changetomode(MODE_EAT); }
+	else if(key == KEY.P);//{ changetomode(MODE_POKE); }
+	else if(key == KEY.I);//{ changetomode(MODE_USE); }
+	else if(key == KEY.D);//{ changetomode(MODE_DROP); }
 	else if(key == KEY.S){ savegame();}
 	else if(key == KEY.R){ restoregame();}
 	else if(key == KEY.W){ passtime(10);}
@@ -73,43 +72,44 @@ function walking(key, shifted, dir){
 }
 
 function listonseverallines(list){
-	string = "";
+	var string = "";
 	list.forEach(function(element, index){
-		string += "("+alphabet[index] + ") " + element + "<br>";
+		string += "(" + ALPHABET[index] + ") " + element + "<br>";
 	});
 	return string;
 }
 
 function pagebypage(list, page){
-	output("#bug1", ""); itemsonpage = ITEMSPERPAGE;
+	output(1, ""); 
+	itemsonpage = ITEMSPERPAGE;
 	for(var i = 0; i < ITEMSPERPAGE; i++){
 		if(i + page * ITEMSPERPAGE >= list.length){
 			itemsonpage = i;
 			break;
 		}
-		if(i > 0) output("#bug1", "<br>", 1);
-		output("#bug1", "(" + alphabet[i] + ") " + list[page*ITEMSPERPAGE + i], 1);
+		if(i > 0) output(1, "<br>", true);
+		output(1, "(" + ALPHABET[i] + ") " + list[page * ITEMSPERPAGE + i], true);
 	}
-	output("#bug2", "");
-	if(page != 0) output("#bug2", "(<) Prev ");
-	if((page + 1) * ITEMSPERPAGE < list.length) output("#bug2", "(>) Next", 1);
+	output(0, "");
+	if(page != 0) output(0, "(<) Prev ");
+	if((page + 1) * ITEMSPERPAGE < list.length) output(0, "(>) Next", 1);
 	return itemsonpage;
 }
 
 
 function listpokemon(){
-	listofpoke = listpoke();
+	var listofpoke = listpoke();
 	if(listofpoke.length != 0){
-		output("#bug0", "Check out which Pokemon?");
-		output("#bug1", listonseverallines(listofpoke));//CHAGME
+		output(0, "Check out which Pokemon?");
+		output(1, listonseverallines(listofpoke)); //CHANGEME
 	} else {
-		output("#bug0", "No Pokemon");
-		mode = WALKMODE;
+		output(0, "No Pokemon");
+		mode = MODE_WALK;
 	}
 }
 
 function savegame(){
-	output("#bug0", "Game saved!");
+	output(0, "Game saved!");
 	$.jStorage.set("playerroom", curroom.id);
 	$.jStorage.set("seedy", originalseed);
 	$.jStorage.set("saveexists", true);
@@ -129,61 +129,54 @@ function savegame(){
 	});
 }
 
+// For saving
 function deflatepokemon(list){
-	for(i=0; i < list.length; i++){
+	for(var i = 0; i < list.length; i++){
 		if(list[i].contains != undefined){
-			//console.log(list[i].contains);
 			next = list[i].contains;
 			shortform = {id: next.id, xp: next.xp, level: next.level, hp: next.curhp, moves: []};
-			for(j = 0; j < next.moves.length; j++){
+			for(var j = 0; j < next.moves.length; j++){
 				shortform.moves.push(next.moves[j].id);
 			}
 			list[i].contains = shortform;
-			//console.log(shortform.moves);
 		}
 	}
 }
 
+// for loading
 function inflateitems(list){
 	list.forEach( function(itemtoinf, index, array) {
-		console.log(itemtoinf);
 		infl = items[itemtoinf.id].copy(itemtoinf.pos);
 		infl.name = itemtoinf.name;
 		infl.contains = itemtoinf.contains;
 		infl.pos = itemtoinf.pos;
 		if(infl.contains != undefined){
-			//console.log(itemtoinf.contains.moves);
-			infl.itemtype = BALL;
+			infl.itemtype = ITEM_BALL;
 			nextt = infl.contains;
 			inflated = pokemon[nextt.id].copy({}, nextt.level);
 			inflated.xp = nextt.xp; inflated.curhp = nextt.hp;
 			inflated.moves = new Array(nextt.moves.length);
-			for(j=0; j< nextt.moves.length; j++){
+			for(var j = 0; j < nextt.moves.length; j++){
 				inflated.moves[j] = moves[nextt.moves[j]];
 			}
 			inflated.ballref = infl;
 			infl.contains = inflated;
-			//console.log(infl.contains.moves[0]);
 		}
 		array[index] = infl;
-		//console.log(infl);
 	});
 }
 
 function restoregame(){
-	restp1 = $.jStorage.get("playersave");
-	//console.log(restp1.inv.balls[0].contains.moves);
-	restroom = $.jStorage.get("playerroom");
-	roomitems = $.jStorage.get("roomitems");
-	//rooms = $.jStorage.get("rooms");
-	//restrooms = $.jStorage.get("rooms");
-	p1 = RED.copy({x: 3, y:4}, restp1.level);
-	p1.type = PLAYA;
+	var restp1 = $.jStorage.get("playersave");
+	var restroom = $.jStorage.get("playerroom");
+	var roomitems = $.jStorage.get("roomitems");
+	p1 = SATOSHI.copy({x: 3, y:4}, restp1.level);
+	p1.type = PLAYER;
 	p1.dpos = {x: 3, y: 4};
 	p1.hunger = restp1.hunger;
-	p1.phrases = ["I'm so alone"];
+	p1.phrases = ["Hello!"];
 	p1.inv = restp1.inv;
-	p1.doge = restp1.doge;
+	p1.bitc = restp1.bitc;
 	p1.seentotal = restp1.seentotal;
 	p1.ownedtotal = restp1.ownedtotal;
 	p1.pos = restp1.pos;
@@ -197,59 +190,58 @@ function restoregame(){
 		element.items = roomitems[index];
 		if(element.items != undefined) inflateitems(element.items);
 		else element.items = [];
-		//console.log(element.items);
 		element.npcs.forEach( function(npc){
 			npc.pos = npc.dpos;
 		});
 	});
 	charout = p1;
 	curroom = rooms[restroom];
-	savegame();//fixes weird problems with storage..
+	savegame();//fixes some problems with the storage, 
 
-	output("#bug0", "Game restored!");
+	output(0, "Game restored!");
 	update();
 }
 
 function keytodir(keyn, shifted){
-	if(keyn == KEY.H || keyn == KEY.LEFT) return LEFT;
-	if(keyn == KEY.J || keyn == KEY.DOWN) return DOWN;
-	if(keyn == KEY.K || keyn == KEY.UP) return UP;
-	if(keyn == KEY.L || keyn == KEY.RIGHT) return RIGHT;
-	if(keyn == KEY.Y || keyn == KEY.HOME) return UPLEFT;
-	if(keyn == KEY.U || keyn == KEY.PAGEUP) return UPRIGHT;
-	if(keyn == KEY.B || keyn == KEY.END) return DOWNLEFT;
-	if(keyn == KEY.N || keyn == KEY.PAGEDOWN) return DOWNRIGHT;
-	if(keyn == KEY.PERIOD && !shifted) return ZENITH;
-	return NOTADIR;
+	if(keyn == KEY.H || keyn == KEY.LEFT) return DIR_LEFT;
+	if(keyn == KEY.J || keyn == KEY.DOWN) return DIR_DOWN;
+	if(keyn == KEY.K || keyn == KEY.UP) return DIR_UP;
+	if(keyn == KEY.L || keyn == KEY.RIGHT) return DIR_RIGHT;
+	if(keyn == KEY.Y || keyn == KEY.HOME) return DIR_UPLEFT;
+	if(keyn == KEY.U || keyn == KEY.PAGEUP) return DIR_UPRIGHT;
+	if(keyn == KEY.B || keyn == KEY.END) return DIR_DOWNLEFT;
+	if(keyn == KEY.N || keyn == KEY.PAGEDOWN) return DIR_DOWNRIGHT;
+	if(keyn == KEY.PERIOD && !shifted) return DIR_ZENITH;
+	return DIR_NOTADIR;
 }
 
 //uncertain how function if GXGY even
 //Used for finding the placement of the top left square
 function findtl(pxorpy, max, len){
-	if(max < len) return Math.floor((max-len+1)/2);
-	if(pxorpy<(len-1)/2) return 0;
-	if(pxorpy > max-(len+1)/2) return max-len;
-	return pxorpy - (len-1)/2;
+	if(max < len) return Math.floor((max - len + 1) / 2);
+	if(pxorpy < (len - 1) / 2) return 0;
+	if(pxorpy > max-(len + 1) / 2) return max - len;
+	return pxorpy - (len - 1) / 2;
 }
 
 function startpos(post){
-	val={
+	var val = {
 		y: findtl(post.y, curroom.dim.y, GDIM.y),
 		x: findtl(post.x, curroom.dim.x, GDIM.x)};
 	return val;
 }
 
-function update(lookatmeimanargument){
+function update(fighting){
 	statusupdate();
-	if(mode == WALKMODE && !lookatmeimanargument){
-		hunt = thingsat(curroom.items, p1.pos);
+	if(mode == MODE_WALK && !fighting){
+		var hunt = thingsat(curroom.items, p1.pos);
 		if(hunt.length > 0){
-			string = "You see here: ";
+			var string = "You see here: ";
 			hunt.forEach(function(element, index){
 				if(index > 0) string += ", ";
 				string += "A " + element;
 			});
-			output("#bug1", string);
+			output(1, string);
 		}
 	}
 	drawmap();
@@ -257,8 +249,8 @@ function update(lookatmeimanargument){
 
 function drawmap(){
 	$("#cursor").remove();
-	for(ii = 0; ii < GDIM.y; ii++){
-		for(jj = 0; jj < GDIM.x; jj++){
+	for(var ii = 0; ii < GDIM.y; ii++){
+		for(var jj = 0; jj < GDIM.x; jj++){
 			drawsquare({y: ii, x: jj});
 		}
 	}
@@ -272,17 +264,6 @@ function howhungryami(){
 	else return {message: "", affectstats: 0};
 }
 
-function statusupdate(){
-	output("#status11",  charout.name); // title?
-	output("#status12", "At:" + charout.att + " Df:" + 
-			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
-			" Own:" + p1.ownedtotal + "(" + p1.seentotal + ")");
-	output("#status2", curroom + " &#x0E3F:" + p1.doge + " HP:" + charout.curhp +
-			"("+ charout.maxhp + ") Exp:" + charout.level + "(" + xptogo(charout) +
-			") T:" + turns + " ");
-	output("#status2", howhungryami().message + " ", 1);
-	output("#status2", charout.howareyou() + " ", 1);
-}
 
 function exitdest(pos){
 	return Math.floor(ap(curroom.map,pos) % 1e3);
@@ -295,28 +276,28 @@ function tileat(pos){
 }
 
 function drawsquare(pos){
-	ijda = addpos(startpos(p1.pos), pos);// pos is position on grid, ijda is on map
+	var ijda = addpos(startpos(p1.pos), pos);// pos is position on grid, ijda is on map
+	var toohigh = false; 
 	if(curroom.heightmap != undefined && ap(curroom.heightmap, ijda) > ap(curroom.heightmap, p1.pos)
 			&& distance(ijda, p1.pos) > LINEOFSIGHT){
-		toohigh = true; //#420blazin
-	} else toohigh = false;
+		var toohigh = true; 
+	} 
+
 	if(inbounds(ijda) && !toohigh){ 
 		$(ap(gridimgs,pos)).show();
-		newtile = tileat(ijda);
+		var newtile = tileat(ijda);
 
-		peepat = checkforthings(ijda); 
-		hunt = thingsat(curroom.items, ijda);
-		hideme = peepat == p1 && newtile.hide && hunt.length == 0 && mode != BATTLEMODE;
-		if(peepat != null && !hideme) newtile = peepat;
+		var personat = checkforthings(ijda); 
+		var hunt = thingsat(curroom.items, ijda);
+		var hideme = personat == p1 && newtile.hide && hunt.length == 0 && mode != BATTLEMODE;
+		if(personat != null && !hideme) newtile = personat;
 
-		if(newtile.type == TILE && newtile.blink) $(ap(gridimgs,pos)).addClass("blinking");
+		if(newtile.type == ELE_TILE && newtile.blink) $(ap(gridimgs,pos)).addClass("blinking");
 		else $(ap(gridimgs, pos)).removeClass("blinking");
 
-		//console.log(ap(at, pos))
-		//console.log(newtile)
-		if(newtile.type == TILE && ap(at, pos) != newtile.id || peepat != null){
+		if(newtile.type == ELE_TILE && ap(at, pos) != newtile.id || personat != null){
 			$(ap(gridimgs,pos)).attr("src", newtile.fn);
-			if(peepat == null) at[pos.y][pos.x] = newtile.id;
+			if(personat == null) at[pos.y][pos.x] = newtile.id;
 			else at[pos.y][pos.x] = -1;
 		}
 		if(hideme) blinky(pos);
@@ -324,16 +305,16 @@ function drawsquare(pos){
 }
 
 
-//may be able to do withoutthis
+//may be able to do without this
 //currently only needed for blinky
 function blinky(pos){ 
-	$(ap(grids, pos)).append("<img id='cursor' class='blinking' src='"+CURSORFN+"'></img>");
+	$(ap(grids, pos)).append("<img id='cursor' class='blinking' src='" + CURSORFN + "'></img>");
 }
 
 //moves around npcs
-function dancenpcdance(){
+function movenpcs(){
 	curroom.npcs.forEach(function(element){
-		if(!element.stat && randI(0,4)==0){
+		if(!element.stat && randI(0, 4) == 0){ //NPC_MOVEFREQ
 			move(element, DIRS[randI(0, 3)]);
 		}
 	})
@@ -345,7 +326,6 @@ function placenpcs(){
 	curroom.npcs.forEach(function(element){ element.pos = element.dpos; })
 }
 
-//use exit
 function exit(){
 	if(tileat(p1.pos).exit){ 
 		exitid = exitdest(p1.pos);
@@ -361,7 +341,7 @@ function changeroom(newroom, newpos){
 }
 
 function thingsat(list, pos){
-	rlist = [];
+	var rlist = [];
 	list.forEach(function(element){
 		if(equpos(element.pos, pos)) rlist.push(element);
 	});
@@ -371,7 +351,7 @@ function thingsat(list, pos){
 function checkforthings(pos){
 	if(equpos(p1.pos, pos)) return charout; 
 
-	if(mode == BATTLEMODE && equpos(pos, encpok.pos)) return encpok;
+	if(mode == MODE_BATTLE && equpos(pos, encpok.pos)) return encpok;
 
 	npccheck = thingsat(curroom.npcs, pos);
 	if(npccheck.length > 0) return npccheck[0];
@@ -382,11 +362,12 @@ function checkforthings(pos){
 	return null;
 }
 
+// Tries to go to another tile, handles jumps, exits and wild pokemon
 function checktile(nexttile, pos, dir){
 	if(nexttile.danger){
 		if(randI(0, 5) == 0){ //encounter chance
-			wildmon(pos);
-			encpok.checkifseen(false);
+			wildmon(pos); //populates encpok
+			encpok.checkifseen(false); //move to wildmon?
 			return true;
 		}
 	} else if(nexttile.exit){
@@ -398,97 +379,112 @@ function checktile(nexttile, pos, dir){
 }
 
 function tryjump(nexttile, dir, pos){
-	newpos = addpos(pos, dir);
-	things = checkforthings(newpos);
-	if(things == null || things.type == ITEM){
+	var newpos = addpos(pos, dir);
+	var element = checkforthings(newpos);
+	if(things == null || element.type == ELE_ITEM){
 		p1.pos = newpos;
 	}
 }
 
-function move(peep, dir){ 
-	op = {y:peep.pos.y, x:peep.pos.x};
-	np = addpos(peep.pos, dir);
+function move(person, dir){ 
+	var op = {y:person.pos.y, x:person.pos.x};
+	var np = addpos(person.pos, dir);
 
 	if(!inbounds(np)) return false; 
-	nexttile = tileat(np);
-	things = checkforthings(np); 
+	var nexttile = tileat(np);
+	var things = checkforthings(np); 
 
-	if(peep == p1){
-		//could use object instead of direction
-		if(things != null && things.type == NPC) chat(dir); 
-		else if(checktile(nexttile, np, dir)) return !equpos(peep.pos, op); //special things eg jump
+	if(person == p1){ //could use object instead of direction
+		if(things != null && things.type == ELE_NPC) chat(dir); 
+		else if(checktile(nexttile, np, dir)) return !equpos(person.pos, op); //special things eg jump
 	}  
 
-	if((things == null || things.type == ITEM) && nexttile.walk) {
-		peep.pos = np; 
+	if((things == null || things.type == ELE_ITEM) && nexttile.walk) {
+		person.pos = np; 
 		return true;
 	}
 }
 
 //checks if pos is within bounds of current room
 function inbounds(pos){ 
-	topl = {y : 0, x : 0};
-	botr = {y : curroom.dim.y, x : curroom.dim.x};
+	var topl = {y : 0, x : 0};
+	var botr = {y : curroom.dim.y, x : curroom.dim.x};
 	if(pos.y < topl.y || pos.x < topl.x || pos.y >= botr.y || pos.x >= botr.x) return false;
 	return true;
 }
 
-function movebutt(dir){
-	if(!equpos(dir, ZENITH)){ //solving invisible bugs
+function movechar(dir){
+	if(!equpos(dir, DIR_ZENITH)){ //just in case
 		if(move(p1, dir)) passtime(1);
 	} else passtime(1);
 }
 
 function passtime(timetopass){
-	for(i = 0; i < timetopass; i++) {
+	for(var i = 0; i < timetopass; i++) { //not strictly necessary, but easy way to do this
 		if(p1.hunger < 100 && timetopass > 1){
-			output("#bug0", "You are too hungry to just sit around");
+			output(0, "You are too hungry to just sit around");
 			break;
 		}
 		turns++;
 		p1.hunger--;
-		hungercheck = howhungryami().affectstats;
+		var hungercheck = howhungryami().affectstats;
 
-		if(hungercheck != hungerstatus){
+		if(hungercheck != hungerstatus){ // Do a full recalculation instead
 			p1.att -= hungerstatus - hungercheck; p1.def -= hungerstatus - hungercheck;
 			p1.spd -= hungerstatus - hungercheck; p1.spc -= hungerstatus - hungercheck;
 			hungerstatus = hungercheck;
 		}
+
 		if(turns % REGENTIME == 0) {
 			p1.regen();  
 			listpoke().forEach(function(element){
 				element.regen();
-				if(element.curhp <= 0) pokedeath(0, element, 2); 
+				if(element.curhp <= 0) pokefaint(0, element, 2); 
 			});
-			if(p1.curhp <= 0) playerdeath(); //might be good to link hpchanges tothis
+			if(p1.curhp <= 0) playerfaint(); //link hp changes to this
 		}
-		dancenpcdance();
+		movenpcs();
 	}
 	update();
 	if(p1.hunger <= 0) { // if hunger gets changed anywhere else moveme/copyme
-		playerdeath();
+		playerfaint();
 	}
 }
 
-function playerdeath(){
-	bugspray();
-	newgame("You dead");
+function playerfaint(){
+	clearoutputs();
+	newgame("You fainted");
 }
 
 //append is an optional flag, appends if true
-function output(divname, message, append){ 
-	if(append) { $(divname).append(message); }
-	else{ $(divname).html(message); }
+function output(outnum, message, append){ 
+	if(append) { 
+		$("#bug" + outnum).append(message);
+	} else { 
+		$("#bug" + outnum).html(message); 
+	}
+}
+
+function statusupdate(){
+	output("#status11",  charout.name); // title?
+	output("#status12", "At:" + charout.att + " Df:" + 
+			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
+			" Own:" + p1.ownedtotal + "(" + p1.seentotal + ")");
+	output("#status2", curroom + " &#x0E3F:" + p1.bitc + " HP:" + charout.curhp +
+			"("+ charout.maxhp + ") Exp:" + charout.level + "(" + xptogo(charout) +
+			") T:" + turns + " ");
+	output("#status2", howhungryami().message + " ", 1);
+	output("#status2", charout.checkstatus() + " ", 1);
 }
 
 function chat(dir){
 	chkp = addpos(p1.pos, dir);
 	thing = checkforthings(chkp);
-	if(thing != null && (thing.type == NPC || thing.type == PLAYA)){
-		output("#bug0", thing +": "+ justanyol(thing.phrases));
+	if(thing != null && (thing.type == ELE_NPC || thing.type == ELE_PLAYER)){
+		output(0, thing +": "+ randomelement(thing.phrases));
 	}
 }
 
-function bugspray(){//removes bugs
+function clearoutputs(){
 	$(".bugs").html("");
 }

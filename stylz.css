@@ -65,7 +65,7 @@ img {
 	animation-iteration-count: infinite;
 }
 
-.blinkonceforyes{
+.blinkonce{
 	-webkit-animation: semiblink .4s;
 	-webkit-animation-iteration-count: 2;
 	-moz-animation: semiblink .4s;

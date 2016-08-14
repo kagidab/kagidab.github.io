@@ -31,17 +31,18 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 		return newpoke;
 	}
 
-	this.checkifseen = function(ownedaswell){
+	this.checkifseen = function(owned){
 		if(!p1.seen[this.id]){
 			p1.seen[this.id] = true;
 			p1.seentotal++;
 		} 
-		if(!p1.owned[this.id] && ownedaswell){
+		if(!p1.owned[this.id] && owned){
 			p1.owned[this.id] = true;
 			p1.ownedtotal++;
 		}
 	}
 
+	//apply status effect
 	this.become = function(statuseffect){
 		if(!this.statuses[statuseffect]) {
 			this.statuses[statuseffect] = true;
@@ -50,9 +51,11 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 		return false;
 	}
 
-	this.howareyou = function(){
-		count = 0; string = "";
-		for(i = 0; i < this.statuses.length; i++){
+	//check current status
+	this.checkstatus = function(){
+		var count = 0; 
+		var string = "";
+		for(var i = 0; i < this.statuses.length; i++){
 			if(this.statuses[i]) {
 				if(count > 0) string += ", "
 					string += STATUSNAMES[i];
@@ -63,9 +66,9 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 	}
 
 	this.regen = function(){
-		if(this.statuses[POISONED] && this.statuses[BURNED]){
+		if(this.statuses[STATUS_POISONED] && this.statuses[STATUS_BURNED]){
 			this.curhp -= 2;
-		} else if(this.statuses[POISONED] || this.statuses[BURNED]){
+		} else if(this.statuses[STATUS_POISONED] || this.statuses[STATUS_BURNED]){
 			this.curhp--;
 		} else if(this.curhp < this.maxhp){
 			this.curhp++;
@@ -74,9 +77,9 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 
 	this.endoffight = function(){
 		this.fillstats(true);
-		this.statuses[ASLEEP] = false;
-		this.statuses[CONFUSED] = false;
-		this.statuses[FROZEN] = false;
+		this.statuses[STATUS_ASLEEP] = false;
+		this.statuses[STATUS_CONFUSED] = false;
+		this.statuses[STATUS_FROZEN] = false;
 	}
 
 	this.hpcalc = function(){
@@ -87,86 +90,91 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 		return Math.floor(basestat * this.level / 50 + 5);
 	}
 
-	this.changestat = function(statnum, amount){
-		if(statnum == ATTACKSTAT){
+	this.changestat = function(stat, amount){
+		if(stat == STAT_ATTACK){
 			if(this.att + amount > this.statcalc(this.baseatt) / 2 &&
 					this.att + amount < this.statcalc(this.baseatt) * 2) 
 				this.att += amount; else return false;
-		} else if(statnum == DEFENCESTAT){
+		} else if(stat == STAT_DEFENCE){
 			if(this.def + amount > this.statcalc(this.basedef) / 2 &&
 					this.def + amount < this.statcalc(this.basedef) * 2) 
 				this.def += amount; else return false;
-		} else if(statnum == SPECIALSTAT){
+		} else if(stat == STAT_SPECIAL){
 			if(this.spc + amount > this.statcalc(this.basespc) / 2 &&
-					this.spc + amount < this.statcalc(this.basespc) * 2) 
-				this.spc += amount; else return false;
-		} else if(statnum == SPEEDSTAT){
+					this.spc + amount < this.statcalc(this.basespc) * 2) {
+				this.spc += amount; 
+			} else return false;
+		} else if(stat == STAT_SPEED){
 			if(this.spd + amount > this.statcalc(this.basespd) / 2 &&
-					this.spd + amount < this.statcalc(this.basespd) * 2) 
-				this.spd += amount; else return false;
+					this.spd + amount < this.statcalc(this.basespd) * 2) {
+				this.spd += amount; 
+			} else return false;
 		}
 		return true;
 	}
 
 	//returns true if the attack goes through 
-	//UNTESTED, CBF
-	this.checkstatus = function(){
-		result = true;
-		attackanyway = false;
-		if(this.statuses[POISONED]){
-			output("#bug0", this + " is poisoned, it loses 1 HP.<br> ", 1);
+	//mostly UNTESTED
+	//reduce complexity
+	this.fightstatus = function(){
+		var result = true;
+		var attackanyway = false;
+		if(this.statuses[STATUS_POISONED]){
+			output(0, this + " is poisoned, it loses 1 HP.<br> ", true);
 			this.curhp--;
 		} 
-		if(this.statuses[BURNED]){
-			output("#bug0", this + " is burned, it loses 1 HP.<br> ", 1);
+		if(this.statuses[STATUS_BURNED]){
+			output(0, this + " is burned, it loses 1 HP.<br> ", true);
 			this.curhp--;
 		}
-		if(this.statuses[ASLEEP]){
-			if(randI(1,2) == 1) {
-				output("#bug0",  this + " wakes up!<br>", 1);
-				this.statuses[ASLEEP] = false;
+		if(this.statuses[STATUS_ASLEEP]){
+			if(randI(1, 2) == 1) {
+				output(0,  this + " wakes up!<br>", true);
+				this.statuses[STATUS_ASLEEP] = false;
 			} else {
-				output("#bug0", this + " is sleeping.<br>", 1);
+				output(0, this + " is sleeping.<br>", true);
 				result = false;
 			}
 		}
-		if(this.statuses[CONFUSED] && result){
-			if(randI(1,3) == 1) {
-				this.statuses[CONFUSED] = false;
-				output("#bug0", this + " is confused no more!<br>", 1);
+		if(this.statuses[STATUS_CONFUSED] && result){
+			if(randI(1, 3) == 1) {
+				this.statuses[STATUS_CONFUSED] = false;
+				output(0, this + " is confused no more!<br>", true);
 			} else if(randI(1,2) == 1) {
-				output("#bug0", this + " is confused, ", 1);
+				output(0, this + " is confused, ", true);
 				attackanyway = true;
 			} else {
-				output("#bug0", this + " is confused, it hurts itself in confusion.<br>", 1);
+				output(0, this + " is confused, it hurts itself in confusion.<br>", true);
 				this.curhp--;
 				result = false;
 			}
 		}
-		if(this.statuses[FROZEN] && result){
-			if(randI(1,2) == 1) {
-				this.statuses[FROZEN] = false;
+		if(this.statuses[STATUS_FROZEN] && result){
+			if(randI(1, 2) == 1) {
+				this.statuses[STATUS_FROZEN] = false;
 				attackanyway = false;
-				output("#bug0", this + " is no longer frozen.<br>", 1);
+				output(0, this + " is no longer frozen.<br>", true);
 			} else{
-				output("#bug0", this + " is frozen, it cannot attack.<br>", 1);
+				output(0, this + " is frozen, it cannot attack.<br>", true);
 				result = false;
 			}
 		}
-		if(this.statuses[PARALYZED] && result){
-			if(randI(1,4) < 4) {
-				output("#bug0", this + " is paralyzed, ", 1);
+		if(this.statuses[STATUS_PARALYZED] && result){
+			if(randI(1, 4) < 4) {
+				output(0, this + " is paralyzed, ", true);
 				attackanyway = true;
 			} else {
-				output("#bug0", this + " is fully paralyzed!<br>", 1);
+				output(0, this + " is fully paralyzed!<br>", true);
 				result = false;
 				attackanyway = false;
 			}
 		}
-		if(attackanyway && result) output("#bug0", "it attacks anyway!<br>", 1);
+		if(attackanyway && result) output(0, "it attacks anyway!<br>", true);
 		return result;
 	}
 
+	// Recalculates stats
+	// Argument chooses whether to go to full health or not
 	this.fillstats = function(keepcurhp){
 		this.maxhp = this.hpcalc(); 
 		if(!keepcurhp) this.curhp = this.maxhp; //not always wanted
@@ -182,22 +190,22 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 
 	//doesn't limit moves currently... 
 	this.trytolearn = function(move){
-		output("#bug3", "");
-		for(i = 0; i < this.moves.length; i++){
+		output(0, "");
+		for(var i = 0; i < this.moves.length; i++){
 			if(this.moves[i] == move) return; //shouldn't, but probably will happen
 		}
 		if(this.moves.length < 4){ 
 			this.moves.push(move);
 		} else {
-			movetoforget = this.moves[randI(0, 3)];
-			output("#bug3", this + " forgot " + movetoforget + "... and ", true);
+			var movetoforget = this.moves[randI(0, 3)];
+			output(0, this + " forgot " + movetoforget + "... and ", true);
 			this.moves.push(move);
 		}
-		output("#bug3", this + " learned " + move + "!", true);
+		output(0, this + " learned " + move + "!", true);
 	}
 
-	this.trylearnsomemoves = function(){
-		for(movenum = 0; movenum < this.learn.length; movenum++){
+	this.trylearnmoves = function(){
+		for(var movenum = 0; movenum < this.learn.length; movenum++){
 			if(this.learnlvl[movenum] == this.level){
 				this.trytolearn(this.learn[movenum]);
 			}
@@ -211,20 +219,22 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 			oldhp = this.curhp;
 			oldmax = this.maxhp;
 			if(this.evolvecheck()) {
-				evolvy(this);
+				evolve(this);
 				return 2;
 			} else {
 				this.fillstats();
 				this.curhp = oldhp + this.maxhp - oldmax; 
-				this.trylearnsomemoves();
+				this.trylearnmoves();
 				return 1;
 			}
 		} else return 0;
 	}
 }
 
-function evolvy(mon){
-	npok = mon.evolve.to.copy({}, mon.level);
+// Evolves pokemon by creating a new instance and replacing the ball's reference
+// Change to not require ballref? Seems bad
+function evolve(mon){
+	var npok = mon.evolve.to.copy({}, mon.level);
 	npok.xp = mon.xp;
 	npok.curhp = mon.curhp;
 	npok.checkifseen(true); 
@@ -233,7 +243,7 @@ function evolvy(mon){
 }
 
 function listpoke(){
-	rlist = [];
+	var rlist = [];
 	p1.inv.balls.forEach(function(item){
 		rlist.push(item.contains);
 	});
@@ -241,25 +251,25 @@ function listpoke(){
 }
 
 function wildmon(pos){
-	poklev = randI(Math.floor(curroom.poklev*.7), curroom.poklev);
-	poktype = justanyol(curroom.pokemon);
-	encpok = newmon(poktype, poklev, pos);
+	var poklev = randI(Math.floor(curroom.poklev * .7), curroom.poklev);
+	var poktype = randomelement(curroom.pokemon);
+	var encpok = newmon(poktype, poklev, pos);
 
-	output("#bug0","A wild " + encpok.name + " appears!");
-	output("#bug2", "Press the any key to continue");
+	output(0,"A wild " + encpok.name + " appears!");
+	output(0, "Press the any key to continue");
 	if(listpoke().length > 0) {
 		monout = charout = listpoke()[0];
-		output("#bug1", "Go, " + monout.name + "!");
+		output(0, "Go, " + monout.name + "!");
 	} else monout = p1;
 	anykey = true;
 	mode = BATTLEMODE;
 	update();
-	$("#grid").addClass("blinkonceforyes");
+	$("#grid").addClass("blinkonce"); //queue music
 }
 
 
 function newmon(type, level, position){
-	newpoke = type.copy(position, level);
+	var newpoke = type.copy(position, level);
 	return newpoke;
 }
 
@@ -268,53 +278,52 @@ function levelatxp(xp){
 	return Math.floor(Math.pow(xp + 1, .3333));
 }
 
-//reverse
+//reverse of levelatxp
 function xpatlevel(level){
-	return level*level*level;
+	return level * level * level;
 }
 
+//xp needed to level up
 function xptogo(mon){
-	return xpatlevel(mon.level+1)-mon.xp;
+	return xpatlevel(mon.level + 1) - mon.xp;
 }
+
 //returns the amount of xp a mon will give 
 function xpgiven(mon){
 	return mon.level * 10;
 }
 
 function gainxp(result, mon, amount){
-	output("#bug2", mon + " gains " + amount + "xp!");
+	output(0, mon + " gains " + amount + "xp!");
 	if(result == 1){
-		output("#bug2", " Level up!", 1);
+		output(0, " Level up!", true);
 	} else if(result == 2){
 		charout = mon.ballref.contains;
-		output("#bug2", " Level up! What's this? " + mon + " evolved into "
-				+ charout, 1);
+		output(0, " Level up! What's this? " + mon + " evolved into "
+				+ charout, true);
 	}
 }
 
-//what happens when a pokemon dies
+//what happens when a pokemon faints
 //mon1 is winner
-//situation 1 -> enemy death
-//0-> your battledeath
-//2-> status death
-function pokedeath(mon1, mon2, situation) {
-	output("#bug3", "");
-	if(situation < 2) output("#bug1", mon1.name + " kills the " + mon2.name + "!"); 
+//situation 1 -> enemy faint
+//0-> you faint
+//2-> status faint
+function pokefaint(mon1, mon2, situation) {
+	output(0, "");
+	if(situation < 2) output(1, mon2.name + " faints!"); 
 	if(situation == 1){
-		oldname = mon1.name;
-		result = mon1.givexp(xpgiven(mon2));
+		var oldname = mon1.name;
+		var result = mon1.givexp(xpgiven(mon2));
 		gainxp(result, mon1, xpgiven(mon2));
-		cpos = mon2.pos;
-		if(randI(1,10) == 1) POKEBALL.copy(cpos, curroom);
+		if(randI(1, 10) == 1) items["pokeball"].copy(mon2.pos, curroom); //make more general drops
+		item["berry"].copy(mon2.pos, curroom);
 	} else {
-		for(i = p1.inv.balls.length - 1; i >= 0; i--){
+		for(var i = p1.inv.balls.length - 1; i >= 0; i--){ //unsure of this section?
 			if(mon2.ballref == p1.inv.balls[i]) {
 				p1.inv.balls.splice(i, 1);
 			}
 		}
 		charout = p1;
-		cpos = p1.pos;
 	}
-	newitem = CORPSE.copy(cpos, curroom);
-	newitem.name = mon2.name + " corpse";
 }

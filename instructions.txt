@@ -1,9 +1,9 @@
-This is a simple gauntlet demo of a Pokemon rougelike.
+This is a simple gauntlet demo of a Pokemon roguelike.
 The goal is to reach the end of the routes(there are 15)
 To recieve The Gift
 
 Important controls:
-Movement is either arrows and home/pgup/end/pgdwn for diagonals, or the numpad with numlock off, or hjklyubn for purists
+Movement is either arrows and home/pgup/end/pgdwn for diagonals, or the numpad with numlock off, or vimkeys[hjklyubn] 
 , picks up items
 . waits 1 time unit
 w waits 10 time units
@@ -11,24 +11,23 @@ q waits 100 time units
 e [ITEMLETTER] eats a food
 
 
-Unimportant controls:
+Misc controls:
 t [DIR] talks in a direction, walking at an NPC is easier
 >/< use an exit, currently exits are autoused
 s saves
-r restores[will not work well, but that'll learn you for saving] 
+r restores[these are experimental]
 
 
 
 Important things:
 You and your pokemon restore 1HP every 20 steps
 You need food to survive, if you get too hungry, "Hungry" will appear, then "Weak", then you will die
-There are no cures for statuses, fear them, poison and burning cause inevitable deaths
+There are currently no cures for statuses, fear them, poison and burning cause inevitable deaths
 Pokemon grow more difficult each map, grinding is advised.
 Most of the special moves are not implemented properly - 
 Essentially, the damage and types are implemented, but special things mostly aren't,
 But I've tried to make everything do something.
-Also, moves of pokemon with no damaging moves have been given damage to make them worse
-to grind, but better to own
+Also, moves of pokemon with no damaging moves have been given damage to make them worse to grind, but better to own
 Most stuff is just taken from Gen1 directly, but some is modified
 PP and evasion aren't implemented
 A few Pokemon with special evolve conditions evolve at some level(e.g. trade, stone pokemon), not all
@@ -37,8 +36,8 @@ All the routes are intended to be mountainous regions.
 The '(', ')', 'n', 'u' symbols are cliffs, sortofsimilar to the jumps in the Pokemon,
 i.e. they jump you a space[the jumping is actually a little wonky and will probably change]
 It IS possible to get stuck in a valley. This is a feature, professional mountaineers will often tell you that jumping off cliffs with no means of escape is imprudent
-Using diagonals helps to get out.
-Also,  if you save and refresh the game page, then load your game, the map should be different. But that is an exploit, and FBI vans will be deployed accordingly.
+Using diagonal movement may be necessary 
+Also,  if you save and refresh the game page, then load your game, the map should be different. 
 
 
 
@@ -50,7 +49,7 @@ If you want to know where to find things:
 5: butterfree, beedrill, pidgeotto, golbat, gastly, drowzee, onix, krabby, cubone, machoke, voltorb
 6: fearow, raichu, nidorina, nidorino, hitmonlee, hitmonchan, horsea, chansey, staryu, goldeen, omanyte, dratini
 7: bulbasaur, charmander, squirtle, graveler, koffing, rhyhorn, jynx, poliwhirl, gloom, haunter
-8:eevee, exeggcute, scyther, mrmime, magmar, electabuzz, lapras, ditto, kabuto, snorlax, weepinbell
+8: eevee, exeggcute, scyther, mrmime, magmar, electabuzz, lapras, ditto, kabuto, snorlax, weepinbell
 9: raticate, tentacruel, arbok, raichu, sandslash, tauros, pinsir, haunter, muk, dodrio, dugtrio, kadabra, dragonair
 10: golduck, dewgong, starmie, pidgeot, clefable, wigglytuff, ninetales, primeape, tangela, ivysaur, charmeleon, wartortle
 11: tangela, lickitung, rapidash, kangaskhan, persian, vaporeon, jolteon, flareon, porygon, cloyster, slowbro, arcanine

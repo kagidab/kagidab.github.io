@@ -29,7 +29,7 @@ function Move(name, type, cat, base, pp, acc, effect){
 	//mon1 uses this on mon2
 	this.use = function(mon1, mon2, enemy){
 		dam = 0; affected = false;
-		if(enemy) output("#bug0", "Enemy ", 1);
+		if(enemy) output(0, "Enemy ", 1);
 		if(mon1.checkstatus()){
 			if(this.base > 0){
 				dam = this.damage(mon1, mon2);
@@ -38,7 +38,7 @@ function Move(name, type, cat, base, pp, acc, effect){
 			if(this.effect != NOEFFECT) {
 				affected = this.useeffect(mon1, mon2);
 			}
-			output("#bug0", this.usemessage(mon1, mon2, dam, affected), 1);
+			output(0, this.usemessage(mon1, mon2, dam, affected), 1);
 		}
 	}
 
