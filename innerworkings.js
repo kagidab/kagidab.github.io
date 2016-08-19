@@ -1,34 +1,31 @@
-// To implement: 
-// wild pokemon should have moves depending on level
-//
-//
-// battles
-// 	-when items implemented properly, a systematic way of dropping
-// story
-// using items 
-// OOPier!
-// trainer battles
-// mapmaking could be better
-// spritesheet
-// make a better output system, currently just waiting until something weird happens
-// Split this file into html interaction things and higher level things
-//
-// TOFIX: 
-// eating menu lets you eat past ITEMSPERPAGE... causes no actual problems, just confusing 
-// hiding is a bit awkward, don't want NPCs appearing on rooftops
-// 	currently not actually relevant... OK fix is to make HIDEALL and HIDESOME tags
-// animations unsync =/
-// Can walk through Reds house from top side, can't think of a easy/good way to fix
-// exits are funky... everything is tho
-//
-//
+/* innerworkings.js
+ *
+ * This handles the majority of the input and directs it accordingly
+ * 
+ *
+ * To implement: 
+ * wild pokemon should have moves depending on level
+ * battles
+ * 	-when items implemented properly, a systematic way of dropping
+ * story
+ * using items 
+ * trainer battles
+ * mapmaking could be better
+ * spritesheet
+ * make a better output system
+ * Split this file into html interaction things and higher level things
+ *
+ * TOFIX: 
+ * eating menu lets you eat past ITEMSPERPAGE... causes no actual problems, just confusing 
+ * hiding is a bit awkward, don't want NPCs appearing on rooftops
+ */
 
 newgame("Welcome!");
 
 function newgame(message){
 	resetthings(Math.floor(1e7*Math.random()));
 	charout = p1; 
-	changeroom(STARTINGROOM, STARTINGPOS); 
+	changeroom(rooms[STARTINGROOM], STARTINGPOS); 
 	output(0, message);
 }
 
@@ -46,7 +43,7 @@ $("body").keydown(function(event){
 			$("#grid").removeClass("blinkonce"); 
 			anykey = false;
 			update();
-			fightmenu = NORMALMENU;
+			fightmenu = MENU_NORMAL;
 			fightingmessage(true);
 		} else fightinkeys(key);
 	} else if(mode == MODE_GET) gettheitems(key); 
@@ -113,13 +110,11 @@ function savegame(){
 	$.jStorage.set("playerroom", curroom.id);
 	$.jStorage.set("seedy", originalseed);
 	$.jStorage.set("saveexists", true);
-	$.jStorage.set("turnnumber", turns);
 	deflatepokemon(p1.inv.balls);
 	roomitems = [];
 	rooms.forEach( function(element){
 		deflatepokemon(element.items);
 		roomitems.push(element.items);
-		//console.log(element.items);
 	});
 	$.jStorage.set("playersave", p1);
 	$.jStorage.set("roomitems", roomitems);
@@ -131,34 +126,27 @@ function savegame(){
 
 // For saving
 function deflatepokemon(list){
-	for(var i = 0; i < list.length; i++){
-		if(list[i].contains != undefined){
-			next = list[i].contains;
-			shortform = {id: next.id, xp: next.xp, level: next.level, hp: next.curhp, moves: []};
-			for(var j = 0; j < next.moves.length; j++){
-				shortform.moves.push(next.moves[j].id);
-			}
-			list[i].contains = shortform;
+	list.forEach( function(element, index){
+		if(element.contains != undefined){
+			var next = element.contains;
+			var shortform = {id: next.id, xp: next.xp, level: next.level, hp: next.curhp, moves: next.moves};
+			list[index].contains = shortform;
 		}
-	}
+	});
 }
 
 // for loading
 function inflateitems(list){
 	list.forEach( function(itemtoinf, index, array) {
-		infl = items[itemtoinf.id].copy(itemtoinf.pos);
+		var infl = items[itemtoinf.id].copy(itemtoinf.pos);
 		infl.name = itemtoinf.name;
-		infl.contains = itemtoinf.contains;
 		infl.pos = itemtoinf.pos;
-		if(infl.contains != undefined){
-			infl.itemtype = ITEM_BALL;
-			nextt = infl.contains;
-			inflated = pokemon[nextt.id].copy({}, nextt.level);
-			inflated.xp = nextt.xp; inflated.curhp = nextt.hp;
-			inflated.moves = new Array(nextt.moves.length);
-			for(var j = 0; j < nextt.moves.length; j++){
-				inflated.moves[j] = moves[nextt.moves[j]];
-			}
+		if(itemtoinf.contains != undefined){ //ball with pokemon inside
+			var next = itemtoinf.contains;
+			var inflated = pokemon[next.id].copy({}, next.level);
+			inflated.xp = next.xp; 
+			inflated.curhp = next.hp;
+			inflated.moves = next.moves
 			inflated.ballref = infl;
 			infl.contains = inflated;
 		}
@@ -171,7 +159,7 @@ function restoregame(){
 	var restroom = $.jStorage.get("playerroom");
 	var roomitems = $.jStorage.get("roomitems");
 	p1 = SATOSHI.copy({x: 3, y:4}, restp1.level);
-	p1.type = PLAYER;
+	p1.type = ELE_PLAYER;
 	p1.dpos = {x: 3, y: 4};
 	p1.hunger = restp1.hunger;
 	p1.phrases = ["Hello!"];
@@ -183,6 +171,8 @@ function restoregame(){
 	p1.xp = restp1.xp;
 	p1.seen = restp1.seen;
 	p1.owned = restp1.owned;
+	p1.turns = restp1.turns;
+
 	inflateitems(p1.inv.usable);
 	inflateitems(p1.inv.food);
 	inflateitems(p1.inv.balls);
@@ -196,7 +186,7 @@ function restoregame(){
 	});
 	charout = p1;
 	curroom = rooms[restroom];
-	savegame();//fixes some problems with the storage, 
+	savegame();//fixes some problems with the storage
 
 	output(0, "Game restored!");
 	update();
@@ -215,8 +205,7 @@ function keytodir(keyn, shifted){
 	return DIR_NOTADIR;
 }
 
-//uncertain how function if GXGY even
-//Used for finding the placement of the top left square
+// Give the placement of the top left square
 function findtl(pxorpy, max, len){
 	if(max < len) return Math.floor((max - len + 1) / 2);
 	if(pxorpy < (len - 1) / 2) return 0;
@@ -258,9 +247,9 @@ function drawmap(){
 
 //fixmagicalnumbers
 function howhungryami(){
-	if(p1.hunger > 1000) return {message: "Satisfied", affectstats: 0};
-	if(p1.hunger < 100) return {message: "Weak", affectstats: -4};
-	if(p1.hunger < 300) return {message: "Hungry", affectstats: -2};
+	if(p1.hunger > 1000) return { message: "Satisfied", affectstats: 0};
+	if(p1.hunger < 100) return  { message: "Weak",      affectstats: -4};
+	if(p1.hunger < 300) return  { message: "Hungry",    affectstats: -2};
 	else return {message: "", affectstats: 0};
 }
 
@@ -271,8 +260,8 @@ function exitdest(pos){
 
 function tileat(pos){
 	if(ap(curroom.map, pos) > 1e6) 
-		return tiles[Math.floor(ap(curroom.map,pos)/1e6)];
-	return tiles[ap(curroom.map,pos)];
+		return tiles[Math.floor(ap(curroom.map, pos) / 1e6)];
+	return tiles[ap(curroom.map, pos)];
 }
 
 function drawsquare(pos){
@@ -286,10 +275,10 @@ function drawsquare(pos){
 	if(inbounds(ijda) && !toohigh){ 
 		$(ap(gridimgs,pos)).show();
 		var newtile = tileat(ijda);
-
 		var personat = checkforthings(ijda); 
 		var hunt = thingsat(curroom.items, ijda);
-		var hideme = personat == p1 && newtile.hide && hunt.length == 0 && mode != BATTLEMODE;
+		var hideme = personat == p1 && newtile.hide && hunt.length == 0 && mode != MODE_BATTLE;
+
 		if(personat != null && !hideme) newtile = personat;
 
 		if(newtile.type == ELE_TILE && newtile.blink) $(ap(gridimgs,pos)).addClass("blinking");
@@ -304,9 +293,7 @@ function drawsquare(pos){
 	} else $(ap(gridimgs,pos)).hide(); //OOB
 }
 
-
-//may be able to do without this
-//currently only needed for blinky
+//Makes the cursor blink, for hiding in tall grass
 function blinky(pos){ 
 	$(ap(grids, pos)).append("<img id='cursor' class='blinking' src='" + CURSORFN + "'></img>");
 }
@@ -320,8 +307,7 @@ function movenpcs(){
 	})
 }
 
-//no longer strictly necessary
-//it resets npc positions, which is maybe useful 
+//resets npc positions
 function placenpcs(){
 	curroom.npcs.forEach(function(element){ element.pos = element.dpos; })
 }
@@ -353,10 +339,10 @@ function checkforthings(pos){
 
 	if(mode == MODE_BATTLE && equpos(pos, encpok.pos)) return encpok;
 
-	npccheck = thingsat(curroom.npcs, pos);
+	var npccheck = thingsat(curroom.npcs, pos);
 	if(npccheck.length > 0) return npccheck[0];
 
-	itemcheck = thingsat(curroom.items, pos);
+	var itemcheck = thingsat(curroom.items, pos);
 	if(itemcheck.length > 0) return itemcheck[0];
 
 	return null;
@@ -372,16 +358,16 @@ function checktile(nexttile, pos, dir){
 		}
 	} else if(nexttile.exit){
 		p1.pos = pos; exit(); return true;
-	} else if(nexttile.jumpd != -1 && equpos(DIRS[nexttile.jumpd], dir)){  //to avoid this, can change data structure to LEFT, RIGHT, etc
+	} else if(nexttile.jumpd != -1 && equpos(DIRS[nexttile.jumpd], dir)){  
 		tryjump(nexttile, dir, pos); return true;
 	}
-	return false; //nothing to stop movement
+	return false; //if nothing is in the way
 }
 
 function tryjump(nexttile, dir, pos){
 	var newpos = addpos(pos, dir);
 	var element = checkforthings(newpos);
-	if(things == null || element.type == ELE_ITEM){
+	if(element == null || element.type == ELE_ITEM){
 		p1.pos = newpos;
 	}
 }
@@ -425,7 +411,7 @@ function passtime(timetopass){
 			output(0, "You are too hungry to just sit around");
 			break;
 		}
-		turns++;
+		p1.turns++;
 		p1.hunger--;
 		var hungercheck = howhungryami().affectstats;
 
@@ -435,7 +421,7 @@ function passtime(timetopass){
 			hungerstatus = hungercheck;
 		}
 
-		if(turns % REGENTIME == 0) {
+		if(p1.turns % REGENTIME == 0) {
 			p1.regen();  
 			listpoke().forEach(function(element){
 				element.regen();
@@ -466,15 +452,12 @@ function output(outnum, message, append){
 }
 
 function statusupdate(){
-	output("#status11",  charout.name); // title?
-	output("#status12", "At:" + charout.att + " Df:" + 
-			charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
+	$("#status11").html(charout.name); 
+	$("#status12").html("At:" + charout.att + " Df:" + charout.def + " Sp:" + charout.spd + " Sc:" + charout.spc +
 			" Own:" + p1.ownedtotal + "(" + p1.seentotal + ")");
-	output("#status2", curroom + " &#x0E3F:" + p1.bitc + " HP:" + charout.curhp +
+	$("#status2").html(curroom + " &#x0E3F:" + p1.bitc + " HP:" + charout.curhp +
 			"("+ charout.maxhp + ") Exp:" + charout.level + "(" + xptogo(charout) +
-			") T:" + turns + " ");
-	output("#status2", howhungryami().message + " ", 1);
-	output("#status2", charout.checkstatus() + " ", 1);
+			") T:" + p1.turns + " " + howhungryami().message + " " + charout.checkstatus() + " ");
 }
 
 function chat(dir){
@@ -487,4 +470,12 @@ function chat(dir){
 
 function clearoutputs(){
 	$(".bugs").html("");
+}
+
+function changetomode(newmode){
+	mode = newmode;
+	curpage = 0;
+	if(newmode == MODE_EAT) {
+		if(!listitemsoftype(ITEM_FOOD, curpage)) mode = MODE_WALK;
+	}
 }

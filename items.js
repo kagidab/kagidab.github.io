@@ -1,10 +1,12 @@
-//currently items are pretty lacking
-//usables don't do anything currently...
-//knowing how to use inheritance would help a lot here
-//there may be some redundancy here
+/* items.js
+ * Holds mechanisms for items
+ * Currently they're not particularly developed
+ * e.g. can't use items, can't drop
+ */
+
 
 function listoftype(typetolist){
-	rlist = [];
+	var rlist = [];
 	if(typetolist == ITEM_FOOD || typetolist == ITEM_ALL){
 		p1.inv.food.forEach(function(item){ rlist.push(item); });
 	} 
@@ -18,7 +20,7 @@ function listoftype(typetolist){
 }
 
 function listitemsoftype(typetolist, curpage){
-	listofitems = listoftype(typetolist);
+	var listofitems = listoftype(typetolist);
 	if(listofitems.length != 0){
 		if(typetolist == ITEM_FOOD) output(0, "What to eat?");
 		if(typetolist == ITEM_BALL) output(0, "Which Pokemon?");
@@ -28,7 +30,7 @@ function listitemsoftype(typetolist, curpage){
 		output(3, "(ESC) Back");
 		return true;
 	} else {
-		if(mode == BATTLEMODE) backtonormal();
+		if(mode == MODE_BATTLE) backtonormal();
 		if(typetolist == ITEM_FOOD) output(0, "Nothing to eat");
 		if(typetolist == ITEM_BALL) output(0, "No Pokemon");
 		if(typetolist == ITEM_USABLE) output(0, "You have no usable items"); 
@@ -38,55 +40,49 @@ function listitemsoftype(typetolist, curpage){
 }
 
 
-function changetomode(newmode){
-	mode = newmode;
-	curpage = 0;
-	if(newmode == EATMODE) {
-		if(!listitemsoftype(ITEM_FOOD, curpage)) mode = WALKMODE;
-	}
-}
-
-function dropitem(key){
+function dropitem(key){ // not implemented
 }
 
 function getitems(){
-	listofitems = itemsat(p1.pos);
+	var listofitems = itemsat(p1.pos);
 	if(listofitems.length == 0) output(0, "Nothing here");
 	else if(listofitems.length == 1) getitem(0);
 	else {
 		curpage = 0;
-		listzeitems();
-		mode = GETMODE;
+		listtheitems();
+		mode = MODE_GET;
 	}
 }
 
-function listzeitems(){
-	listofitems = itemsat(p1.pos);
+function listtheitems(){
+	var listofitems = itemsat(p1.pos);
 	output(1, "Which item to get?");
 	pagebypage(listofitems, curpage);
 	output(3, "(ESC) Back");
 }
 
 function gettheitems(key){
-	letternum = key - KEY.A;
-	if(key == KEY.ESCAPE) { bugspray(); mode = WALKMODE;}
-	else if(key == KEY.GREATERTHAN) { 
+	var letternum = key - KEY.A;
+	if(key == KEY.ESCAPE) { 
+		clearoutputs(); 
+		mode = MODE_WALK;
+	} else if(key == KEY.GREATERTHAN) { 
 		if((curpage + 1) * ITEMSPERPAGE < itemsat(p1.pos).length) curpage++;
-		listzeitems();
+		listtheitems();
 	} else if(key == KEY.LESSTHAN) { 
 		if(curpage > 0) curpage--;
-		listzeitems();
+		listtheitems();
 	} else if(letternum >= 0 && letternum < itemsat(p1.pos).length){
 		itemnum = letternum + curpage * ITEMSPERPAGE;
 		getitem(itemnum);
 	} else {
-		listzeitems();
+		listtheitems();
 	}
 }
 
 function itemsat(pos){
-	rlist = [];
-	for(i = 0; i < curroom.items.length; i++){
+	var rlist = [];
+	for(var i = 0; i < curroom.items.length; i++){
 		if(equpos(pos, curroom.items[i].pos)){
 			rlist.push(curroom.items[i]);
 		}
@@ -95,7 +91,7 @@ function itemsat(pos){
 }
 
 function getitem(itemtogetnum){ 
-	itemtoget = itemsat(p1.pos)[itemtogetnum];
+	var itemtoget = itemsat(p1.pos)[itemtogetnum];
 	if(curroom.mapprop.store){
 		if(itemtoget.cost > p1.bitc){
 			output(0, "You can't afford it");
@@ -107,8 +103,11 @@ function getitem(itemtogetnum){
 		if(itemsat(p1.pos).length == curpage*ITEMSPERPAGE){
 			curpage--;
 		}
-		listzeitems(); 
-	} else { bugspray(); mode = WALKMODE;}
+		listtheitems(); 
+	} else { 
+		clearoutputs(); 
+		mode = MODE_WALK;
+	}
 	output(0, "You get a " + itemtoget.name);
 	if(itemtoget.contains != undefined){
 		itemtoget.itemtype = ITEM_BALL;
@@ -133,10 +132,10 @@ function eat(key){
 	if(key == -1) {
 		curpage = 0;
 		listitemsoftype(ITEM_FOOD, curpage);
-		mode = EATMODE;
+		mode = MODE_EAT;
 	} else {
-		index = key - KEY.A;
-		foodnum = index + curpage * ITEMSPERPAGE;
+		var index = key - KEY.A;
+		var foodnum = index + curpage * ITEMSPERPAGE;
 		if(key == KEY.GREATERTHAN) { 
 			if((curpage + 1) * ITEMSPERPAGE < p1.inv.food.length) curpage++;
 			listitemsoftype(ITEM_FOOD, curpage);
@@ -149,36 +148,30 @@ function eat(key){
 			p1.hunger += itemtoeat.nutrition;
 			if(p1.hunger > MAXHUNGER) p1.hunger = MAXHUNGER;
 			passtime(1);
-			mode = WALKMODE;
+			mode = MODE_WALK;
 		} else if(key == KEY.ESCAPE){ 
-			mode = WALKMODE;
-		} else { listitemsoftype(ITEM_FOOD, curpage); }
+			mode = MODE_WALK;
+		} else { 
+			listitemsoftype(ITEM_FOOD, curpage); 
+		}
 	}
 	update();
 }
 
 
 function grabballs(){
-	rlist = [];
+	var rlist = [];
 	p1.inv.usable.forEach( function(element){
-		if(element.id == POKEBALL.id) rlist.push(element);
+		if(element.id == items["pokeball"].id) rlist.push(element);
 	});
 	if(rlist.length == 0) return [null];
 	else return rlist;
 }
 
 function isininv(itemtocheck){
-	listtocheck = listoftype(itemtocheck.itemtype);
+	var listtocheck = listoftype(itemtocheck.itemtype);
 	for(var i = 0; i < listtocheck.length; i++){
-		if(itemtocheck == listtocheck[i]) return true;
-	}
-	return false;
-}
-
-function havefossil(){
-	listtocheck = listoftype(USABLE);
-	for(var i = 0; i < listtocheck.length; i++){
-		if(HELIXFOSSIL.id == listtocheck[i].id) return true;
+		if(itemtocheck.id == listtocheck[i].id) return true;
 	}
 	return false;
 }
@@ -186,21 +179,20 @@ function havefossil(){
 function Item(name, fn, itemtype, cost, nutrition){
 	this.toString = function(){
 		if(this.contains != undefined){
-			if(isininv(this)) return "" + this.contains;
+			if(isininv(this)) return "" + this.contains;//fixme
 			else return this.name + " containing a " + this.contains;
 		} else if(curroom.mapprop.store){
 			return this.name + " [&ETH" + this.cost + "]";
 		} else return this.name;
 	}
-	this.type = ITEM;
+	this.type = ELE_ITEM;
 	this.name = name;
 	this.fn = fn;
 	this.cost = cost;
 	this.itemtype = itemtype;
 	this.nutrition = nutrition;
 	this.copy = function(position, room, contains, level){
-		newitem = new Item(this.name, IMGDIR + this.fn, this.itemtype, this.cost, 
-				this.nutrition);
+		newitem = new Item(this.name, IMGDIR + this.fn, this.itemtype, this.cost, this.nutrition);
 		if(contains != undefined){//new pokemon
 			newitem.contains = newmon(contains, level);
 			newitem.newpok = true;

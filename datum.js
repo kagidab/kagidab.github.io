@@ -1,6 +1,6 @@
 /* datum.js
  *
- * Contains basic data for maps 
+ * Contains basic data
  * Quite tedious with manual entry
  * Make automated system in future
  */
@@ -184,7 +184,7 @@ moves["horndrill"] = new Move("Horn Drill", TYPE_NORMAL, MOVE_PHYSICAL, -1, -1, 
 moves["hydropump"] = new Move("Hydro Pump",  TYPE_WATER, MOVE_SPECIAL, 110, 80, 5, EFFECT_NONE);
 moves["hyperbeam"] = new Move("Hyper Beam",  TYPE_NORMAL, MOVE_SPECIAL, 110, 90, 5, EFFECT_NONE);//
 moves["hyperfang"] = new Move("Hyper Fang",  TYPE_NORMAL, MOVE_PHYSICAL, 80, 90, 15, EFFECT_NONE);//
-moves["hypnosis"] = new Move("Hypnosis",  TYPE_PSYCHIC, MOVE_STATUS, -1, 60, 20, EFFECT_SLEEP);
+moves["hypnosis"] = new Move("Hypnosis",  TYPE_PSYCHIC, MOVE_STATUS, -1, 60, 20, EFFECT_PUTSASLEEP);
 moves["icebeam"] = new Move("Ice Beam",  TYPE_ICE, MOVE_SPECIAL, 90, 100, 10, EFFECT_FREEZES);
 moves["icepunch"] = new Move("Ice Punch",  TYPE_ICE, MOVE_PHYSICAL, 75, 100, 15, EFFECT_FREEZES);
 moves["jumpkick"] = new Move("Jump Kick",  TYPE_FIGHTING, MOVE_PHYSICAL, 100, 95,10,  EFFECT_NONE);//
@@ -195,7 +195,7 @@ moves["leechseed"] = new Move("Leech Seed",  TYPE_GRASS, MOVE_STATUS, -1, 90, 10
 moves["leer"] = new Move("Leer",  TYPE_NORMAL, MOVE_STATUS, -1, 100, 30, EFFECT_DEFENSEDOWN);
 moves["lick"] = new Move("Lick",  TYPE_GHOST, MOVE_PHYSICAL, 30, 100, 30, EFFECT_PARALYZES);
 moves["lightscreen"] = new Move("Light Screen",  TYPE_PSYCHIC, MOVE_STATUS, -1, -1,30, EFFECT_SPECIALDOWN);//
-moves["lovelykiss"] = new Move("Lovely Kiss",  TYPE_NORMAL, MOVE_STATUS, -1, 75, 10, EFFECT_SLEEP);
+moves["lovelykiss"] = new Move("Lovely Kiss",  TYPE_NORMAL, MOVE_STATUS, -1, 75, 10, EFFECT_PUTSASLEEP);
 moves["lowkick"] = new Move("Low Kick",  TYPE_FIGHTING, MOVE_PHYSICAL, 80, 100,20, EFFECT_NONE);//
 moves["meditate"] = new Move("Meditate",  TYPE_PSYCHIC, MOVE_STATUS, -1, -1, 40, EFFECT_ATTACKUP);
 moves["megadrain"] = new Move("Mega Drain", TYPE_GRASS, MOVE_SPECIAL, 40, 100, 15, EFFECT_NONE);//
@@ -211,9 +211,9 @@ moves["payday"] = new Move("Pay Day", TYPE_NORMAL, MOVE_PHYSICAL, 40, 100, 20, E
 moves["peck"] = new Move("Peck",  TYPE_FLYING, MOVE_PHYSICAL, 35, 100, 35, EFFECT_NONE);
 moves["petaldance"] = new Move("Petal Dance",  TYPE_GRASS, MOVE_SPECIAL, 120, 100, 10, EFFECT_NONE);//
 moves["pinmissile"] = new Move("Pin Misile",  TYPE_BUG, MOVE_PHYSICAL, 55, 85, 20, EFFECT_NONE);//
-moves["poisongas"] = new Move("Poison Gas",  TYPE_POISON, MOVE_STATUS, -1, 90, 20, EFFECT_POISON);
-moves["poisonpowder"] = new Move("Poison Powder", TYPE_POISON, MOVE_STATUS, -1, 75, 20, EFFECT_POISON);
-moves["poisonsting"] = new Move("Poison Sting",  TYPE_POISON, MOVE_PHYSICAL, 15, 100, 20, EFFECT_POISON);
+moves["poisongas"] = new Move("Poison Gas",  TYPE_POISON, MOVE_STATUS, -1, 90, 20, EFFECT_POISONS);
+moves["poisonpowder"] = new Move("Poison Powder", TYPE_POISON, MOVE_STATUS, -1, 75, 20, EFFECT_POISONS);
+moves["poisonsting"] = new Move("Poison Sting",  TYPE_POISON, MOVE_PHYSICAL, 15, 100, 20, EFFECT_POISONS);
 moves["pound"] = new Move("Pound",  TYPE_NORMAL, MOVE_PHYSICAL, 40, 100, 35, EFFECT_NONE);
 moves["psybeam"] = new Move("Psybeam",  TYPE_PSYCHIC, MOVE_SPECIAL, 65, 100, 20, EFFECT_CONFUSES);
 moves["psychic"] = new Move("Psychic",  TYPE_PSYCHIC, MOVE_SPECIAL, 90, 100, 10, EFFECT_SPECIALDOWN);
@@ -224,7 +224,7 @@ moves["razorleaf"] = new Move("Razor Leaf",  TYPE_GRASS, MOVE_PHYSICAL, 55, 95, 
 moves["razorwind"] = new Move("Razor Wind",  TYPE_NORMAL, MOVE_SPECIAL, 80, 100, 20, EFFECT_NONE);//
 moves["recover"] = new Move("Recover",  TYPE_NORMAL, MOVE_STATUS, -1, -1, 10, EFFECT_DEFENSEUP);//
 moves["reflect"] = new Move("Reflect",  TYPE_PSYCHIC, MOVE_STATUS, -1, -1, 20, EFFECT_DEFENSEUP);//
-moves["rest"] = new Move("Rest",  TYPE_PSYCHIC, MOVE_STATUS, -1, -1, 10, EFFECT_SLEEP);//
+moves["rest"] = new Move("Rest",  TYPE_PSYCHIC, MOVE_STATUS, -1, -1, 10, EFFECT_PUTSASLEEP);//
 moves["roar"] = new Move("Roar",  TYPE_NORMAL, MOVE_STATUS, -1, -1, 20, EFFECT_ATTACKUP);//
 moves["rockslide"] = new Move("Rock Slide", TYPE_ROCK, MOVE_PHYSICAL, 75, 90, 20, EFFECT_NONE);//
 moves["rockthrow"] = new Move("Rock Throw", TYPE_ROCK, MOVE_PHYSICAL, 50, 90, 20, EFFECT_NONE);
@@ -235,21 +235,21 @@ moves["screech"] = new Move("Screech",  TYPE_NORMAL, MOVE_STATUS, -1, 85, 40, EF
 moves["seismictoss"] = new Move("Seismic Toss",  TYPE_FIGHTING, MOVE_PHYSICAL, 100, -1, 100, EFFECT_NONE);//
 moves["selfdestruct"] = new Move("Self-Destruct", TYPE_NORMAL, MOVE_PHYSICAL, 100, 100, 5, EFFECT_NONE);//
 moves["sharpen"] = new Move("Sharpen",  TYPE_NORMAL, MOVE_STATUS, -1, -1, 30, EFFECT_ATTACKUP);
-moves["sing"] = new Move("Sing",  TYPE_NORMAL, MOVE_STATUS, -1, 55, 15, EFFECT_SLEEP);
+moves["sing"] = new Move("Sing",  TYPE_NORMAL, MOVE_STATUS, -1, 55, 15, EFFECT_PUTSASLEEP);
 moves["skullbash"] = new Move("Skull Bash",TYPE_NORMAL, MOVE_PHYSICAL, 130, 100, 10, EFFECT_NONE);
 moves["skyattack"] = new Move("Sky Attack", TYPE_FLYING, MOVE_PHYSICAL, 110, 90, 20, EFFECT_NONE);//
 moves["slam"] = new Move("Slam",  TYPE_NORMAL, MOVE_PHYSICAL, 80, 75, 20, EFFECT_NONE);
 moves["slash"] = new Move("Slash",  TYPE_NORMAL, MOVE_PHYSICAL, 70, 100, 20, EFFECT_NONE);//
-moves["sleeppowder"] = new Move("Sleep Powder",  TYPE_GRASS, MOVE_STATUS, -1, 75, 20, EFFECT_SLEEP);
-moves["sludge"] = new Move("Sludge",  TYPE_POISON, MOVE_SPECIAL, 65, 100, 20, EFFECT_POISON);
-moves["smog"] = new Move("Smog",  TYPE_POISON, MOVE_SPECIAL, 30, 70, 20, EFFECT_POISON);
+moves["sleeppowder"] = new Move("Sleep Powder",  TYPE_GRASS, MOVE_STATUS, -1, 75, 20, EFFECT_PUTSASLEEP);
+moves["sludge"] = new Move("Sludge",  TYPE_POISON, MOVE_SPECIAL, 65, 100, 20, EFFECT_POISONS);
+moves["smog"] = new Move("Smog",  TYPE_POISON, MOVE_SPECIAL, 30, 70, 20, EFFECT_POISONS);
 moves["smokescreen"] = new Move("Smokescreen",  TYPE_NORMAL, MOVE_STATUS, -1, 100, 20, EFFECT_SPEEDDOWN);//
 moves["softboiled"] = new Move("Softboiled", TYPE_NORMAL, MOVE_STATUS, -1, -1, 10, EFFECT_DEFENSEUP);//
 moves["solarbeam"] = new Move("Solar Beam",  TYPE_GRASS, MOVE_SPECIAL, 110, 100, 20, EFFECT_NONE);//
 moves["sonicboom"] = new Move("Sonic Boom",  TYPE_NORMAL, MOVE_SPECIAL, 50, -1, 90, EFFECT_NONE); //
 moves["spikecannon"] = new Move("Spike Cannon", TYPE_NORMAL, MOVE_PHYSICAL, 50, 100, 20, EFFECT_NONE);//
 moves["splash"] = new Move("Splash",  TYPE_NORMAL, MOVE_STATUS, -1, -1, 40, EFFECT_NONE);//forjustice
-moves["spore"] = new Move("Spore",  TYPE_GRASS, MOVE_STATUS, -1, 100, 15, EFFECT_SLEEP);
+moves["spore"] = new Move("Spore",  TYPE_GRASS, MOVE_STATUS, -1, 100, 15, EFFECT_PUTSASLEEP);
 moves["stomp"] = new Move("Stomp",  TYPE_NORMAL, MOVE_PHYSICAL, 65, 100, 20, EFFECT_NONE);
 moves["stringshot"] = new Move("String Shot",  TYPE_BUG, MOVE_STATUS, -1, 95, 40, EFFECT_SPEEDDOWN);//
 moves["strength"] = new Move("Strength",  TYPE_NORMAL, MOVE_PHYSICAL, 80, 100, 15, EFFECT_NONE);//
@@ -272,7 +272,7 @@ moves["thunderpunch"] = new Move("Thunder Punch", TYPE_ELECTRIC, MOVE_PHYSICAL, 
 moves["thundershock"] = new Move("Thunder Shock", TYPE_ELECTRIC, MOVE_SPECIAL, 40, 100, 20, EFFECT_PARALYZES);
 moves["thunderwave"] = new Move("Thunder Wave",  TYPE_ELECTRIC, MOVE_STATUS, -1, 100, 20, EFFECT_PARALYZES);
 moves["thunderbolt"] = new Move("Thunderbolt",  TYPE_ELECTRIC, MOVE_SPECIAL, 90, 100, 15, EFFECT_PARALYZES);
-moves["toxic"] = new Move("Toxic",  TYPE_POISON, MOVE_STATUS, -1, 90, 10, EFFECT_POISON);
+moves["toxic"] = new Move("Toxic",  TYPE_POISON, MOVE_STATUS, -1, 90, 10, EFFECT_POISONS);
 moves["transform"] = new Move("Transform",  TYPE_NORMAL, MOVE_STATUS, 40, -1, 10, EFFECT_NONE);//forditto
 moves["triattack"] = new Move("Tri Attack",  TYPE_NORMAL, MOVE_SPECIAL, 80, 100, 20, EFFECT_FREEZES);//
 moves["twineedle"] = new Move("Twineedle",  TYPE_BUG, MOVE_PHYSICAL, 50, 100, 20, TYPE_POISON);//
@@ -289,7 +289,7 @@ moves["wrap"] = new Move("Wrap",  TYPE_NORMAL, MOVE_PHYSICAL, 55, 90, 20, EFFECT
 function NPC(name, filename, phrases, dpos, stationary){
 	this.toString = function(){ return this.name; }
 	this.name = name;
-	this.type = NPC;
+	this.type = ELE_NPC;
 	this.fn = IMGDIR + filename;
 	this.phrases = phrases;
 	this.dpos = dpos;
@@ -300,7 +300,7 @@ function NPC(name, filename, phrases, dpos, stationary){
 SATOSHI = new Pokemon("Satoshi", "red.png", "", 300, 5, 10, 10, 10, 100, TYPE_NORMAL, TYPE_NONE,
 		["throwrock"],[],[]);
 
-npcs=[]
+npc=[]
 npc["mom"] = new NPC("Your mother", "mom.png", 
 		["You're in a coma... just wake up...",
 		"One day your father will return..."],
@@ -322,13 +322,13 @@ npc["trainerbilly"] = new NPC("Trainer Billy", "billy.png",
 		{x:3, y: 4}, false);
 
 npc["storejoe"] = new NPC("Joe", "joe.png", 
-		["Buy my items!"] 
+		["Buy my items!"], 
 		{x:2, y: 2}, false);
 
 Tile = function(tileid, name, filename, walk, exit, hide, blink, jumpd, danger){
 	this.name = name;
 	this.fn = IMGDIR + filename;
-	this.type = TILE;
+	this.type = ELE_TILE;
 	this.id = tileid
 	if(walk		!= undefined) this.walk = walk;			else this.walk = false;
 	if(exit		!= undefined) this.exit = exit;			else this.exit = false;
@@ -344,7 +344,7 @@ tiles = []
 tiles["ground"] = new Tile(0, "Ground", "dot.png", true);
 tiles["wallhor"] = new Tile(1, "Wall", "minus.png");
 tiles["wallver"] = new Tile(2, "Wall", "pipe.png");
-tiles["stairdow"]n= new Tile(3, "Stairway", "stairdown.png", true, true);
+tiles["stairdown"] = new Tile(3, "Stairway", "stairdown.png", true, true);
 tiles["stairup"] = new Tile(4, "Stairway", "stairup.png", true, true);
 tiles["miscobject"] = new Tile(5, "Object", "rbracket.png");
 tiles["door"] = new Tile(6, "Door", "plus.png", true, true);
@@ -371,6 +371,7 @@ tiles["cliffface1"] = new Tile(26, "Cliff face", "cliffface1.png");
 tiles["cliffface2"] = new Tile(27, "Cliff face", "cliffface2.png");
 
 
+pokemon = [];
 pokemon["venusaur"]  = new Pokemon(
 		"Venasaur","venasaur.png",
 		"",
@@ -753,7 +754,7 @@ pokemon["nidoranm"] = new Pokemon(
 		TYPE_POISON, TYPE_NONE, 
 		["tackle","leer"], 
 		["hornattack","poisonsting", "focusenergy", "furyattack", 
-		HORNDRILL,DOUBLEKICK]
+		"horndrill", "doublekick"]
 		[8,14,21,29,36,43],
 		{to: "nidorino", at: 16}
 		);
@@ -994,7 +995,7 @@ pokemon["gyarados"] = new Pokemon(
 pokemon["magikarp"] = new Pokemon(
 		"Magikarp","magikarp.png",
 		"",
-		20,10,55,20,10,
+		20,10,55,20,80,10,
 		TYPE_WATER, TYPE_NONE, 
 		["tackle","growl"], {to: "gyarados", at: 30}
 		);
@@ -1895,17 +1896,17 @@ items["helixfossil"] = new Item("Helix Fossil", "hfossil.png", ITEM_USABLE, 2000
 //name,map, npcs, items, pokemon, poklev, mapprop
 rooms = [];
 rooms["bedroom"] = new Room("Your bedroom", maps["bedroom"], [], []);
-rooms["downstair"] = new Room("Kitchen", maps["downstair"], [npcs["mom"]], [], []);
-rooms["pallettown"] = new Room("Pallet Town", maps["pallettownmap"], [], [], ["pidgey", "rattata"], 5);
-rooms["oakslab"] = new Room("Oak's Lab", "oakslabmap", ["oak"], [
+rooms["downstair"] = new Room("Kitchen", maps["downstair"], [npc["mom"]], [], []);
+rooms["pallettown"] = new Room("Pallet Town", maps["pallettown"], [], [], ["pidgey", "rattata"], 5);
+rooms["oakslab"] = new Room("Oak's Lab", maps["oakslab"], [npc["oak"]], [
 		{itemtype: "pokeball", pos: {y: 2, x: 6}, contains: "charmander", lev : 5},
 		{itemtype: "pokeball", pos: {y: 2, x: 7}, contains: "squirtle", lev: 5},
 		{itemtype: "pokeball", pos: {y: 2, x: 8}, contains: "bulbasaur", lev: 5}]);
-rooms["pointlesshouse"] = new Room("Guy's house", "pointlesshousemap", [], [
+rooms["pointlesshouse"] = new Room("Guy's house", maps["pointlesshouse"], [], [
 		{itemtype: "potion", pos: {y: 1, x: 1}},
 		{itemtype: "potion", pos: {y: 1, x: 3}}]);
 
-rooms["endzone"] = new Room("Victory Cul-de-sac", "viktor", [], [
+rooms["endzone"] = new Room("Victory Cul-de-sac", maps["viktor"], [], [
 		{itemtype: "helixfossil", pos: {y: 2, x: 3}}]);
 
 rooms["route1"] = new Room("Route 1", [], [], [], 

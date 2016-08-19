@@ -7,15 +7,16 @@ Pokemon = function(name, filename, entry, basehp, baseatt,
 	this.basespc = basespc; this.basedef = basedef; 
 	this.basespd = basespd; this.weight = weight;
 	this.type1 = type1; this.type2 = type2; 
-	this.moves = moves;
 	this.learn = learn;
 	this.learnlvl = learnlvl;
 	this.evolve = evolve;
 	if(evolve == undefined) this.evolve = {at:1000000};
-	this.type = POKEMON;
+	this.type = ELE_POKEMON;
 	this.statuses = new Array(STATUSNAMES.length);
 	this.statuses.forEach(function(element){ element = false; });
 	this.toString = function(){ return this.name; }
+	this.moves = moves;
+
 	this.copy = function(position, level){
 		newpoke = new Pokemon(this.name, IMGDIR + this.fn, this.entry, this.basehp,
 				this.basespc, this.baseatt, this.basedef, this.basespd, this.weight, 
@@ -253,7 +254,7 @@ function listpoke(){
 function wildmon(pos){
 	var poklev = randI(Math.floor(curroom.poklev * .7), curroom.poklev);
 	var poktype = randomelement(curroom.pokemon);
-	var encpok = newmon(poktype, poklev, pos);
+	encpok = newmon(poktype, poklev, pos);
 
 	output(0,"A wild " + encpok.name + " appears!");
 	output(0, "Press the any key to continue");
@@ -262,15 +263,15 @@ function wildmon(pos){
 		output(0, "Go, " + monout.name + "!");
 	} else monout = p1;
 	anykey = true;
-	mode = BATTLEMODE;
+	mode = MODE_BATTLE;
 	update();
 	$("#grid").addClass("blinkonce"); //queue music
 }
 
 
 function newmon(type, level, position){
-	var newpoke = type.copy(position, level);
-	return newpoke;
+	newpokemon = pokemon[type].copy(position, level);
+	return newpokemon;
 }
 
 //returns the level of a pokemon with xp xp
@@ -307,8 +308,8 @@ function gainxp(result, mon, amount){
 //what happens when a pokemon faints
 //mon1 is winner
 //situation 1 -> enemy faint
-//0-> you faint
-//2-> status faint
+//0 -> you faint
+//2 -> status faint
 function pokefaint(mon1, mon2, situation) {
 	output(0, "");
 	if(situation < 2) output(1, mon2.name + " faints!"); 
@@ -316,10 +317,10 @@ function pokefaint(mon1, mon2, situation) {
 		var oldname = mon1.name;
 		var result = mon1.givexp(xpgiven(mon2));
 		gainxp(result, mon1, xpgiven(mon2));
-		if(randI(1, 10) == 1) items["pokeball"].copy(mon2.pos, curroom); //make more general drops
-		item["berry"].copy(mon2.pos, curroom);
+		if(randI(1, 10) == 1) items["pokeball"].copy(mon2.pos, curroom); //make drops more general
+		items["berry"].copy(mon2.pos, curroom);
 	} else {
-		for(var i = p1.inv.balls.length - 1; i >= 0; i--){ //unsure of this section?
+		for(var i = p1.inv.balls.length - 1; i >= 0; i--){ 
 			if(mon2.ballref == p1.inv.balls[i]) {
 				p1.inv.balls.splice(i, 1);
 			}

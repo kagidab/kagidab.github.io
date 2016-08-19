@@ -18,10 +18,10 @@ function randI(lo, hi){ //random int [lo, hi]
 
 //Gives a random element from a list
 function randomelement(list){
-	return item[randI(0, list.length - 1)];
+	return list[randI(0, list.length - 1)];
 }
 
-//for accessing all those 2d arrays with poses
+//shorthand for accessing 2d arrays with a position
 function ap(array, pos){
 	return array[pos.y][pos.x];
 }
@@ -32,9 +32,7 @@ function distance(pos1, pos2) {
 	return Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2);
 }
 
-/* This is for future versions to allow pseudorandom generation
- * Mostly relevant for the mapmaking function
- */
+// These are for future versions to allow pseudorandom generation
 originalseed = Math.floor(1e7 * Math.random());
 seednow = originalseed;
 

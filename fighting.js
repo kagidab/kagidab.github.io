@@ -15,25 +15,25 @@ function fightingmessage(topline){
 	}
 	output(1, "(A) Attack (S) Switch");
 	output(2, "(D) Catch (F) Flee");
-	if(havefossil()){
+	if(isininv(items["helixfossil"])){
 		output(2, "<br>(X) Use Helix Fossil", true);
 	}
 	output(3, "HP: " + encpok.curhp + " / " + encpok.maxhp);
 }
 
 function fightinkeys(key){
-	if(fightmenu == NORMALMENU){
+	if(fightmenu == MENU_NORMAL){
 		menuchoice(key);
-	} else if (fightmenu == ATTACKMENU){
+	} else if (fightmenu == MENU_ATTACK){
 		listattacks();
 		attackchoice(key);
-	} else if (fightmenu == ITEMMENU){
+	} else if (fightmenu == MENU_ITEM){
 		listitems();
 		itemchoice(key);
-	} else if(fightmenu == SWITCHMENU){
+	} else if(fightmenu == MENU_SWITCH){
 		switchpoke();
 		switchout(key);
-	} else if(fightmenu == KEEPHOLDINGON){
+	} else if(fightmenu == MENU_KEEPFIGHTING){
 		holdon(key);
 	}
 }
@@ -42,7 +42,7 @@ function holdon(key){
 	output(0, "Keep battling?(Y/N)");
 	if(key == KEY.Y) {
 		if(listpoke().length > 0){
-			fightmenu = SWITCHMENU; 
+			fightmenu = MENU_SWITCH; 
 			curpage = 0;
 			switchpoke();
 		} else { 
@@ -50,20 +50,23 @@ function holdon(key){
 			backtonormal(true);
 			update();
 		}
-	} else if(key == KEY.N) { bugspray(); backtowalk();}
+	} else if(key == KEY.N) { 
+		clearoutputs(); 
+		backtowalk();
+	}
 }
 
 function listattacks(){
 	output(0, "Which move to use?");
-	output(1, "(A) " + monout.moves[0]);
-	if(monout.moves.length > 1) output(1, " (S) " + monout.moves[1], 1);
-	if(monout.moves.length > 2) output(2, "(D) " + monout.moves[2]);
-	if(monout.moves.length > 3) output(2, " (F) " + monout.moves[3], 1);
+	output(1, "(A) " + moves[monout.moves[0]]);
+	if(monout.moves.length > 1) output(1, " (S) " + moves[monout.moves[1]], 1);
+	if(monout.moves.length > 2) output(2, "(D) " + moves[monout.moves[2]]);
+	if(monout.moves.length > 3) output(2, " (F) " + moves[monout.moves[3]], 1);
 	output(3, "(ESC) Back");
 }
 
 function switchpoke(){
-	listofpoke = listoftype(BALL);
+	listofpoke = listoftype(ITEM_BALL);
 	if(listofpoke.length != 0){
 		output(0, "Which Pokemon to switch to?");
 		listofpoke.push(p1);
@@ -106,15 +109,22 @@ function attackchoice(key){
 }
 
 function menuchoice(key){
-	if(key == KEY.A){ fightmenu = ATTACKMENU; listattacks();}
-	else if(key == KEY.S){ fightmenu = SWITCHMENU; curpage = 0; switchpoke(); }
-	else if(key == KEY.F){ flee(); }
-	else if(key == KEY.D){ throwball(); }
-	//else if(key == KEY.D){ fightmenu = ITEMMENU; listitems(); }
+	if(key == KEY.A){ 
+		fightmenu = MENU_ATTACK; 
+		listattacks();
+	} else if(key == KEY.S){ 
+		fightmenu = MENU_SWITCH; 
+		curpage = 0; 
+		switchpoke(); 
+	} else if(key == KEY.F){ 
+		flee(); 
+	} else if(key == KEY.D){ 
+		throwball(); 
+	} //else if(key == KEY.D){ fightmenu = ITEMMENU; listitems(); }
 	else{
 		fightingmessage(true);
 		if(key == KEY.P){ output(0, "Pokedex say: " + encpok.entry); }
-		else if(key == KEY.X && havefossil()){
+		else if(key == KEY.X && isininv(items["helixfossil"])){
 			output(0, "This isn't the time to use that!");
 		} 
 	}
@@ -125,12 +135,12 @@ function throwball(){
 	balltouse = grabballs()[0];
 	if(balltouse != null){
 		purgeitemfromlist(p1.inv.usable, balltouse);
-		if(Math.random() + 0.3 > encpok.curhp / encpok.maxhp){
+		if(Math.random() + 0.3 > encpok.curhp / encpok.maxhp){ //catch rate is more complicated
 			balltouse.contains = encpok;
 			if(!p1.owned[encpok.id]) p1.ownedtotal++;
 			p1.owned[encpok.id] = true;
 			encpok.ballref = balltouse;
-			balltouse.itemtype = BALL;
+			balltouse.itemtype = ITEM_BALL;
 			output(0, "You catch the " + encpok + "!");
 			p1.inv.balls.push(balltouse);
 			backtowalk();
@@ -152,7 +162,7 @@ function checkforfaint(mon1, mon2, enemy){
 			else {
 				pokefaint(mon2, mon1, 0);
 				output(2, "Keep battling(Y/N)");
-				fightmenu = KEEPHOLDINGON;
+				fightmenu = MENU_KEEPFIGHTING;
 			}
 		}
 		return true;
@@ -161,8 +171,9 @@ function checkforfaint(mon1, mon2, enemy){
 }
 
 //this seems like it could be split better
-function attack(moveused, onlyenemy){
-	encmov = randomelement(encpok.moves);
+function attack(move, onlyenemy){
+	var encmov = moves[randomelement(encpok.moves)];
+	var moveused = moves[move];
 	if(onlyenemy){
 		encmov.use(encpok, monout, true);
 		if(!checkforfaint(monout, encpok)) backtonormal();
@@ -189,13 +200,13 @@ function attack(moveused, onlyenemy){
 
 function backtonormal(topline){
 	fightingmessage(topline);
-	fightmenu = NORMALMENU;
+	fightmenu = MENU_NORMAL;
 }
 
 function switchout(key){
-	alphanum = key - KEY.A;
-	num = curpage * ITEMSPERPAGE + alphanum;
-	pokelist = listpoke();
+	var alphanum = key - KEY.A;
+	var num = curpage * ITEMSPERPAGE + alphanum;
+	var pokelist = listpoke();
 	pokelist.push(p1);
 	if(alphanum >= 0 && num < pokelist.length && alphanum < ITEMSPERPAGE){
 		monout = pokelist[num];
@@ -203,8 +214,6 @@ function switchout(key){
 		output(0, "It's your turn, " + monout + "!");
 		backtonormal(false);
 	} else if(num == pokelist.length && alphanum < ITEMSPERPAGE){
-		//list.length < ITEMSPERPAGE && alphanum == pokelist.length 
-		//|| pokelist.length > ITEMSPERPAGE && alphanum == ITEMSPERPAGE){
 		charout = p1;
 		monout = p1;
 		backtonormal(true);
@@ -216,12 +225,11 @@ function switchout(key){
 		switchpoke();
 	} else if(key == KEY.ESCAPE) backtonormal();
 	update();
-	}
 }
 
 function flee(){
 	if(randI(1, 3) < 3){
-		bugspray();
+		clearoutputs();
 		output(0, "You cower from the " + encpok);
 		backtowalk();
 	} else {
@@ -235,7 +243,7 @@ function backtowalk(){
 		pokemon.endoffight();
 	});
 	p1.endoffight();
-	mode = WALKMODE;
+	mode = MODE_WALK;
 	p1.att += hungerstatus; p1.def += hungerstatus;
 	p1.spd += hungerstatus; p1.spc += hungerstatus;
 	update();
