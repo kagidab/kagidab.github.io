@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </head>
+
+    <body>
+        <script type="module">
+
+function readSingleFile(e) {
+  var file = e.target.files[0];
+  if (!file) {
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    displayContents(contents);
+  };
+  reader.readAsText(file);
+}
+
+function last(arr) {
+    return arr[arr.length - 1];
+}
+
+function get_val(line, inline) {
+    let dat = line.split(/[\[\.]/)[1];
+    dat = new Date(dat);//, "%Y-%m-%d %H:%M:%S")
+    return [dat, parseInt(last(line.split(inline)))];
+}
+
+function displayContents(contents) {
+    //var element = document.getElementById('file-content');
+    //element.textContent = contents;
+    let lines = contents.split("\n");
+    let voltages = [["Time", "Voltage"]];
+    let modes = [["Time", "Mode"]];
+    let currents = [["Time", "Current"]];
+    let c1 = 0;
+    let c2 = 0;
+
+    for (let line of lines) {
+        if (line.match(/.*\?M0.*/)) {
+            let mode = get_val(line, "M");
+            //console.log(mode)
+            if (mode[1] != last(modes)[1]) {
+                //console.log("THIS", mode, "LAST", last(modes))
+                if (modes.length > 1) {
+                    let mode_dash = [...last(modes)];
+                    mode_dash[0] = new Date(mode[0]);
+                    mode_dash[0].setMilliseconds(0); //make sure it appears before
+                    modes.push(mode_dash);
+                }
+                modes.push(mode);
+            }
+        } else if (line.match(/.*<- \?V[0-9].*/)) {
+            c1++;
+            if (c1 % 3 == 0) {
+                let voltage = get_val(line, "V");
+                voltages.push(voltage);
+            }
+        } else if (line.match(/.*<- \?I[0-9].*/)) {
+            c2++
+            if (c2 % 3 == 0) {
+                let current = get_val(line, "I");
+                currents.push(current);
+            }
+        }
+
+    }
+
+    let mode_dash = [...last(modes)];
+    mode_dash[0] = new Date(last(currents)[0]);
+    modes.push(mode_dash);
+
+    //console.log(modes);
+    //console.log(currents);
+
+    let mode_data = google.visualization.arrayToDataTable(modes);
+    let mode_options = {
+      title: 'Mode',
+      hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+      explorer: { 
+        actions: ['dragToZoom', 'rightClickToReset'],
+        axis: 'horizontal',
+        keepInBounds: true,
+        maxZoomIn: 420.0},
+      colors: ['#D44E41'],
+    };
+    let current_data = google.visualization.arrayToDataTable(currents);
+    let current_options = {
+      title: 'Current (mA)',
+      hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+        vAxis: {viewWindow: { min: 160, max: 210}},
+      explorer: { 
+        actions: ['dragToZoom', 'rightClickToReset'],
+        axis: 'horizontal',
+        keepInBounds: true,
+        maxZoomIn: 420.0},
+      colors: ['#D44E41'],
+    };
+
+    let voltage_data = google.visualization.arrayToDataTable(voltages);
+    let voltage_options = {
+      title: 'Voltage (V)',
+      hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+      explorer: { 
+        actions: ['dragToZoom', 'rightClickToReset'],
+        axis: 'horizontal',
+        keepInBounds: true,
+        maxZoomIn: 420.0},
+      colors: ['#D44E41'],
+    };
+
+    let mode_chart = new google.visualization.LineChart(document.getElementById('mode'));
+    let current_chart = new google.visualization.LineChart(document.getElementById('current'));
+    let voltage_chart = new google.visualization.LineChart(document.getElementById('voltage'));
+
+    mode_chart.draw(mode_data, mode_options);
+    current_chart.draw(current_data, current_options);
+    voltage_chart.draw(voltage_data, voltage_options);
+}
+
+google.charts.load('current', {'packages':['corechart']});
+
+document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+        </script>
+        <input type="file" id="file-input" />
+        <div id="mode"></div>
+        <div id="current"></div>
+        <div id="voltage"></div>
+    </body>
+
+</html>
