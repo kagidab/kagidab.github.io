@@ -75,8 +75,11 @@ function displayContents(contents) {
 
     //console.log(modes);
     //console.log(currents);
+    let vals = x => x[1];
     let max = (x,y)=>x>y?x:y;
-    let max_current = currents.reduce(max);
+    
+    let current_vals = currents.map(vals);
+    let max_current = currents_vals.reduce(max);
     //max_voltage = voltages.reduce(max);
     
 
