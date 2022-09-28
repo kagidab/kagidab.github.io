@@ -75,6 +75,10 @@ function displayContents(contents) {
 
     //console.log(modes);
     //console.log(currents);
+    let max = (x,y)=>x>y?x:y;
+    max_current = currents.reduce(max);
+    //max_voltage = voltages.reduce(max);
+    
 
     let mode_data = google.visualization.arrayToDataTable(modes);
     let mode_options = {
@@ -91,7 +95,7 @@ function displayContents(contents) {
     let current_options = {
       title: 'Current (mA)',
       hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
-        vAxis: {viewWindow: { min: 160, max: 210}},
+        vAxis: {viewWindow: { min: max_current-30, max: max_current+10}},
       explorer: { 
         actions: ['dragToZoom', 'rightClickToReset'],
         axis: 'horizontal',
