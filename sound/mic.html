@@ -36,8 +36,7 @@
 	<script type="text/javascript">
 		// you probably DONT want to connect the microphone
 		// directly to the master output because of feedback.
-		const filter = new Tone.Filter(1500, "highpass").toDestination();
-filter.frequency.rampTo(20000, 10);
+		const filter = new Tone.Filter(150, "highpass").toDestination();
 		const mic = new Tone.UserMedia().connect(filter).toDestination();
 		const player = new Tone.Player({
 	url: "gullnoise.mp3",
@@ -45,7 +44,7 @@ filter.frequency.rampTo(20000, 10);
 	autostart: true,
 })
 //create a distortion effect
-const distortion = new Tone.Distortion(0.4).toDestination();
+const distortion = new Tone.Distortion(0.4).connect(filter).toDestination();
 //connect a player to the distortion
 player.connect(distortion);
 
