@@ -36,7 +36,7 @@
 	<script type="text/javascript">
 		// you probably DONT want to connect the microphone
 		// directly to the master output because of feedback.
-		const filter = new Tone.Filter(150, "highpass").toDestination();
+		const filter = new Tone.Filter(50, "highpass").toDestination();
 		const mic = new Tone.UserMedia().connect(filter).toDestination();
 		const player = new Tone.Player({
 	url: "gullnoise.mp3",
