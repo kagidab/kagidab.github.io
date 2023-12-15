@@ -37,6 +37,15 @@
 		// you probably DONT want to connect the microphone
 		// directly to the master output because of feedback.
 		const mic = new Tone.UserMedia().toDestination();
+		const player = new Tone.Player({
+	url: "gullnoise.mp3",
+	loop: true,
+	autostart: true,
+})
+//create a distortion effect
+const distortion = new Tone.Distortion(0.4).toDestination();
+//connect a player to the distortion
+player.connect(distortion);
 
 		const micFFT = new Tone.FFT();
 		mic.connect(micFFT);
