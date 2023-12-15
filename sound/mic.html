@@ -36,11 +36,11 @@
 	<script type="text/javascript">
 		// you probably DONT want to connect the microphone
 		// directly to the master output because of feedback.
-		const mic = new Tone.UserMedia();
+		const mic = new Tone.UserMedia().toDestination();
 
 		const micFFT = new Tone.FFT();
 		mic.connect(micFFT);
-
+		
 		fft({
 			tone: micFFT,
 			parent: document.querySelector("#content")
